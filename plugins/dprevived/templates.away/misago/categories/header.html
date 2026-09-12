@@ -1,0 +1,42 @@
+{% load i18n %}
+{% if not THREADS_ON_INDEX and settings.index_header %}
+<div class="container page-header-container">
+  <div class="page-header page-header-forum-index">
+    <div class="page-header-bg-image">
+      <div class="page-header-bg-overlay">
+        <div class="page-header-image"></div>
+        <div class="page-header-banner page-header-banner-forum-index">
+          <div class="page-header-banner-bg-image">
+            <div class="page-header-banner-bg-overlay">
+              <h1>{{ settings.index_header }}</h1>
+            </div>
+          </div>
+        </div>
+          <div class="page-header-details">
+            <div class="page-header-message">
+              {{dprevived.users}} members - {{dprevived.usersonline}} today online - {{dprevived.threads}} threads - {{dprevived.posts}} posts - {{dprevived.attachments}} images with {{dprevived.uploads}} MB data
+              {% if settings.index_message %}{{ settings.index_message|force_escape|urlize|linebreaks|safe }}{% endif %}
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% elif THREADS_ON_INDEX %}
+<div class="container page-header-container">
+  <div class="page-header page-header-categories">
+    <div class="page-header-bg-image">
+      <div class="page-header-bg-overlay">
+        <div class="page-header-image"></div>
+        <div class="page-header-banner page-header-banner-categories">
+          <div class="page-header-banner-bg-image">
+            <div class="page-header-banner-bg-overlay">
+              <h1>{% trans "Categories" %}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
