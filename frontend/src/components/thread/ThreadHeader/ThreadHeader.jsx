@@ -12,6 +12,7 @@ import {
 import ThreadModeration from "../ThreadModeration"
 import ThreadWatchButton from "../ThreadWatchButton"
 import ThreadHeaderBreadcrumbs from "./ThreadHeaderBreadcrumbs"
+import sendEvent from "../../../utils/dprevived"
 
 const ThreadHeader = ({ styleName, thread, posts, user, moderation }) => (
   <PageHeaderContainer>
@@ -40,6 +41,10 @@ const ThreadHeader = ({ styleName, thread, posts, user, moderation }) => (
           </FlexRowSection>
           {user.is_authenticated && (
             <FlexRowSection>
+
+              <FlexRowCol>
+                <button className="btn btn-default btn-outline btn-block" onClick={() =>sendEvent("markThreadRead",{"thread":thread.id})} ><span className="material-icon">check</span> mark thread read</button>
+              </FlexRowCol>
               <FlexRowCol>
                 <ThreadWatchButton thread={thread} />
               </FlexRowCol>

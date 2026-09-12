@@ -5,10 +5,12 @@ import MarkupCodeModal from "./MarkupCodeModal"
 import MarkupFormattingHelpModal from "./MarkupFormattingHelpModal"
 import MarkupImageModal from "./MarkupImageModal"
 import MarkupLinkModal from "./MarkupLinkModal"
+import MarkupEmojiModal from "./MarkupEmojiModal"
 import MarkupQuoteModal from "./MarkupQuoteModal"
 import MarkupEditorButton from "./MarkupEditorButton"
 import { getSelection, replaceSelection, wrapSelection } from "./operations"
 import uploadFile from "./uploadFile"
+import sendEvent from "../../utils/dprevived"
 
 const MarkupEditorToolbar = ({
   disabled,
@@ -61,6 +63,20 @@ const MarkupEditorToolbar = ({
       icon: "remove",
       onClick: () => {
         replaceSelection(getSelection(element), update, "\n\n- - -\n\n")
+      },
+    },
+    {
+      name: pgettext("markup editor", "insert emoji"),
+      icon: "insert_emoticon",
+      onClick: () => {
+        const selection = getSelection(element)
+        modal.show(
+          <MarkupEmojiModal
+            selection={selection}
+            element={element}
+            update={update}
+          />
+        )
       },
     },
     {
@@ -149,6 +165,7 @@ const MarkupEditorToolbar = ({
           />
         ))}
       </div>
+      <div className="markup-editor-toolbar-space" ><div className="text" onClick={() => {sendEvent("checkFreeSpace",{});}} ><span className="material-icon" title="Upload Space">timelapse</span></div> <div className="maxSpace" ><div className="usedSpace"  >used</div><div className="freeSpace"  >free</div></div> </div>
       <div className="markup-editor-toolbar-right">
         <div className="markup-editor-controls-dropdown">
           <button

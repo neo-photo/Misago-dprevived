@@ -106,6 +106,9 @@ class Attachment(PluginDataModel):
         self.image = File(upload, upload.name)
 
         thumbnail = Image.open(upload)
+        # MG: patched for exif preversation
+        exif_data = thumbnail.info.get('exif', b'')
+        
         downscale_image = (
             thumbnail.size[0] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[0]
             or thumbnail.size[1] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[1]
@@ -114,10 +117,12 @@ class Attachment(PluginDataModel):
 
         thumb_stream = BytesIO()
         if downscale_image:
-            thumbnail.thumbnail(settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT)
+            # MG: patched Filter quality
+            thumbnail.thumbnail(settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT, Image.LANCZOS)                        
             if fileformat == "jpg":
                 # normalize jpg to jpeg for Pillow
-                thumbnail.save(thumb_stream, "jpeg")
+                # MG: patched for exif preversation
+                thumbnail.save(thumb_stream, "jpeg", exif=exif_data)
             else:
                 thumbnail.save(thumb_stream, "png")
         elif strip_animation:

@@ -5,6 +5,7 @@ import { Toolbar, ToolbarItem, ToolbarSection, ToolbarSpacer } from "../Toolbar"
 import ThreadsCategoryPicker from "./ThreadsCategoryPicker"
 import ThreadsListPicker from "./ThreadsListPicker"
 import ThreadsToolbarModeration from "./ThreadsToolbarModeration"
+import sendEvent from "../../utils/dprevived"
 
 const ThreadsToolbar = ({
   api,
@@ -56,7 +57,7 @@ const ThreadsToolbar = ({
       </ToolbarSection>
     )}
     {lists.length > 1 && (
-      <ToolbarSection className="hidden-xs">
+      <ToolbarSection >
         <ToolbarItem>
           <ThreadsListPicker baseUrl={baseUrl} list={list} lists={lists} />
         </ToolbarItem>
@@ -65,6 +66,9 @@ const ThreadsToolbar = ({
     <ToolbarSpacer />
     {!!user.id && (
       <ToolbarSection>
+        <ToolbarItem>
+          <Button className="btn btn-primary btn-outline btn-block" onClick={() =>sendEvent("markCategoryRead",{"category":category.id})} ><span className="material-icon">check</span> mark all read</Button>
+        </ToolbarItem>
         <ToolbarItem>
           <Button
             className="btn-primary btn-outline btn-block"

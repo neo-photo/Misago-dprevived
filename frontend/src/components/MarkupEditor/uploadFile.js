@@ -5,10 +5,12 @@ import snackbar from "../../services/snackbar"
 import formatFilesize from "../../utils/file-size"
 import getRandomString from "../../utils/getRandomString"
 
+import sendEvent from "../../utils/dprevived"
 const ID_LEN = 32
 
 const uploadFile = (file, setState) => {
-  const maxSize = misago.get("user").acl.max_attachment_size * 1024
+  let maxSize = misago.get("user").acl.max_attachment_size * 1024
+  if ((global.freeSpace*1024)>maxSize ) maxSize = global.freeSpace*1024
 
   if (file.size > maxSize) {
     snackbar.error(
@@ -61,6 +63,7 @@ const uploadFile = (file, setState) => {
       (data) => {
         Object.assign(upload, data, { uploaded_on: moment(data.uploaded_on) })
         refreshState()
+        sendEvent("checkFreeSpace",{})
       },
       (rejection) => {
         if (rejection.status === 400 || rejection.status === 413) {

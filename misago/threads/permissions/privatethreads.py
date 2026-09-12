@@ -275,7 +275,7 @@ def allow_add_participants(user_acl, target):
     max_participants = user_acl["max_private_thread_participants"]
     current_participants = len(target.participants_list) - 1
 
-    if current_participants >= max_participants:
+    if current_participants >= max_participants and max_participants>0 :
         raise PermissionDenied(
             pgettext_lazy(
                 "private threads permission",
