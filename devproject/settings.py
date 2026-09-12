@@ -110,7 +110,7 @@ STATIC_URL = "/static/"
 # User uploads (Avatars, Attachments, files uploaded in other Django apps, ect.)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "../media/"
 
 
 # The absolute path to the directory where collectstatic will collect static files for deployment.
@@ -158,7 +158,7 @@ AUTHENTICATION_BACKENDS = ["misago.users.authbackends.MisagoBackend"]
 
 CSRF_FAILURE_VIEW = "misago.core.errorpages.csrf_failure"
 
-PLUGINS_DIRECTORY = os.environ.get("MISAGO_PLUGINS")
+PLUGINS_DIRECTORY = os.path.join(BASE_DIR, "plugins")
 
 INSTALLED_PLUGINS = discover_plugins(PLUGINS_DIRECTORY)
 
