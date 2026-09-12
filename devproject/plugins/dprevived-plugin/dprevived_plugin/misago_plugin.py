@@ -1,7 +1,8 @@
 from django.db import connection
 #from rest_framework.response import Response
 from django.http import JsonResponse
-from settings import settings
+from devproject import settings
+from misago import MisagoPlugin
 
 def dictfetchall(cursor):
     """
@@ -92,17 +93,14 @@ def mark_category_read(request, category_pk):
 
 
 manifest = MisagoPlugin(
-    name="Example plugin with complete manifest",
-    description="This plugin has all fields in its manifest filled in.",
-    license="GNU GPL v2",
+    name="Plugin for the-photo.org",
+    description="This plugin has all addons for the-photo.org",
+    license="??",
     icon="fa fa-wrench",
     color="#9b59b6",
-    version="0.1DEV",
-    author="Rafał Pitoń",
-    homepage="https://misago-project.org",
-    sponsor="https://github.com/sponsors/rafalp",
-    help="https://misago-project.org/c/support/30/",
-    bugs="https://misago-project.org/c/bug-reports/29/",
-    repo="https://github.com/rafalp/misago",
+    version="0.1pre",
+    author="neo-photo",
+    homepage="https://the-photo.org",
+    repo="https://github.com/neo-photo/Misago-dprevived",
 )
 

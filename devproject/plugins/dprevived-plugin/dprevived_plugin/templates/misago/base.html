@@ -62,6 +62,10 @@
       {% endif %}
     {% endspaceless %}
     <script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","url":"{{ settings.forum_address }}"}</script>
+    <script type="text/javascript">
+      window.misago_locale = "{{ LANGUAGE_CODE }}"
+      window.misago_csrf = {{ CSRF_COOKIE_NAME|safe }}
+    </script>
 <script src="/static/js/dprevived.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
 <script src="/static/js/styles.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
 <script src="/static/js/exif.js"></script>
@@ -87,15 +91,22 @@
     </div>
     {% include "misago/auth.html" %}
 
+    <div id="site-nav-mount"></div>
+    <div id="search-mount"></div>
+    <div id="notifications-mount"></div>
+    <div id="private-threads-mount"></div>
+    <div id="user-nav-mount"></div>
+
     <div id="posting-mount"></div>
     <div id="posting-spacer"></div>
+
     <div class="modal fade" id="modal-mount" tabindex="-1" role="dialog" aria-labelledby="misago-modal-label"></div>
 
     {% if misago_agreement %}
       {% include "misago/required_agreement.html" %}
     {% endif %}
 
-    <script src="{% url 'django-i18n' %}?{{ LANGUAGE_CODE }}"></script>
+    <script src="{% url 'django-i18n' %}?l={{ LANGUAGE_CODE }}&v={{ I18N_VERSION_SIGNATURE }}"></script>
     <script src="{% static 'misago/js/vendor.js' %}"></script>
     <script src="{% static 'misago/js/misago.js' %}"></script>
     {% include "misago/scripts.html" %}

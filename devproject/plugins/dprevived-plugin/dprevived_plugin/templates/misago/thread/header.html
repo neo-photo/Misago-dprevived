@@ -44,7 +44,7 @@
                   </div>
                 </div>
               </div>
-              <div class="flex-row-col"></div>
+              <div class="flex-row-col myclass"></div>
               {% if thread.replies > 0 %}
                 <div class="flex-row-col flex-row-col-shrink">
                   {% include "misago/thread_replies.html" %}
@@ -57,6 +57,11 @@
               {% endif %}
             </div>
             {% if user.is_authenticated %}
+                  <div class="flex-row-section">
+                <div class="flex-row-col">
+            <button class="btn btn-default btn-outline btn-block" onclick="{(e) =>markThreadRead(e,thread.id);}" ><span class="material-icon">check</span> mark thread read</button>
+                   </div>
+                </div>
               <div class="flex-row-section">
                 <div class="flex-row-col">
                   <div class="dropdown">

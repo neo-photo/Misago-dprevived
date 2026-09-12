@@ -1,26 +1,16 @@
-{% load i18n static misago_avatars %}
-<nav id="misago-navbar" class="navbar" role="navigation">
-  <div class="container navbar-container">
-    
-    {% if settings.logo %}
-      <div class="navbar-branding">
-        <a href="{% url 'misago:index' %}" class="navbar-branding-logo">
-          <img src="{{ settings.logo }}" alt="{{ settings.logo_text}}">
-        </a>
-      </div>
-    {% else %}
-      <div class="navbar-branding">
-        {% if settings.logo_small %}
-          <a href="{% url 'misago:index' %}" class="navbar-branding-logo-xs">
-            <img src="{{ settings.logo_small }}" alt="{{ settings.logo_text}}">
-          </a>
+{% load i18n static %}
+<nav class="navbar navbar-misago navbar-default navbar-static-top" role="navigation">
+
+  <div class="container navbar-full navbar-desktop-nav">
+    {% if settings.logo_text or settings.logo %}
+      <a href="{% url 'misago:index' %}" class="navbar-brand">
+        {% if settings.logo %}
+          <img src="{{ settings.logo }}" alt="">
         {% endif %}
         {% if settings.logo_text %}
-          <a href="{% url 'misago:index' %}" class="navbar-branding-text">
-            {{ settings.logo_text }}
-          </a>
+          <span>{{ settings.logo_text}}</span>
         {% endif %}
-      </div>
+      </a>
     {% endif %}
 
     <ul class="nav navbar-nav">
@@ -79,14 +69,9 @@
           </a>
         </li>
       {% endif %}
-      <div id="navbar-site-nav-link">
-        <button class="btn btn-navbar-icon" title="Open menu" type="button" disabled>
-          <span class="material-icon">menu</span>
-        </button>
-      </div>
-      {% if user.is_authenticated and user_acl.can_use_private_threads %}
-        <a id="navbar-private-threads" class="btn btn-navbar-icon" href="{% url 'misago:private-threads' %}" title="{% trans 'Open private threads' context 'navbar' %}">
-          <span class="material-icon">inbox</span>
+      <li>
+        <a href="{% url 'misago:users' %}">
+          {% trans "Users" %}
         </a>
       </li>
       <li>
@@ -97,15 +82,19 @@
           <a href="{{ link.url }}"{% if link.css_class %} class="{{ link.css_class }}"{% endif %}{% if link.rel %} rel="{{ link.rel }}"{% endif %}{% if link.target_blank %} target="_blank"{% endif %}>
             {{ link.title }}
           </a>
-        </div>
-        <div id="navbar-user-nav-link">
-          <a class="btn-navbar-image" href="{% url 'misago:user' slug=user.slug pk=user.id %}" title="{% trans 'Open your options' context 'navbar' %}">
-            <img alt="" class="user-avatar" src="{{ user|avatar:34 }}" srcset="{{ user|avatar:68 }}" width="34" height="34">
-          </a>
-        </div>
-      {% elif settings.enable_oauth2_client %}
-        <a class="btn btn-sign-in btn-navbar-sign-in" href="{% url 'misago:oauth2-login' %}">
-          {% trans "Sign in" context "cta" %}
+        </li>
+      {% endfor %}
+
+    </ul>
+
+    <div id="user-menu-mount"></div>
+  </div><!-- /full navbar -->
+
+  <ul class="nav navbar-nav navbar-compact-nav" itemscope itemtype="http://schema.org/SiteNavigationElement">
+    {% if settings.logo_small %}
+      <li>
+        <a href="{% url 'misago:index' %}" class="brand-link">
+          <img src="{{ settings.logo_small }}" alt="">
         </a>
       </li>
       {% if THREADS_ON_INDEX %}
@@ -115,14 +104,49 @@
           </a>
         </li>
       {% else %}
-        <button class="btn btn-sign-in btn-navbar-sign-in" type="button" disabled>
-          {% trans "Sign in" context "cta" %}
-        </button>
-        <button class="btn btn-register btn-navbar-register" type="button" disabled>
-          {% trans "Register" context "cta" %}
-        </button>
+        <li>
+          <a href="{% url 'misago:threads' %}">
+            <i class="material-icon">message</i>
+          </a>
+        </li>
       {% endif %}
-    </div>
-
-  </div>
+    {% elif THREADS_ON_INDEX %}
+      <li>
+        <a href="{% url 'misago:index' %}">
+          <i class="material-icon">message</i>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'misago:categories' %}">
+          <i class="material-icon">forum</i>
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <a href="{% url 'misago:index' %}">
+          <i class="material-icon">forum</i>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'misago:threads' %}">
+          <i class="material-icon">message</i>
+        </a>
+      </li>
+    {% endif %}
+    <li>
+      <a href="{% url 'misago:users' %}">
+        <i class="material-icon">group</i>
+      </a>
+    </li>
+    {% if user_acl.can_search %}
+      <li>
+        <a href="{% url 'misago:search' %}">
+          <i class="material-icon">search</i>
+        </a>
+      </li>
+    {% endif %}
+    <li id="user-menu-compact-mount"></li>
+  </ul>
+  <!-- /compact navbar -->
 </nav>
+<div id="mobile-navbar-dropdown-mount" class="mobile-dropdown"></div>
