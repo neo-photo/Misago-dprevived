@@ -2,7 +2,7 @@
 #from django.contrib.auth import get_user_model
 #User = get_user_model()
 from django.db import connection
-from settings import settings
+from devproject import settings
 
 __version__ = "2"
 

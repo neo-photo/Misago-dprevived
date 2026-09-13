@@ -12,13 +12,12 @@
               </div>
             </div>
           </div>
-          {% if settings.index_message %}
-            <div class="page-header-details">
-              <div class="page-header-message">
-                {{ settings.index_message|force_escape|urlize|linebreaks|safe }}
-              </div>
+        </div>
+          <div class="page-header-details">
+            <div class="page-header-message">
+              {{dprevived.users}} members - {{dprevived.usersonline}} today online - {{dprevived.threads}} threads - {{dprevived.posts}} posts - {{dprevived.attachments}} images with {{dprevived.uploads}} MB data
+              {% if settings.index_message %}{{ settings.index_message|force_escape|urlize|linebreaks|safe }}{% endif %}
             </div>
-          {% endif %}
         </div>
       </div>
     </div>

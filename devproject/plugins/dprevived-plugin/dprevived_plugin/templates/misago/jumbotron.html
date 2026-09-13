@@ -8,7 +8,7 @@ If you can not login please clear cookies
 </style>
 <!-- {{dprevived.Time}} {{dprevived.log}} {{dprevived.Users}}-->
 <script>
-var global = {"freeSpace":0,"freeSpaceUser": {{dprevived.MAX_SPACE_USER}}, "postsPerPage":"{{request.session.posts_per_page}}" };
+var global = {"freeSpace":0,"freeSpaceUser": 0{{dprevived.MAX_SPACE_USER}}, "postsPerPage":"{{request.session.posts_per_page}}" };
 function ready(fn) {
   if (document.readyState != 'loading'){
     fn();

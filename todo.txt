@@ -1,0 +1,9 @@
+
+* Plugin migration
+    * api calls + urls
+    * context values
+
+* fix Hamburger menu    
+    
+* checkt css styles
+* add quick menu

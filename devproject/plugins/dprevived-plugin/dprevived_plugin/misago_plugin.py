@@ -3,6 +3,8 @@ from django.db import connection
 from django.http import JsonResponse
 from devproject import settings
 from misago import MisagoPlugin
+from api import dprevived
+
 
 def dictfetchall(cursor):
     """

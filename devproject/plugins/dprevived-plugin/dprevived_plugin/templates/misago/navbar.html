@@ -1,5 +1,5 @@
 {% load i18n static misago_avatars %}
-<nav id="misago-navbar" class="navbar" role="navigation">
+<nav id="misago-navbar" class="navbar navbar-misago navbar-default navbar-static-top" role="navigation">
   <div class="container navbar-container">
     
     {% if settings.logo %}
@@ -24,6 +24,7 @@
     {% endif %}
 
     <div class="navbar-right">
+
       {% if navbar_menu %}
         <ul class="navbar-extra-menu" role="nav">
           {% for link in navbar_menu %}
@@ -35,6 +36,7 @@
           {% endfor %}
         </ul>
       {% endif %}
+              <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
       {% if user_acl.can_search %}
         <div id="navbar-search-link">
           <a class="btn btn-navbar-icon" href="{% url 'misago:search' %}" title="{% trans 'Open search' context 'navbar' %}">

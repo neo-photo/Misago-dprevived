@@ -14,8 +14,5 @@ export default function initializer(context) {
   )
 }
 
-misago.addInitializer({
-  name: "component:navbar",
-  initializer: initializer,
-  after: "store",
-})
+misago.addInitializer({name: "component:navbar",initializer: initializer,after: "store",})
+
