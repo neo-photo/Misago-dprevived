@@ -4,7 +4,7 @@
 from django.db import connection
 from devproject import settings
 
-__version__ = "2"
+__version__ = "4"
 
 def dictfetchall(cursor):
     """
@@ -29,7 +29,7 @@ def dprevived_context(request):
     start_time = time.time()
     CT = {}
     body_class = request.COOKIES.get('dpreviedBGSet',"light").split("+",1)[0]
-    print(dir(settings))
+    #print(dir(settings))
     CT["dprevived"] ={"MAX_SPACE_USER":settings.MISAGO_MAX_SPACE_USER,
                         "Version":__version__,
                         "BodyClass":body_class

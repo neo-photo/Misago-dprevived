@@ -429,7 +429,7 @@ function makeExif(elem) {
             
             if (fmm != undefined){ 
             	line2 += `${fmm}mm `;
-                if (fmm35 != undefined && fmm35 != fmm  && fmm35 != 0 ){ 
+                if (fmm35 != undefined && fmm35 != fmm && fmm35 != 0 ){ 
             	line2 += `(35mm eq. ${fmm35}mm) `;
                 }
             }
@@ -449,7 +449,7 @@ function makeExif(elem) {
 		 if (line2 != '') line2 = `<span>` + line2 +`</span>`;    
 
          tDiv.innerHTML = line1 + line2 ;
-        })
+        });
     }
     img.addEventListener('load',(e)=>{img.onload(img)});
     img.src=src;

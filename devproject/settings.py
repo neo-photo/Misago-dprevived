@@ -106,11 +106,15 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
+FILE_UPLOAD_MAX_MEMORY_SIZE = 106214400
+MISAGO_AVATARS_SIZES = [400, 200, 100]
+MISAGO_MAX_SPACE = 6000000
+MISAGO_MAX_SPACE_USER = 10000
+MISAGO_THREADS_ON_INDEX = False
 # User uploads (Avatars, Attachments, files uploaded in other Django apps, ect.)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-MEDIA_URL = "../media/"
+MEDIA_URL = "/media/"
 
 
 # The absolute path to the directory where collectstatic will collect static files for deployment.
@@ -122,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
 
 
 # This setting defines the additional locations the staticfiles app will traverse if the FileSystemFinder finder
@@ -239,7 +243,7 @@ TEMPLATES = [
         "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
-            "context_processors": TEMPLATE_CONTEXT_PROCESSORS,
+            "context_processors": TEMPLATE_CONTEXT_PROCESSORS + ["dprevived_plugin.context_processors.dprevived_context"],
         },
     }
 ]
