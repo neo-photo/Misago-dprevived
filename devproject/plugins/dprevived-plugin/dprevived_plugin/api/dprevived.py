@@ -1,7 +1,7 @@
 from django.db import connection
 #from rest_framework.response import Response
 from django.http import JsonResponse
-from settings import settings
+from devproject import settings
 
 def dictfetchall(cursor):
     """
