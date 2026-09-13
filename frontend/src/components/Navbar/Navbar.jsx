@@ -35,7 +35,7 @@ export function Navbar({
         {extraMenuItems.length > 0 && (
           <NavbarExtraMenu items={extraMenuItems} />
         )}
-        <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
+        <select id="styleSwitch" style={{ display: "none" }} ><option value="">Choose Style</option></select>
         {!!showSearch && (
           <NavbarSearchDropdown id="navbar-search-dropdown" url={searchUrl} />
         )}
