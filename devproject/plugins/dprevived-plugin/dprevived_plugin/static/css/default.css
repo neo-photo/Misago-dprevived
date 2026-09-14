@@ -14,6 +14,10 @@ ul.posts-list li:nth-child(odd) .panel-post {
   display: flex;
 }
 
+.navbar-branding-text {
+  padding: 10px;
+}
+
 
 
 li.list-group-item:nth-child(2n+1) {

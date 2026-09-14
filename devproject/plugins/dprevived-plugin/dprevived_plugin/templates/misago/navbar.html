@@ -7,6 +7,11 @@
         <a href="{% url 'misago:index' %}" class="navbar-branding-logo">
           <img src="{{ settings.logo }}" alt="{{ settings.logo_text}}">
         </a>
+        {% if settings.logo_text %}
+          <a href="{% url 'misago:index' %}" class="navbar-branding-text">
+			{{ settings.logo_text}}
+          </a>
+        {% endif %}
       </div>
     {% else %}
       <div class="navbar-branding">
@@ -63,6 +68,29 @@
             </li>
         {% endfor %}
         </ul>
+      </li>
+      {% if THREADS_ON_INDEX %}
+        <li>
+          <a href="{% url 'misago:index' %}">
+            {% trans "Threads" %}
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'misago:categories' %}">
+            {% trans "Categories" %}
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a href="{% url 'misago:threads' %}">
+            {% trans "Threads" %}
+          </a>
+        </li>
+      {% endif %}
+      <li>
+        <a href="{% url 'misago:users' %}">
+          {% trans "Users" %}
+        </a>
       </li>
 		<li>
               <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
