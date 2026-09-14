@@ -288,7 +288,7 @@ REST_FRAMEWORK = {
 
 # Configure Celery to use Redis as message broker.
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_BROKER_URL = "memory://"
 
 # Celery workers may leak the memory, eventually depriving the instance of resources.
 # This setting forces celery to stop worker, clean after it and create new one
