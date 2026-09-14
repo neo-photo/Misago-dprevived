@@ -20,18 +20,50 @@
   position: relative;
   padding: @markup-editor-toolbar-padding;
 
+  display: flex;
   background: @markup-editor-toolbar-bg;
   border-bottom: 1px solid @markup-editor-toolbar-border-color;
 }
 
 .markup-editor-toolbar-left {
   display: flex;
-  flex-shrink: 0;
+  flex-shrink: 1;
   overflow-x: hidden;
+}
+.markup-editor-toolbar-space {
+  flex-grow: 1;
+  color: black;
+  font-size: 24px;
+  display: flex;
+  line-height:36px;
+}
+
+.markup-editor-toolbar-space .text {
+  padding: 0 5px;
+}
+
+.maxSpace {
+  flex-grow: 1;
+  border: 2px solid black;
+  border-radius: 3px;
+  display: flex;
+  background: linear-gradient(to right ,red 99%, 99%,wheat);
+  visibility:hidden;
+}
+.freeSpace {
+  color: grey;
+  padding-right: 3px;
+  text-align: right;
+  flex-grow:1;
+}
+.usedSpace {
+  padding-left: 3px;
+  color: grey;
+  flex-grow:1;
 }
 
 .markup-editor-toolbar-right {
-  flex-shrink: 0;
+  flex-shrink: 1;
   padding: @markup-editor-toolbar-padding;
   padding-right: 0;
   margin-right: @line-height-computed / 2;
@@ -50,9 +82,7 @@
   justify-content: center;
   flex-shrink: 0;
 
-  height: @markup-editor-btn-size;
-  width: @markup-editor-btn-size;
-  padding: 0;
+  padding: 0 5px;
 
   font-size: @markup-editor-btn-icon-size;
   line-height: @markup-editor-btn-icon-size;

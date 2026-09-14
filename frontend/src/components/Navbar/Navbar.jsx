@@ -29,13 +29,7 @@ export function Navbar({
   showPrivateThreads,
 }) {
   return (
-    <div className="container navbar-container">
-      <NavbarBranding {...branding} />
-      <div className="navbar-right">
-        {extraMenuItems.length > 0 && (
-          <NavbarExtraMenu items={extraMenuItems} />
-        )}
-        <select id="styleSwitch" style={{ display: "none" }} ><option value="">Choose Style</option></select>
+	<div >
         {!!showSearch && (
           <NavbarSearchDropdown id="navbar-search-dropdown" url={searchUrl} />
         )}
@@ -99,7 +93,6 @@ export function Navbar({
           <RegisterButton className="btn-navbar-register" />
         )}
         {!user && !authDelegated && <SignInModalAutoOpen />}
-      </div>
     </div>
   )
 }

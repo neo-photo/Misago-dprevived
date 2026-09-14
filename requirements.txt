@@ -224,3 +224,4 @@ webservices[django]==0.7
     # via django-simple-sso
 yarl==1.9.4
     # via aiohttp
+pylibmc

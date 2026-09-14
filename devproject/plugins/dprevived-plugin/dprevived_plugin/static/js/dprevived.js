@@ -133,6 +133,10 @@ function runInit(){
                 images.appendChild(newdiv);
             });
     }
+    let hamburger = document.querySelector("#navbar-site-nav-link");
+    if (hamburger != null) {
+    	hamburger.addEventListener('click',(e) =>{return hamburgerEvent(e,hamburger);});
+    }
 }
 
 function swichBg(e) {
@@ -373,6 +377,28 @@ function startup(){
                                                       return false;
                                                       }));
     }
+}
+
+function hamburgerEvent(e,elem) {
+	console.log(e.target.tagName);
+	if (e.target.tagName.toLowerCase() =="a") {return true;}
+	else {
+		let button;
+		button = document.querySelector("#navbar-site-nav-link button");
+		e.stopPropagation();
+		e.preventDefault();
+		if (button.classList.contains("active"))
+		{
+		button.classList.remove("active");
+		elem.classList.remove("open");
+		} 
+		else 
+		{
+		button.classList.add("active");
+		elem.classList.add("open");
+		}
+		return false;
+	}
 }
 
 function addImageOv(){

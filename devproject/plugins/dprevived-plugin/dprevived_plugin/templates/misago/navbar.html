@@ -26,7 +26,47 @@
     <div class="navbar-right">
 
       {% if navbar_menu %}
-        <ul class="navbar-extra-menu" role="nav">
+        <ul class="nav navbar-nav navbar-extra-menu" role="nav">
+    <li>
+      <a href="{% url 'misago:categories' %}">
+        {% trans "Home" %}
+      </a>
+    </li>
+      <li class="quickmenu hoveropen"  >
+            <a href="#" class="dummy">Forums</a>
+        <ul class="popmenu popmenu-lev1">
+        {% for key, item in dprevived.menu.items %}
+            <li class="popmenu-li lev1 hoveropen">
+                 {% if item.submenu %} 
+                <div class="submenu-line read-{{item.read}}"><span><span class="material-icon" style="color:{{item.color}};">theaters{{item.outline}}</span>{{item.name}}</span> <a href="/c/{{item.slug}}/{{item.id}}/" ><span class="material-icon">arrow_forward</span></a></div>
+                    <ul class="popmenu popmenu-lev2">
+                    {% for key2, item2 in item.submenu.items %}
+                        <li class="popmenu-li lev2 hoveropen">
+                             {% if item2.submenu %}
+                 <div class="submenu-line read-{{item2.read}}"><span ><span class="material-icon"  style="color:{{item.color}};">chat_bubble{{item2.outline}}</span>{{item2.name}}</span> <a href="/c/{{item2.slug}}/{{item2.id}}/" ><span class="material-icon">arrow_forward</span></a></div>
+                                <ul class="popmenu popmenu-lev3">
+                                {% for key3, item3 in item2.submenu.items %}
+                                    <li class="popmenu-li lev3">
+                                     <div class="read-{{item3.read}}"> <span class="material-icon">camera{{item3.outline}}</span>  <a href="/c/{{item3.slug}}/{{item3.id}}/" >{{item3.name}}</a></div>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                             {% else %}
+                                <a href="/c/{{item2.slug}}/{{item2.id}}/" >{{item2.name}}</a>
+                             {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                 {% else %}
+                 <a href="/c/{{item.slug}}/{{item.id}}/" >{{item.name}}</a>
+                 {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+      </li>
+		<li>
+              <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
+              </li>
           {% for link in navbar_menu %}
             <li>
               <a href="{{ link.url }}"{% if link.css_class %} class="{{ link.css_class }}"{% endif %}{% if link.rel %} rel="{{ link.rel }}"{% endif %}{% if link.target_blank %} target="_blank"{% endif %}>
@@ -36,7 +76,8 @@
           {% endfor %}
         </ul>
       {% endif %}
-              <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
+<div id="misago-navbar-small" >
+<div>
       {% if user_acl.can_search %}
         <div id="navbar-search-link">
           <a class="btn btn-navbar-icon" href="{% url 'misago:search' %}" title="{% trans 'Open search' context 'navbar' %}">
@@ -44,10 +85,22 @@
           </a>
         </div>
       {% endif %}
-      <div id="navbar-site-nav-link">
-        <button class="btn btn-navbar-icon" title="Open menu" type="button" disabled>
+      <div id="navbar-site-nav-link" class="dropdown">
+        <button class="btn btn-navbar-icon" title="Open menu" type="button" >
           <span class="material-icon">menu</span>
         </button>
+<div class="dropdown-menu dropdown-menu-right site-nav-dropdown" role="menu">
+<ul class="site-nav-menu dropdown-menu-list">
+<li class="dropdown-subheader">The-Photo Forum</li>
+<li class="dropdown-menu-item"><a href="/">Home</a></li>
+<li class="dropdown-menu-item"><a href="/threads/">Threads</a></li>
+<li class="dropdown-menu-item"><a href="/search/">Search</a></li>
+<li class="dropdown-menu-item"><a href="https://www.the-photo.org" rel="">Web Site</a></li>
+<li class="divider site-nav-users-divider"></li>
+<li class="dropdown-subheader site-nav-users">Users</li>
+<li class="dropdown-menu-item"><a href="/users/active-posters/">Top posters</a></li>
+<li class="dropdown-menu-item"><a href="/users/forum-team/">Forum team</a></li>
+</div>
       </div>
       {% if user.is_authenticated and user_acl.can_use_private_threads %}
         <a id="navbar-private-threads" class="btn btn-navbar-icon" href="{% url 'misago:private-threads' %}" title="{% trans 'Open private threads' context 'navbar' %}">
@@ -78,6 +131,7 @@
         </button>
       {% endif %}
     </div>
-
+        </div>
+<div >
   </div>
 </nav>

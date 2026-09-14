@@ -22,13 +22,13 @@ function SiteNavMenu({ isAnonymous, close, dropdown, overlay }) {
 
   const topNav = []
   if (misago.get("THREADS_ON_INDEX")) {
-    topNav.push({ title: pgettext("site nav", "Threads"), url: baseUrl })
+    topNav.push({ title: pgettext("site nav", "Home"), url: baseUrl })
     topNav.push({
       title: pgettext("site nav", "Categories"),
       url: baseUrl + "categories/",
     })
   } else {
-    topNav.push({ title: pgettext("site nav", "Categories"), url: baseUrl })
+    topNav.push({ title: pgettext("site nav", "Home"), url: baseUrl })
     topNav.push({
       title: pgettext("site nav", "Threads"),
       url: baseUrl + "threads/",
@@ -106,7 +106,7 @@ function SiteNavMenu({ isAnonymous, close, dropdown, overlay }) {
           <a href={item.url}>{item.name}</a>
         </DropdownMenuItem>
       ))}
-      <DropdownDivider className="site-nav-categories-divider" />
+      {/* <DropdownDivider className="site-nav-categories-divider" />
       <DropdownSubheader className="site-nav-categories">
         {pgettext("site nav section", "Categories")}
       </DropdownSubheader>
@@ -150,6 +150,7 @@ function SiteNavMenu({ isAnonymous, close, dropdown, overlay }) {
           <a href={item.url}>{item.title}</a>
         </DropdownMenuItem>
       ))}
+      */}
     </ul>
   )
 }

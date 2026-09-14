@@ -10,6 +10,11 @@ ul.posts-list li:nth-child(odd) .panel-post {
     background: inherit;
 }
 
+#misago-navbar-small>div {
+  display: flex;
+}
+
+
 
 li.list-group-item:nth-child(2n+1) {
     background: #EBECF0;
@@ -145,7 +150,7 @@ button.nopad {padding:0}
 .popmenu {
   padding: 5px;
   border-radius:3px;
-  top:40px;
+  top:36px;
 }
 .dark .popmenu.popmenu-lev2 {
   background: lightgray;
