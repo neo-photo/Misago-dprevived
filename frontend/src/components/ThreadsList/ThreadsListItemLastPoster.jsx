@@ -12,8 +12,7 @@ const ThreadsListItemLastPoster = ({ thread }) =>
         true
       )}
     >
-      {thread.last_poster.username!=thread.starter_name &&  <Avatar size={30} user={thread.last_poster} /> }
-      {thread.last_poster.username==thread.starter_name &&  <div style={{width:"30px",height:"30px"}} /> }
+	<Avatar size={30} user={thread.last_poster} /> 
     </a>
   ) : (
     <span
