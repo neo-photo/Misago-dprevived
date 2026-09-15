@@ -86,6 +86,7 @@ def dprevived_context(request):
     else:
         ip = request.META.get('REMOTE_ADDR',"none")                    
     CT["dprevived"]["log"] = ip
+    CT["dprevived"]["Time"] = 0
     if (request.META.get("QUERY_STRING","").endswith("time")):
       CT["dprevived"]["Time"] = "%.08f"%(time.time() - start_time)
      

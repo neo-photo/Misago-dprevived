@@ -13,20 +13,7 @@ def dictfetchall(cursor):
     """
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
-    
-def set_post_limit(request, post_limit):    
-    try:
-        post_limit =int(post_limit)
-    except ValueError:
-        post_limit = -1
-    if post_limit == 0:
-        del request.session["posts_per_page"]
-    elif post_limit>0 and post_limit<51:
-        request.session["posts_per_page"] = post_limit
-    else:
-        return JsonResponse({"error":1 })
-    return JsonResponse({"error":0 })
-    
+        
 def check_free_space(request):
     max_space_kb = settings.MISAGO_MAX_SPACE_USER * 1024
     max_space = (max_space_kb * 1024)
