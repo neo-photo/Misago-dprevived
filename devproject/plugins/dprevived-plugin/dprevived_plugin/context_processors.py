@@ -32,7 +32,16 @@ def dprevived_context(request):
     #print(dir(settings))
     CT["dprevived"] ={"MAX_SPACE_USER":settings.MISAGO_MAX_SPACE_USER,
                         "Version":__version__,
-                        "BodyClass":body_class
+                        "BodyClass":body_class,
+                        "usersonline":0,
+                        "Time":0,
+                        "log":"",
+                        "menu": {},
+                        "uploads":0,
+                        "attachments":0,
+                        "threads":0,
+                        "posts":0,
+                        "users":0,
                         }
     with connection.cursor() as cursor:
         # Stats on Homepage
@@ -86,7 +95,6 @@ def dprevived_context(request):
     else:
         ip = request.META.get('REMOTE_ADDR',"none")                    
     CT["dprevived"]["log"] = ip
-    CT["dprevived"]["Time"] = 0
     if (request.META.get("QUERY_STRING","").endswith("time")):
       CT["dprevived"]["Time"] = "%.08f"%(time.time() - start_time)
      

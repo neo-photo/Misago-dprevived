@@ -339,6 +339,9 @@ function startup(){
     else if (document.location.pathname.search("/2599/")>0) {
         document.querySelector("body").classList.add("dark");
     }
+    else if (window.matchMedia('(prefers-color-scheme:dark').matches) {
+        {changeStyle(global.styles['dark']);}       
+    }
     
     if (1==1){//(new URL(document.location).searchParams.get("test")=="1"){
         document.querySelectorAll("article.misago-markup img").forEach(
