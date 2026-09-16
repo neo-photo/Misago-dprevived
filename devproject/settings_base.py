@@ -47,7 +47,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 CACHES = {
     "default": {
         # Misago doesn't run well with LocMemCache in production environments
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache"
+        #"BACKEND": "django.core.cache.backends.locmem.LocMemCache"   
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -94,7 +95,7 @@ MISAGO_THREADS_ON_INDEX = False
 # User uploads (Avatars, Attachments, files uploaded in other Django apps, ect.)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-MEDIA_URL = "../media/"
+MEDIA_URL = "/media/"
 
 
 # The absolute path to the directory where collectstatic will collect static files for deployment.
@@ -338,8 +339,6 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": "misago.conf.debugtoolbar.enable_debug_toolbar"
 }
-
-#CSRF_TRUSTED_ORIGINS = [        'https://*.dprevived.com',        'http://*dprevived.com', 'https://the-photo.org'    ]
 
 LOGGING = {    
 	"version": 1,     
