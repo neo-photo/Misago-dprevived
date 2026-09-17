@@ -14,8 +14,8 @@ DATABASES = {
 }
 # If either of these settings is empty, Django won't attempt authentication.
 
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+MAILERS["default"]["OPTIONS"]["username"] = ""
+MAILERS["default"]["OPTIONS"]["password"] = ""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "xxx"

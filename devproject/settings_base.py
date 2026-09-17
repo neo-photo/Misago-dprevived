@@ -117,9 +117,16 @@ STATICFILES_DIRS = []
 # Email configuration
 # https://docs.djangoproject.com/en/1.11/ref/settings/#email-backend
 
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 25
-
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "localhost",
+            "username": "",
+            "password":""
+        },	
+    },
+}
 
 # Default email address to use for various automated correspondence from the site manager(s).
 
@@ -325,10 +332,6 @@ MISAGO_PROFILE_FIELDS = [
     },
 ]
 
-
-# Set dev instance to send e-mails to console
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # Display debug toolbar if IN_MISAGO_DOCKER enviroment var is set to "1"

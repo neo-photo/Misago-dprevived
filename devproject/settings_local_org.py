@@ -6,5 +6,5 @@ DATABASES["default"]["PASSWORD"] = "spirito"
 MEDIA_ROOT = os.path.join(BASE_DIR, "../../media")
 
 LOGGING["handlers"]["file"]["filename"] = "../general.log"
-LOGGING["loggers"]["django"]["LEVEL"] = "DEBUG"
+LOGGING["loggers"]["django"]["level"] = "DEBUG"
 # LOGLEVEL: DEBUG INFO WARNING ERROR CRITICAL
