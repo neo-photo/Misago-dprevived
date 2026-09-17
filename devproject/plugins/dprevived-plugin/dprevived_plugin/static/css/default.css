@@ -6,6 +6,10 @@ ul.posts-list li:nth-child(odd) .panel-post {
   background-color: rgb(120,110,100);
 }
 
+body.dark .modal-content {
+background-color: chocolate;
+}
+
 .origin li.threads-list-item.list-group-item:nth-child(2n+1) {
     background: inherit;
 }
