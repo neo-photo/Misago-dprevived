@@ -66,6 +66,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 25
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
