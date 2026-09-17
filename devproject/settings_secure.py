@@ -13,9 +13,22 @@ DATABASES = {
     }
 }
 # If either of these settings is empty, Django won't attempt authentication.
+# Email configuration
+# https://docs.djangoproject.com/en/1.11/ref/settings/#email-backend
 
-MAILERS["default"]["OPTIONS"]["username"] = ""
-MAILERS["default"]["OPTIONS"]["password"] = ""
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "localhost",
+            "username": "",
+            "password":""
+        },	
+    },
+}
+
+#MAILERS["default"]["OPTIONS"]["username"] = ""
+#MAILERS["default"]["OPTIONS"]["password"] = ""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "xxx"

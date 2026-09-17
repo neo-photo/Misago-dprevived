@@ -114,20 +114,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
 STATICFILES_DIRS = []
 
 
-# Email configuration
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-backend
-
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
-        "OPTIONS": {
-            "host": "localhost",
-            "username": "",
-            "password":""
-        },	
-    },
-}
-
 # Default email address to use for various automated correspondence from the site manager(s).
 
 DEFAULT_FROM_EMAIL = "Forums <managment@dprevived.com>"
