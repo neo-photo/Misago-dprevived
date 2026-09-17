@@ -118,7 +118,7 @@ STATICFILES_DIRS = []
 
 # Default email address to use for various automated correspondence from the site manager(s).
 
-DEFAULT_FROM_EMAIL = "Forums <managment@dprevived.com>"
+DEFAULT_FROM_EMAIL = "Forums <info@the-photo.org>"
 
 
 # Application definition
