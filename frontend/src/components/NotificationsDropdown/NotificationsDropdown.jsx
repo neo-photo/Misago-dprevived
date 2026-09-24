@@ -12,7 +12,7 @@ export default class NotificationsDropdown extends React.Component {
     super(props)
 
     this.state = {
-      unread: false,
+      unread: true,
       url: "",
     }
   }
