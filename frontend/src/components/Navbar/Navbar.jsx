@@ -29,7 +29,12 @@ export function Navbar({
   showPrivateThreads,
 }) {
   return (
-	<div >
+    <div className="container navbar-container">
+      <NavbarBranding {...branding} />
+      <div className="navbar-right">
+        {extraMenuItems.length > 0 && (
+          <NavbarExtraMenu items={extraMenuItems} />
+        )}
         {!!showSearch && (
           <NavbarSearchDropdown id="navbar-search-dropdown" url={searchUrl} />
         )}
@@ -93,6 +98,7 @@ export function Navbar({
           <RegisterButton className="btn-navbar-register" />
         )}
         {!user && !authDelegated && <SignInModalAutoOpen />}
+      </div>
     </div>
   )
 }

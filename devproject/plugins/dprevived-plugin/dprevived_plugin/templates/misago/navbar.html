@@ -32,69 +32,6 @@
 
       {% if navbar_menu %}
         <ul class="nav navbar-nav navbar-extra-menu" role="nav">
-    <li>
-      <a href="{% url 'misago:categories' %}">
-        {% trans "Home" %}
-      </a>
-    </li>
-      <li class="quickmenu hoveropen"  >
-            <a href="#" class="dummy">Forums</a>
-        <ul class="popmenu popmenu-lev1">
-        {% for key, item in dprevived.menu.items %}
-            <li class="popmenu-li lev1 hoveropen">
-                 {% if item.submenu %} 
-                <div class="submenu-line read-{{item.read}}"><span><span class="material-icon" style="color:{{item.color}};">theaters{{item.outline}}</span>{{item.name}}</span> <a href="/c/{{item.slug}}/{{item.id}}/" ><span class="material-icon">arrow_forward</span></a></div>
-                    <ul class="popmenu popmenu-lev2">
-                    {% for key2, item2 in item.submenu.items %}
-                        <li class="popmenu-li lev2 hoveropen">
-                             {% if item2.submenu %}
-                 <div class="submenu-line read-{{item2.read}}"><span ><span class="material-icon"  style="color:{{item.color}};">chat_bubble{{item2.outline}}</span>{{item2.name}}</span> <a href="/c/{{item2.slug}}/{{item2.id}}/" ><span class="material-icon">arrow_forward</span></a></div>
-                                <ul class="popmenu popmenu-lev3">
-                                {% for key3, item3 in item2.submenu.items %}
-                                    <li class="popmenu-li lev3">
-                                     <div class="read-{{item3.read}}"> <span class="material-icon">camera{{item3.outline}}</span>  <a href="/c/{{item3.slug}}/{{item3.id}}/" >{{item3.name}}</a></div>
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                             {% else %}
-                                <a href="/c/{{item2.slug}}/{{item2.id}}/" >{{item2.name}}</a>
-                             {% endif %}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                 {% else %}
-                 <a href="/c/{{item.slug}}/{{item.id}}/" >{{item.name}}</a>
-                 {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-      </li>
-      {% if THREADS_ON_INDEX %}
-        <li>
-          <a href="{% url 'misago:index' %}">
-            {% trans "Threads" %}
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'misago:categories' %}">
-            {% trans "Categories" %}
-          </a>
-        </li>
-      {% else %}
-        <li>
-          <a href="{% url 'misago:threads' %}">
-            {% trans "Threads" %}
-          </a>
-        </li>
-      {% endif %}
-      <li>
-        <a href="{% url 'misago:users' %}">
-          {% trans "Users" %}
-        </a>
-      </li>
-		<li>
-              <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
-              </li>
           {% for link in navbar_menu %}
             <li>
               <a href="{{ link.url }}"{% if link.css_class %} class="{{ link.css_class }}"{% endif %}{% if link.rel %} rel="{{ link.rel }}"{% endif %}{% if link.target_blank %} target="_blank"{% endif %}>
@@ -102,6 +39,9 @@
               </a>
             </li>
           {% endfor %}
+ 		<li>
+              <select id="styleSwitch" style="display:none;"><option value="">Choose Style</option></select>
+              </li>
         </ul>
       {% endif %}
 <div id="misago-navbar-small" >

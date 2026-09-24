@@ -14,6 +14,9 @@ export default function NavbarExtraMenu({ items }) {
           </a>
         </li>
       ))}
+       		<li>
+              <select id="styleSwitch" style={{display:'none'}}><option value="">Choose Style</option></select>
+              </li>
     </ul>
   )
 }

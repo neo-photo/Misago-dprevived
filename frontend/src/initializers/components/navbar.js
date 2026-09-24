@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar"
 import store from "../../services/store"
 
 export default function initializer(context) {
-  const root = document.getElementById("misago-navbar-small")
+  const root = document.getElementById("misago-navbar")
   ReactDOM.render(
     <Provider store={store.getStore()}>
       <Navbar />
