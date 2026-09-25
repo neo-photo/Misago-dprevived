@@ -22,7 +22,9 @@ background-color: chocolate;
   padding: 10px;
 }
 
-
+.dark button.btn.btn-navbar-icon, .btn.btn-navbar-icon:link, .btn.btn-navbar-icon:visited, .btn.btn-navbar-icon:hover, .btn.btn-navbar-icon:focus {
+ color:#a5adba;
+}
 
 li.list-group-item:nth-child(2n+1) {
     background: #EBECF0;

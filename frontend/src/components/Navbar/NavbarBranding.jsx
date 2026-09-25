@@ -7,6 +7,11 @@ export default function NavbarBranding({ logo, logoXs, text, url }) {
         <a href={url} className="navbar-branding-logo">
           <img src={logo} alt={text} />
         </a>
+      {!!text && (
+        <a href={url} className="navbar-branding-text">
+          {text}
+        </a>
+      )}
       </div>
     )
   }
