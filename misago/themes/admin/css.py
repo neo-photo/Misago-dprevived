@@ -61,7 +61,11 @@ def rebuild_css(media_map, css):
     if css.build_file:
         css.build_file.delete(save=False)
 
-    css_source = css.source_file.read().decode("utf-8")
+    # Must be closed: rebuild_css runs inline when CELERY_TASK_ALWAYS_EAGER is
+    # set, so a leaked handle here survives into the next save and blocks
+    # source_file.delete() on Windows.
+    with css.source_file.open("rb") as source_file:
+        css_source = source_file.read().decode("utf-8")
     build_source = change_css_source(media_map, css_source).encode()
 
     build_file_name = css.name

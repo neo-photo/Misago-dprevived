@@ -365,7 +365,13 @@ class EditThemeCss(NewThemeCss):
     def get_form(self, form_class, request, theme, css):
         if request.method == "POST":
             return form_class(request.POST, instance=css)
-        initial_data = {"source": css.source_file.read().decode("utf-8")}
+        # Close the file after reading. On Windows an open handle blocks the
+        # source_file.delete() that ThemeCssForm does on save, raising
+        # "WinError 32: The process cannot access the file because it is being
+        # used by another process". POSIX allows unlinking an open file, so the
+        # leak is invisible on Linux.
+        with css.source_file.open("rb") as source_file:
+            initial_data = {"source": source_file.read().decode("utf-8")}
         return form_class(instance=css, initial=initial_data)
 
     def handle_form(self, form, request, theme, css):

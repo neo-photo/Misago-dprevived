@@ -95,6 +95,9 @@ def copy_asset_file(export_dir, asset_file):
     with open(dst_path, "wb") as fp:
         for chunk in asset_file.chunks():
             fp.write(chunk)
+    # chunks() leaves the field file open; on Windows that blocks any later
+    # delete() of the same file.
+    asset_file.close()
     return filename
 
 
