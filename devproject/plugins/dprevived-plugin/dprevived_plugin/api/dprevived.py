@@ -1,10 +1,13 @@
 from django.db import connection
+from django.db.models import F, OuterRef, Subquery
 #from rest_framework.response import Response
 from django.http import Http404, JsonResponse
 from devproject import settings
 from misago.categories import PRIVATE_THREADS_ROOT_NAME
 from misago.categories.models import Category
+from misago.notifications.models import Notification, WatchedThread
 from misago.readtracker.cutoffdate import get_cutoff_date
+from misago.readtracker.signals import thread_read
 from misago.threads.models import Thread, ThreadParticipant
 from misago.threads.permissions import can_see_private_thread, can_see_thread
 
@@ -77,6 +80,23 @@ def mark_read(request, column, ids):
         )
         return cursor.rowcount
 
+# What Misago also does when a user reads posts (misago/threads/api/postendpoints/read.py),
+# for every thread in `threads`:
+# - mark their notifications read and recount the user's unread notifications (the badge);
+# - move the watched-thread marker to the last post. New-reply e-mails are skipped while the
+#   user has posts newer than read_at (notifications.threads.user_has_other_unread_posts),
+#   so without this the next reply in a thread marked read sends no e-mail.
+def update_read_state(user, threads):
+    notifications = Notification.objects.filter(user=user, is_read=False, thread__in=threads)
+    if notifications.update(is_read=True):
+        user.unread_notifications = Notification.objects.filter(user=user, is_read=False).count()
+        user.save(update_fields=["unread_notifications"])
+    WatchedThread.objects.filter(
+        user=user, thread__in=threads, read_at__lt=F("thread__last_post_on")
+    ).update(
+        read_at=Subquery(Thread.objects.filter(pk=OuterRef("thread_id")).values("last_post_on")[:1])
+    )
+
 def mark_thread_read(request, thread_pk):
     if not request.user.is_authenticated:
         return JsonResponse({"error": "not signed in"}, status=403)
@@ -91,6 +111,10 @@ def mark_thread_read(request, thread_pk):
     if not can_see:
         raise Http404()
     lines = mark_read(request, "thread_id", [thread.pk])
+    update_read_state(request.user, Thread.objects.filter(pk=thread.pk))
+    if lines:
+        # the thread had unread posts; lowers the unread private threads count
+        thread_read.send(request.user, thread=thread)
     return JsonResponse({"read": lines, "user": request.user.id})
 
 def mark_category_read(request, category_pk):
@@ -107,4 +131,6 @@ def mark_category_read(request, category_pk):
         if pk in browseable
     ]
     lines = mark_read(request, "category_id", cats) if cats else 0
+    if cats:
+        update_read_state(request.user, Thread.objects.filter(category_id__in=cats))
     return JsonResponse({"read": lines, "categories": len(cats), "user": request.user.id})
