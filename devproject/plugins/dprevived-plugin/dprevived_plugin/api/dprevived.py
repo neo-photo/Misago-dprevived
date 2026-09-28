@@ -1,7 +1,12 @@
 from django.db import connection
 #from rest_framework.response import Response
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from devproject import settings
+from misago.categories import PRIVATE_THREADS_ROOT_NAME
+from misago.categories.models import Category
+from misago.readtracker.cutoffdate import get_cutoff_date
+from misago.threads.models import Thread, ThreadParticipant
+from misago.threads.permissions import can_see_private_thread, can_see_thread
 
 def dictfetchall(cursor):
     """
@@ -49,43 +54,57 @@ def check_free_space(request):
     used_pct = int(((usedSpace/max_space) * 100))
     return JsonResponse({"max":max_space_kb , "used": used_kb,"free":free_kb,"usedp": used_pct ,"freep":free_pct })
     
-def mark_read( thread_pk, cursor, request):
-        cursor.execute("SELECT  id, category_id from misago_threads_post WHERE thread_id=%s"%(int(thread_pk)))
-        rows = cursor.fetchall()
-        lines = 0
-        for one in rows:
-            cursor.execute("insert into misago_readtracker_postread( last_read_on, post_id ,category_id, thread_id, user_id) values (NOW(), %s ,%s, %s, %s) ON CONFLICT DO NOTHING"%(one[0],one[1],int(thread_pk), request.user.id ))
-            lines +=1
-        return lines
+# Marks every post of the given threads/categories as read for the user, the way Misago's
+# readtracker stores it: one misago_readtracker_postread row per post. Posts older than the
+# readtracker cutoff are read by definition, and the table has no unique constraint, so only
+# the missing rows are inserted - one statement, no duplicates on repeated clicks.
+MARK_READ_SQL = """
+    INSERT INTO misago_readtracker_postread (user_id, category_id, thread_id, post_id, last_read_on)
+    SELECT %(user)s, p.category_id, p.thread_id, p.id, NOW()
+    FROM misago_threads_post p
+    WHERE p.{column} = ANY(%(ids)s) AND p.posted_on > %(cutoff)s
+    AND NOT EXISTS (
+        SELECT 1 FROM misago_readtracker_postread r WHERE r.user_id = %(user)s AND r.post_id = p.id
+    )
+"""
+
+def mark_read(request, column, ids):
+    cutoff = get_cutoff_date(request.settings, request.user)
+    with connection.cursor() as cursor:
+        cursor.execute(
+            MARK_READ_SQL.format(column=column),
+            {"user": request.user.id, "ids": list(ids), "cutoff": cutoff},
+        )
+        return cursor.rowcount
 
 def mark_thread_read(request, thread_pk):
-    lines = -1
-    with connection.cursor() as cursor:
-        lines = mark_read( thread_pk, cursor, request) 
-    return JsonResponse({"read":lines, "user": request.user.id})
-
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "not signed in"}, status=403)
+    thread = Thread.objects.select_related("category").filter(pk=thread_pk).first()
+    if thread is None:
+        raise Http404()
+    if thread.category.special_role == PRIVATE_THREADS_ROOT_NAME:
+        is_participant = ThreadParticipant.objects.filter(thread=thread, user=request.user).exists()
+        can_see = can_see_private_thread(request.user_acl, thread, is_participant)
+    else:
+        can_see = can_see_thread(request.user_acl, thread)
+    if not can_see:
+        raise Http404()
+    lines = mark_read(request, "thread_id", [thread.pk])
+    return JsonResponse({"read": lines, "user": request.user.id})
 
 def mark_category_read(request, category_pk):
-    lines = -1
-    threads = -1
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT level from misago_categories_category WHERE id=%s"%int(category_pk))
-        res = cursor.fetchone()[0]
-        if int(res)>2:
-           cats =[[category_pk]]
-        elif int(res)<1: 
-            cats =[]
-        else: # Level 1 und 2
-            cursor.execute("SELECT id from misago_categories_category WHERE parent_id=%s"%int(category_pk))
-            cats = cursor.fetchall()
-            if int(res)==1:
-                cursor.execute("SELECT id from misago_categories_category WHERE parent_id in ()"%(",".join(cats)))
-                cats += cursor.fetchall()
-                print(cats)
-        for x in cats:
-            cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
-            rows = cursor.fetchall()
-            for one in rows:
-                threads += 1
-                lines += mark_read( one[0], cursor, request) 
-    return JsonResponse({"read":lines, "threads":threads,"user": request.user.id})
+    # The category itself and everything below it; the root category ("all threads")
+    # covers the whole public tree. Limited to the categories the user may browse.
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "not signed in"}, status=403)
+    category = Category.objects.all_categories(include_root=True).filter(pk=category_pk).first()
+    if category is None:
+        raise Http404()
+    browseable = set(request.user_acl["browseable_categories"])
+    cats = [
+        pk for pk in category.get_descendants(include_self=True).values_list("pk", flat=True)
+        if pk in browseable
+    ]
+    lines = mark_read(request, "category_id", cats) if cats else 0
+    return JsonResponse({"read": lines, "categories": len(cats), "user": request.user.id})

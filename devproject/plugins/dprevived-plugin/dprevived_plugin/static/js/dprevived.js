@@ -57,7 +57,7 @@ function catchEvent(e) {
     
 }
 
-function sendApiRequest(path, callback) {
+function sendApiRequest(path, callback, onFailure) {
     let cookie = document.cookie;
     let csrfToken = cookie.substring(cookie.indexOf('=') + 1);
 	let request = new XMLHttpRequest();
@@ -69,9 +69,11 @@ function sendApiRequest(path, callback) {
             console.log(res.target.response);
     		callback(res);
 		}
+		else if (onFailure) onFailure(res);
 	}
 	request.onerror = (error) => {
 		console.log(error);
+		if (onFailure) onFailure(error);
 	};
 	request.send();
 }
@@ -89,21 +91,40 @@ function setPostLimit(nr) {
 	return false;
 }
 
-function markThreadRead(ev, thread) {
-    sendApiRequest('/api/mark-read-thread/'+ thread +'/', () =>{
-        document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.remove();});
-        });
-	document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.style.opacity=0.2;});
+// The React app keeps its own copy of the thread lists and never learns about these
+// endpoints, so after a successful call reload the page to show the new read state.
+// Pages the browser brings back with Back/Forward are shown as they were when first
+// loaded, so remember when something was marked read and reload those too.
+const READ_AT_KEY = "dprevivedMarkedReadAt";
+
+function markReadRequest(path, selector) {
+    let dimmed = document.querySelectorAll(selector);
+    dimmed.forEach((el)=>{el.style.opacity=0.2;});
+    sendApiRequest(path, () =>{
+            try { sessionStorage.setItem(READ_AT_KEY, Date.now()); } catch (e) {}
+            window.location.reload();
+        },
+        () =>{ dimmed.forEach((el)=>{el.style.opacity="";}); });
 	return false;
 }
 
+window.addEventListener("pageshow", (e) => {
+    let readAt = 0;
+    try { readAt = parseInt(sessionStorage.getItem(READ_AT_KEY)) || 0; } catch (err) {}
+    if (!readAt) return;
+    let nav = performance.getEntriesByType("navigation")[0];
+    // e.persisted: the old document itself was restored, so its load time is known.
+    // A back_forward load may come from the HTTP cache, whose age is unknown.
+    let stale = e.persisted ? readAt > performance.timeOrigin : (nav && nav.type == "back_forward");
+    if (stale) window.location.reload();
+});
+
+function markThreadRead(ev, thread) {
+    return markReadRequest('/api/mark-read-thread/'+ thread +'/', "li.post .label-unread");
+}
+
 function markCategoryRead(ev, category) {
-    sendApiRequest('/api/mark-read-category/'+ category +'/', () =>{
-        document.querySelectorAll(".threads-list .threads-list-icon-new").forEach((el)=>{el.style.opacity=1;el.classList.remove("threads-list-icon-new");});
-        }
-    )
-	document.querySelectorAll(".threads-list .threads-list-icon-new").forEach((el)=>{el.style.opacity=0.2;});
-	return false;
+    return markReadRequest('/api/mark-read-category/'+ category +'/', ".threads-list-unread-icon");
 }
 
 

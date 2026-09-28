@@ -4,7 +4,7 @@
 from django.db import connection
 from devproject import settings
 
-__version__ = "6"
+__version__ = "8"
 
 def dictfetchall(cursor):
     """
