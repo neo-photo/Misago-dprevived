@@ -343,4 +343,8 @@ LOGGING = {
 				   				"propagate": True,        },    
 				},
 		}
+
+CELERY_BROKER_URL = 'memory://'
+CELERY_RESULT_BACKEND = "cache+memory://"
+
 		

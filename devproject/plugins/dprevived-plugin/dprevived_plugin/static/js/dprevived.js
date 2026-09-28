@@ -92,6 +92,7 @@ function setPostLimit(nr) {
 function markThreadRead(ev, thread) {
     sendApiRequest('/api/mark-read-thread/'+ thread +'/', () =>{
         document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.remove();});
+        window.NotificationsFetch(filter="unread");
         });
 	document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.style.opacity=0.2;});
 	return false;
