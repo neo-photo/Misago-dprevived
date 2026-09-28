@@ -59,5 +59,6 @@ function selectState({ auth }) {
 }
 
 const NotificationsFetchConnected = connect(selectState)(NotificationsFetch)
+window.NotificationsFetch = NotificationsFetch;
 
 export default NotificationsFetchConnected
