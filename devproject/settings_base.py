@@ -148,6 +148,7 @@ LOGIN_URL = "misago:login"
 LOGOUT_URL = "misago:logout"
 
 MIDDLEWARE = [
+    "xff.middleware.XForwardedForMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "misago.users.middleware.RealIPMiddleware",
     "misago.core.middleware.FrontendContextMiddleware",
@@ -344,7 +345,5 @@ LOGGING = {
 				},
 		}
 
-CELERY_BROKER_URL = 'memory://'
-CELERY_RESULT_BACKEND = "cache+memory://"
 
 		
