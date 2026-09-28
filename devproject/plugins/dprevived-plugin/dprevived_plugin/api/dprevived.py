@@ -62,6 +62,10 @@ def mark_thread_read(request, thread_pk):
     lines = -1
     with connection.cursor() as cursor:
         lines = mark_read( thread_pk, cursor, request) 
+    cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(thread_pk),request.user.id))
+    cursor.execute("SELECT count(*) FROM misago_notifications_notification  where is_read=false and user_id = %s"%request.user.id)
+    nr = cursor.fetchall()[0][0]
+    cursor.execute("update misago_users_user set unread_notifications = %s where id = %s"%(nr,request.user.id))
     return JsonResponse({"read":lines, "user": request.user.id})
 
 
@@ -81,11 +85,15 @@ def mark_category_read(request, category_pk):
             if int(res)==1:
                 cursor.execute("SELECT id from misago_categories_category WHERE parent_id in ()"%(",".join(cats)))
                 cats += cursor.fetchall()
-                print(cats)
+                #print(cats)
         for x in cats:
             cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
             rows = cursor.fetchall()
             for one in rows:
                 threads += 1
                 lines += mark_read( one[0], cursor, request) 
+                cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(thread_pk),request.user.id))
+        cursor.execute("SELECT count(*) FROM misago_notifications_notification  where is_read=false and user_id = %s"%request.user.id)
+        nr = cursor.fetchall()[0][0]
+        cursor.execute("update misago_users_user set unread_notifications = %s where id = %s"%(nr,request.user.id))
     return JsonResponse({"read":lines, "threads":threads,"user": request.user.id})
