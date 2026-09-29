@@ -59,8 +59,8 @@ def check_free_space(request):
     
 # Marks every post of the given threads/categories as read for the user, the way Misago's
 # readtracker stores it: one misago_readtracker_postread row per post. Posts older than the
-# readtracker cutoff are read by definition, and the table has no unique constraint, so only
-# the missing rows are inserted - one statement, no duplicates on repeated clicks.
+# readtracker cutoff are read by definition. Only the missing rows are inserted, in one
+# statement; NOT EXISTS, so it doesn't rely on the (hand-made) readtracker_read unique index.
 MARK_READ_SQL = """
     INSERT INTO misago_readtracker_postread (user_id, category_id, thread_id, post_id, last_read_on)
     SELECT %(user)s, p.category_id, p.thread_id, p.id, NOW()
