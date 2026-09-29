@@ -62,10 +62,10 @@ def mark_thread_read(request, thread_pk):
     lines = -1
     with connection.cursor() as cursor:
         lines = mark_read( thread_pk, cursor, request) 
-    	cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(thread_pk),request.user.id))
-    	cursor.execute("SELECT count(*) FROM misago_notifications_notification  where is_read=false and user_id = %s"%request.user.id)
-    	nr = cursor.fetchall()[0][0]
-    	cursor.execute("update misago_users_user set unread_notifications = %s where id = %s"%(nr,request.user.id))
+        cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(thread_pk),request.user.id))
+        cursor.execute("SELECT count(*) FROM misago_notifications_notification  where is_read=false and user_id = %s"%request.user.id)
+        nr = cursor.fetchall()[0][0]
+        cursor.execute("update misago_users_user set unread_notifications = %s where id = %s"%(nr,request.user.id))
     return JsonResponse({"read":lines, "user": request.user.id})
 
 
