@@ -97,9 +97,9 @@ function setPostLimit(nr) {
 // loaded, so remember when something was marked read and reload those too.
 const READ_AT_KEY = "dprevivedMarkedReadAt";
 
-function markReadRequest(path, selector) {
+function markReadRequest(path, selector, opacity) {
     let dimmed = document.querySelectorAll(selector);
-    dimmed.forEach((el)=>{el.style.opacity=0.2;});
+    dimmed.forEach((el)=>{el.style.opacity=opacity;});
     sendApiRequest(path, () =>{
             try { sessionStorage.setItem(READ_AT_KEY, Date.now()); } catch (e) {}
             window.location.reload();
@@ -120,11 +120,13 @@ window.addEventListener("pageshow", (e) => {
 });
 
 function markThreadRead(ev, thread) {
-    return markReadRequest('/api/mark-read-thread/'+ thread +'/', "li.post .label-unread");
+    return markReadRequest('/api/mark-read-thread/'+ thread +'/', "li.post .label-unread", 0.2);
 }
 
+// Fades the whole list, not the unread icons: a list can show threads from other
+// categories (globally pinned ones), which "mark all read" here leaves unread.
 function markCategoryRead(ev, category) {
-    return markReadRequest('/api/mark-read-category/'+ category +'/', ".threads-list-unread-icon");
+    return markReadRequest('/api/mark-read-category/'+ category +'/', ".threads-list", 0.5);
 }
 
 

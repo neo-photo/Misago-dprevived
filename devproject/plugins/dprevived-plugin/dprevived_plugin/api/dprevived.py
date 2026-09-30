@@ -83,9 +83,10 @@ def mark_read(request, column, ids):
 # What Misago also does when a user reads posts (misago/threads/api/postendpoints/read.py),
 # for every thread in `threads`:
 # - mark their notifications read and recount the user's unread notifications (the badge);
-# - move the watched-thread marker to the last post. New-reply e-mails are skipped while the
-#   user has posts newer than read_at (notifications.threads.user_has_other_unread_posts),
-#   so without this the next reply in a thread marked read sends no e-mail.
+# - move the watched-thread marker to the last post. Misago notifies only about the first
+#   unread reply: while the user has posts newer than read_at
+#   (notifications.threads.user_has_other_unread_posts) a new reply creates no notification
+#   and sends no e-mail, so without this a thread marked read stays silent.
 def update_read_state(user, threads):
     notifications = Notification.objects.filter(user=user, is_read=False, thread__in=threads)
     if notifications.update(is_read=True):
