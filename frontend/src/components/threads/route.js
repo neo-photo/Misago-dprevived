@@ -15,6 +15,7 @@ import ThreadsList from "misago/components/ThreadsList"
 import WithDropdown from "misago/components/with-dropdown"
 import misago from "misago/index"
 import * as select from "misago/reducers/selection"
+import { updateAuthenticatedUser } from "misago/reducers/auth"
 import { append, deleteThread, hydrate, patch } from "misago/reducers/threads"
 import ajax from "misago/services/ajax"
 import polls from "misago/services/polls"
@@ -44,6 +45,7 @@ export default class extends WithDropdown {
 
       moderation: [],
       busyThreads: [],
+      isMarkingRead: false,
 
       dropdown: false,
       subcategories: [],
@@ -83,7 +85,7 @@ export default class extends WithDropdown {
   }
 
   loadThreads(category, next = 0) {
-    ajax
+    return ajax
       .get(
         this.props.options.api,
         {
@@ -209,6 +211,37 @@ export default class extends WithDropdown {
 
   addThreads = (threads) => {
     store.dispatch(append(threads, this.getSorting()))
+  }
+
+  // dprevived: "mark all read" in this list's category (the root category on the
+  // Threads page, the private threads root on the private threads list), then load the
+  // list again in place - like the first load, so read icons come fresh from the server -
+  // and update the navbar badges from the counts the endpoint returns.
+  markAllRead = () => {
+    this.setState({ isMarkingRead: true })
+
+    ajax
+      .get("/api/mark-read-category/" + this.props.route.category.id + "/")
+      .then((data) => {
+        store.dispatch(
+          updateAuthenticatedUser({
+            unreadNotifications: data.unreadNotifications,
+            unread_private_threads: data.unread_private_threads,
+          })
+        )
+        // pages the browser brings back with Back reload themselves (dprevived.js)
+        try {
+          window.sessionStorage.setItem("dprevivedMarkedReadAt", Date.now())
+        } catch (e) {}
+        return this.loadThreads(this.getCategory())
+      })
+      .then(
+        () => this.setState({ isMarkingRead: false }),
+        (rejection) => {
+          this.setState({ isMarkingRead: false })
+          snackbar.apiError(rejection)
+        }
+      )
   }
 
   applyDiff = () => {
@@ -339,20 +372,29 @@ export default class extends WithDropdown {
           updateThread={this.updateThread}
           isLoaded={this.state.isLoaded}
           isBusy={this.state.isBusy}
+          markAllRead={this.markAllRead}
+          isMarkingRead={this.state.isMarkingRead}
         >
-          <ThreadsList
-            category={category}
-            categories={this.props.route.categoriesMap}
-            list={list}
-            selection={this.props.selection}
-            threads={this.props.threads}
-            updatedThreads={this.state.diff.results.length}
-            applyUpdate={this.applyDiff}
-            showOptions={!!this.props.user.id}
-            isLoaded={this.state.isLoaded}
-            busyThreads={this.state.busyThreads}
-            emptyMessage={this.props.options.emptyMessage}
-          />
+          <div
+            style={{
+              opacity: this.state.isMarkingRead ? 0.5 : 1,
+              transition: "opacity 0.2s",
+            }}
+          >
+            <ThreadsList
+              category={category}
+              categories={this.props.route.categoriesMap}
+              list={list}
+              selection={this.props.selection}
+              threads={this.props.threads}
+              updatedThreads={this.state.diff.results.length}
+              applyUpdate={this.applyDiff}
+              showOptions={!!this.props.user.id}
+              isLoaded={this.state.isLoaded}
+              busyThreads={this.state.busyThreads}
+              emptyMessage={this.props.options.emptyMessage}
+            />
+          </div>
           {this.getMoreButton()}
         </Container>
       </div>

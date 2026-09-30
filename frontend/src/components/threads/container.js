@@ -37,6 +37,8 @@ export default class extends React.Component {
           moderation={this.props.moderation}
           route={this.props.route}
           user={this.props.user}
+          markAllRead={this.props.markAllRead}
+          isMarkingRead={this.props.isMarkingRead}
           disabled={
             !this.props.isLoaded ||
             this.props.isBusy ||

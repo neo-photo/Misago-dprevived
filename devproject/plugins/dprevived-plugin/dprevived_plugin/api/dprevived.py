@@ -98,6 +98,16 @@ def update_read_state(user, threads):
         read_at=Subquery(Thread.objects.filter(pk=OuterRef("thread_id")).values("last_post_on")[:1])
     )
 
+# Response for both endpoints. The navbar counters, in the form the frontend keeps them
+# (users/serializers/auth.py), so the page can update its badges without a reload.
+def read_response(request, **data):
+    data.update({
+        "user": request.user.id,
+        "unreadNotifications": request.user.get_unread_notifications_for_display(),
+        "unread_private_threads": request.user.unread_private_threads,
+    })
+    return JsonResponse(data)
+
 def mark_thread_read(request, thread_pk):
     if not request.user.is_authenticated:
         return JsonResponse({"error": "not signed in"}, status=403)
@@ -116,13 +126,16 @@ def mark_thread_read(request, thread_pk):
     if lines:
         # the thread had unread posts; lowers the unread private threads count
         thread_read.send(request.user, thread=thread)
-    return JsonResponse({"read": lines, "user": request.user.id})
+    return read_response(request, read=lines)
 
 def mark_category_read(request, category_pk):
     # The category itself and everything below it; the root category ("all threads")
     # covers the whole public tree. Limited to the categories the user may browse.
+    # The private threads list sends its own root: the user's private threads.
     if not request.user.is_authenticated:
         return JsonResponse({"error": "not signed in"}, status=403)
+    if int(category_pk) == Category.objects.private_threads().pk:
+        return mark_private_threads_read(request)
     category = Category.objects.all_categories(include_root=True).filter(pk=category_pk).first()
     if category is None:
         raise Http404()
@@ -134,4 +147,19 @@ def mark_category_read(request, category_pk):
     lines = mark_read(request, "category_id", cats) if cats else 0
     if cats:
         update_read_state(request.user, Thread.objects.filter(category_id__in=cats))
-    return JsonResponse({"read": lines, "categories": len(cats), "user": request.user.id})
+    return read_response(request, read=lines, categories=len(cats))
+
+def mark_private_threads_read(request):
+    threads = Thread.objects.filter(
+        category=Category.objects.private_threads(), threadparticipant__user=request.user
+    )
+    ids = list(threads.values_list("pk", flat=True))
+    lines = mark_read(request, "thread_id", ids) if ids else 0
+    if ids:
+        update_read_state(request.user, Thread.objects.filter(pk__in=ids))
+    # every private thread the user takes part in is read now
+    if request.user.unread_private_threads or request.user.sync_unread_private_threads:
+        request.user.unread_private_threads = 0
+        request.user.sync_unread_private_threads = False
+        request.user.save(update_fields=["unread_private_threads", "sync_unread_private_threads"])
+    return read_response(request, read=lines, threads=len(ids))
