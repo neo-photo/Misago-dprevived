@@ -104,6 +104,7 @@ function markCategoryRead(ev, category) {
     sendApiRequest('/api/mark-read-category/'+ category +'/', () =>{
         document.querySelectorAll(".threads-list .threads-list-icon-new").forEach((el)=>{el.style.opacity=1;el.classList.remove("threads-list-icon-new");});
         document.querySelectorAll(".threads-list-unread-icon").forEach((el)=>{el.classList.remove("threads-list-unread-icon");el.classList.add("threads-list-read-icon");});
+        window.NotificationsFetch(filter="unread");
         }
     )
     //console.log("unread2 c",category);
