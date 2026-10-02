@@ -92,8 +92,10 @@ function setPostLimit(nr) {
 function markThreadRead(ev, thread) {
     sendApiRequest('/api/mark-read-thread/'+ thread +'/', () =>{
         document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.remove();});
+        document.querySelectorAll(".threads-list-unread-icon").forEach((el)=>{el.classList.remove("threads-list-unread-icon");el.classList.add("threads-list-read-icon");});       
         window.NotificationsFetch(filter="unread");
         });
+    //console.log("unread 2:",thread);
 	document.querySelectorAll("li.post .label-unread").forEach((el)=>{el.style.opacity=0.2;});
 	return false;
 }
@@ -101,8 +103,10 @@ function markThreadRead(ev, thread) {
 function markCategoryRead(ev, category) {
     sendApiRequest('/api/mark-read-category/'+ category +'/', () =>{
         document.querySelectorAll(".threads-list .threads-list-icon-new").forEach((el)=>{el.style.opacity=1;el.classList.remove("threads-list-icon-new");});
+        document.querySelectorAll(".threads-list-unread-icon").forEach((el)=>{el.classList.remove("threads-list-unread-icon");el.classList.add("threads-list-read-icon");});
         }
     )
+    //console.log("unread2 c",category);
 	document.querySelectorAll(".threads-list .threads-list-icon-new").forEach((el)=>{el.style.opacity=0.2;});
 	return false;
 }
