@@ -2,6 +2,8 @@ from django.db import connection
 #from rest_framework.response import Response
 from django.http import JsonResponse
 from devproject import settings
+# AJ 03.10.26: Misago treats posts older than the readtracker cutoff as read, so they need no row
+from misago.readtracker.cutoffdate import get_cutoff_date
 
 def dictfetchall(cursor):
     """
@@ -50,12 +52,15 @@ def check_free_space(request):
     return JsonResponse({"max":max_space_kb , "used": used_kb,"free":free_kb,"usedp": used_pct ,"freep":free_pct })
     
 def mark_read( thread_pk, cursor, request):
-        cursor.execute("SELECT  id, category_id from misago_threads_post WHERE thread_id=%s"%(int(thread_pk)))
+        # AJ 03.10.26: skip posts older than the readtracker cutoff, whole forum is then ~400 inserts instead of ~102000
+        cursor.execute("SELECT  id, category_id from misago_threads_post WHERE thread_id=%s AND posted_on > %s", [int(thread_pk), get_cutoff_date(request.settings, request.user)])
         rows = cursor.fetchall()
         lines = 0
         for one in rows:
             cursor.execute("insert into misago_readtracker_postread( last_read_on, post_id ,category_id, thread_id, user_id) values (NOW(), %s ,%s, %s, %s) ON CONFLICT DO NOTHING"%(one[0],one[1],int(thread_pk), request.user.id ))
             lines +=1
+        # AJ 03.10.26: move the watched thread marker to the last post, else user_has_other_unread_posts() suppresses the next reply notification and its e-mail
+        cursor.execute("UPDATE misago_notifications_watchedthread w SET read_at = t.last_post_on FROM misago_threads_thread t WHERE t.id = %s AND w.thread_id = t.id AND w.user_id = %s AND w.read_at < t.last_post_on"%(int(thread_pk), request.user.id))
         return lines
 
 def mark_thread_read(request, thread_pk):
@@ -77,29 +82,25 @@ def mark_thread_read(request, thread_pk):
 
 
 def mark_category_read(request, category_pk):
-    lines = -1
-    threads = -1
+    # AJ 03.10.26: both were -1, so the counts came back one too low, and "read" was -1 when nothing needed marking
+    lines = 0
+    threads = 0
     with connection.cursor() as cursor:
-        cursor.execute("SELECT level from misago_categories_category WHERE id=%s"%int(category_pk))
-        res = cursor.fetchone()[0]
-        if int(res)>2:
-           cats =[[category_pk]]
-        elif int(res)<1: 
-            cats =[]
-        else: # Level 1 und 2
-            cursor.execute("SELECT id from misago_categories_category WHERE parent_id=%s"%int(category_pk))
-            cats = cursor.fetchall()
-            if int(res)==1:
-                cursor.execute("SELECT id from misago_categories_category WHERE parent_id in ()"%(",".join(cats)))
-                cats += cursor.fetchall()
-                #print(cats)
+        # AJ 03.10.26: the category itself plus all its descendants in one query; the old level branching crashed on level 1, and marked nothing for the root or for a category without children
+        cursor.execute("SELECT c.id FROM misago_categories_category c, misago_categories_category p WHERE p.id = %s AND c.tree_id = p.tree_id AND c.lft >= p.lft AND c.rght <= p.rght"%int(category_pk))
+        cats = cursor.fetchall()
         for x in cats:
-            cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
+            # AJ 03.10.26: in the private threads category only the user's own threads, the query above now reaches category 1 where the old code marked nothing
+            if int(x[0])==1:
+                cursor.execute("SELECT t.id from misago_threads_thread t, misago_threads_threadparticipant p WHERE t.category_id = 1 AND p.thread_id = t.id AND p.user_id = %s"%request.user.id)
+            else:
+                cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
             rows = cursor.fetchall()
             for one in rows:
                 threads += 1
                 lines += mark_read( one[0], cursor, request) 
-                cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(thread_pk),request.user.id))
+                # AJ 03.10.26: was thread_pk, which does not exist in this function (NameError on the first thread)
+                cursor.execute("update  misago_notifications_notification set is_read=true where thread_id = %s and user_id = %s"%(int(one[0]),request.user.id))
         if (int(category_pk)==1):
             cursor.execute("update misago_users_user set unread_private_threads = 0 where id = %s"%(request.user.id))
         else:
