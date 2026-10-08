@@ -187,10 +187,13 @@ function openImage(e) {
     let iOv = iOvE.querySelector("div.backImage");
     let imageSrc = getImageSrc(elem);
     iOvE.querySelector(".exifOverlay").innerHTML = "";
-    if (imageSrc !=  elem.href ) {
-        let mylink = iOvE.querySelector(".head .nav-ov a.ext");
+    let mylink = iOvE.querySelector(".head .nav-ov a.ext");
+    if (imageSrc !=  elem.href ) {        
         mylink.href = elem.href ;
         mylink.style.display = "block";
+    }
+    else {
+        mylink.style.display = "none";    
     }
     iOvE.querySelector(".head .nav-ov a.download").href = imageSrc ;
     iOv.style.backgroundImage = "url('"+imageSrc+"')";
@@ -246,7 +249,7 @@ function switchImage(e) {
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
         iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
-        iOvE.querySelector(".head .nav-ov a.ext").style.diplay = "none"  ;
+        iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
         makeExif(iOv);
     }
 
@@ -525,5 +528,6 @@ function makeExif(elem) {
         img.onload(img);
         }
 }
+
 
 
