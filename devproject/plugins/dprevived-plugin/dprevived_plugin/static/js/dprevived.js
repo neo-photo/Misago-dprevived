@@ -162,21 +162,41 @@ function switchStyle(cvalue) {
     changeStyle(global.styles[cvalue]);
 }
 
+function getImageSrc(e) {
+    let aSrc = e.href;
+    let imageSrc = "";
+    //console.log(aSrc);
+    if (aSrc.indexOf("/a/")>-1) {
+        imageSrc = aSrc;
+    }
+    else if ((aSrc.indexOf(".jpg")>-1)) {
+        imageSrc = aSrc;    
+    }
+    else  {
+        //console.log(e);
+        imageSrc = e.querySelector("img").src;
+    }
+    //console.log(imageSrc);
+    return imageSrc;
+}
+
 function openImage(e) {
     let elem = e.target;
     while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
+    let imageSrc = getImageSrc(elem);
     iOvE.querySelector(".exifOverlay").innerHTML = "";
     iOvE.querySelector(".head .nav-ov a").href = elem.href ;
-    iOv.style.backgroundImage = "url('"+elem.href+"')";
-    iOv.querySelector("img.picture").src = elem.href ;
+    iOv.style.backgroundImage = "url('"+imageSrc+"')";
+    iOv.querySelector("img.picture").src = imageSrc ;
     iOvE.style.display = "block";
-    if (! ("ovImages" in global) ) {
+    if ((!("ovImages" in global)) || (global.ovImages.length==0)) {
      global.ovImages = []; 
-     let urls = []
-     document.querySelectorAll("article.misago-markup a.imageOv").forEach((item)=> {
-        if (!(item.href in urls)) {urls.push(item.href); global.ovImages.push(item); }
+     document.querySelectorAll("article.misago-markup a.imageOv").forEach((item)=> { 
+        let imageSrc = getImageSrc(item);
+        //console.log(imageSrc);
+        if (!(global.ovImages.includes(imageSrc))) {global.ovImages.push(imageSrc); }
         }
      );
     }
@@ -198,9 +218,9 @@ function switchImage(e) {
     let targetHref = "";
     let prevHref ="";
     //console.log("cur:",curHref);
-    global.ovImages.forEach((item) => {
-        if ( startHref == "") startHref = item.href;
-        let myHref = item.href;
+    global.ovImages.forEach((href) => {
+        if ( startHref == "") startHref = href;
+        let myHref = href;
         if (targetHref != "") {
             nextHref = myHref; targetHref = "";
         }
@@ -396,25 +416,26 @@ function hamburgerEvent(e,elem) {
 
 
 function startup2(){
-            document.querySelectorAll("article.misago-markup img").forEach(
-            (e) => {
-                if (!e.classList.contains("exif")) {
-                    e.classList.add("exif");
-                    let newdiv = document.createElement("div");
-                    newdiv.classList.add("exifOverlay");
-                    e.parentElement.appendChild(newdiv);
-                    makeExif(e);
-                }
+        global.ovImages = []; 
+        document.querySelectorAll("article.misago-markup img").forEach(
+        (e) => {
+            if (!e.classList.contains("exif")) {
+                e.classList.add("exif");
+                let newdiv = document.createElement("div");
+                newdiv.classList.add("exifOverlay");
+                e.parentElement.appendChild(newdiv);
+                makeExif(e);
             }
-        );
-        document.querySelectorAll("article.misago-markup a").forEach(
-        (e) => {if ((e.href.indexOf("/a/")>-1) && (!e.classList.contains("imageOv")))
-            {
-            e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
-            e.classList.add("imageOv");
-         }
-        });
- }
+        }
+    );
+    document.querySelectorAll("article.misago-markup a:has(img)").forEach(
+    (e) => {if ( (!e.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
+        {
+        e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
+        e.classList.add("imageOv");
+        }
+    });
+}
 
 function addImageOv(){
         document.querySelectorAll("#image-ov button.btn-css").forEach(
@@ -498,4 +519,5 @@ function makeExif(elem) {
         img.onload(img);
         }
 }
+
 
