@@ -13,13 +13,13 @@ function setCountdown(time) {
 function catchEvent(e) {
     //console.log(e);
     if (e.detail.action=="updatePost") {
-        //startup();
+         startup2();
          document.querySelectorAll("#limitSwitch").forEach((ee) =>ee.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let st = document.querySelector("#limitSwitch").selectedOptions[0].value;
                                                       if (st!="") setPostLimit(st);
                                                       return false;
                                                       }));
-        console.log("reloaded");
+        //console.log("reloaded");
     }
     else if (e.detail.action=="markThreadRead") {
         markThreadRead(e, e.detail.data.thread)
@@ -349,23 +349,6 @@ function startup(){
         {changeStyle(global.styles['dark']);}       
     }
     
-    if (1==1){//(new URL(document.location).searchParams.get("test")=="1"){
-        document.querySelectorAll("article.misago-markup img").forEach(
-            (e) => {
-                let newdiv = document.createElement("div");
-                newdiv.classList.add("exifOverlay");
-                e.parentElement.appendChild(newdiv);
-                makeExif(e);
-            }
-        );
-        document.querySelectorAll("article.misago-markup a").forEach(
-        (e) => {if (e.href.indexOf("/a/")>-1)
-            {
-            e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
-            e.classList.add("imageOv");
-         }
-        });
-        addImageOv();
         let selectElement = document.querySelector("#styleSwitch");
         Object.entries(global.styles).forEach(([key,val]) => {
             let newdiv = document.createElement("option");
@@ -385,7 +368,8 @@ function startup(){
                                                       if (st!="") setPostLimit(st);
                                                       return false;
                                                       }));
-    }
+        startup2();
+        addImageOv();
 }
 
 function hamburgerEvent(e,elem) {
@@ -409,6 +393,28 @@ function hamburgerEvent(e,elem) {
 		return false;
 	}
 }
+
+
+function startup2(){
+            document.querySelectorAll("article.misago-markup img").forEach(
+            (e) => {
+                if (!e.classList.contains("exif")) {
+                    e.classList.add("exif");
+                    let newdiv = document.createElement("div");
+                    newdiv.classList.add("exifOverlay");
+                    e.parentElement.appendChild(newdiv);
+                    makeExif(e);
+                }
+            }
+        );
+        document.querySelectorAll("article.misago-markup a").forEach(
+        (e) => {if ((e.href.indexOf("/a/")>-1) && (!e.classList.contains("imageOv")))
+            {
+            e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
+            e.classList.add("imageOv");
+         }
+        });
+ }
 
 function addImageOv(){
         document.querySelectorAll("#image-ov button.btn-css").forEach(
