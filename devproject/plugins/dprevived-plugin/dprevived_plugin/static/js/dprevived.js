@@ -188,7 +188,7 @@ function openImage(e) {
     let imageSrc = getImageSrc(elem);
     iOvE.querySelector(".exifOverlay").innerHTML = "";
     if (imageSrc !=  elem.href ) {
-        let mylink = iOvE.querySelector(".head .nav-ov a.ext"):
+        let mylink = iOvE.querySelector(".head .nav-ov a.ext");
         mylink.href = elem.href ;
         mylink.style.display = "block";
     }
