@@ -13,13 +13,13 @@ function setCountdown(time) {
 function catchEvent(e) {
     //console.log(e);
     if (e.detail.action=="updatePost") {
-        //startup();
+         startup2();
          document.querySelectorAll("#limitSwitch").forEach((ee) =>ee.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let st = document.querySelector("#limitSwitch").selectedOptions[0].value;
                                                       if (st!="") setPostLimit(st);
                                                       return false;
                                                       }));
-        console.log("reloaded");
+        //console.log("reloaded");
     }
     else if (e.detail.action=="markThreadRead") {
         markThreadRead(e, e.detail.data.thread)
@@ -179,21 +179,49 @@ function switchStyle(cvalue) {
     changeStyle(global.styles[cvalue]);
 }
 
+function getImageSrc(e) {
+    let aSrc = e.href;
+    let imageSrc = "";
+    //console.log(aSrc);
+    if (aSrc.indexOf("/a/")>-1) {
+        imageSrc = aSrc;
+    }
+    else if ((aSrc.indexOf(".jpg")>-1)) {
+        imageSrc = aSrc;    
+    }
+    else  {
+        //console.log(e);
+        imageSrc = e.querySelector("img").src;
+    }
+    //console.log(imageSrc);
+    return imageSrc;
+}
+
 function openImage(e) {
     let elem = e.target;
     while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
+    let imageSrc = getImageSrc(elem);
     iOvE.querySelector(".exifOverlay").innerHTML = "";
-    iOvE.querySelector(".head .nav-ov a").href = elem.href ;
-    iOv.style.backgroundImage = "url('"+elem.href+"')";
-    iOv.querySelector("img.picture").src = elem.href ;
+    let mylink = iOvE.querySelector(".head .nav-ov a.ext");
+    if (imageSrc !=  elem.href ) {        
+        mylink.href = elem.href ;
+        mylink.style.display = "block";
+    }
+    else {
+        mylink.style.display = "none";    
+    }
+    iOvE.querySelector(".head .nav-ov a.download").href = imageSrc ;
+    iOv.style.backgroundImage = "url('"+imageSrc+"')";
+    iOv.querySelector("img.picture").src = imageSrc ;
     iOvE.style.display = "block";
-    if (! ("ovImages" in global) ) {
+    if ((!("ovImages" in global)) || (global.ovImages.length==0)) {
      global.ovImages = []; 
-     let urls = []
-     document.querySelectorAll("article.misago-markup a.imageOv").forEach((item)=> {
-        if (!(item.href in urls)) {urls.push(item.href); global.ovImages.push(item); }
+     document.querySelectorAll("article.misago-markup a.imageOv").forEach((item)=> { 
+        let imageSrc = getImageSrc(item);
+        //console.log(imageSrc);
+        if (!(global.ovImages.includes(imageSrc))) {global.ovImages.push(imageSrc); }
         }
      );
     }
@@ -215,9 +243,9 @@ function switchImage(e) {
     let targetHref = "";
     let prevHref ="";
     //console.log("cur:",curHref);
-    global.ovImages.forEach((item) => {
-        if ( startHref == "") startHref = item.href;
-        let myHref = item.href;
+    global.ovImages.forEach((href) => {
+        if ( startHref == "") startHref = href;
+        let myHref = href;
         if (targetHref != "") {
             nextHref = myHref; targetHref = "";
         }
@@ -237,7 +265,8 @@ function switchImage(e) {
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
-        iOvE.querySelector(".head .nav-ov a").href = nextHref ;
+        iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
+        iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
         makeExif(iOv);
     }
 
@@ -366,23 +395,6 @@ function startup(){
         {changeStyle(global.styles['dark']);}       
     }
     
-    if (1==1){//(new URL(document.location).searchParams.get("test")=="1"){
-        document.querySelectorAll("article.misago-markup img").forEach(
-            (e) => {
-                let newdiv = document.createElement("div");
-                newdiv.classList.add("exifOverlay");
-                e.parentElement.appendChild(newdiv);
-                makeExif(e);
-            }
-        );
-        document.querySelectorAll("article.misago-markup a").forEach(
-        (e) => {if (e.href.indexOf("/a/")>-1)
-            {
-            e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
-            e.classList.add("imageOv");
-         }
-        });
-        addImageOv();
         let selectElement = document.querySelector("#styleSwitch");
         Object.entries(global.styles).forEach(([key,val]) => {
             let newdiv = document.createElement("option");
@@ -402,7 +414,8 @@ function startup(){
                                                       if (st!="") setPostLimit(st);
                                                       return false;
                                                       }));
-    }
+        startup2();
+        addImageOv();
 }
 
 function hamburgerEvent(e,elem) {
@@ -425,6 +438,29 @@ function hamburgerEvent(e,elem) {
 		}
 		return false;
 	}
+}
+
+
+function startup2(){
+        global.ovImages = []; 
+        document.querySelectorAll("article.misago-markup img").forEach(
+        (e) => {
+            if (!e.classList.contains("exif")) {
+                e.classList.add("exif");
+                let newdiv = document.createElement("div");
+                newdiv.classList.add("exifOverlay");
+                e.parentElement.appendChild(newdiv);
+                makeExif(e);
+            }
+        }
+    );
+    document.querySelectorAll("article.misago-markup a:has(img)").forEach(
+    (e) => {if ( (!e.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
+        {
+        e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
+        e.classList.add("imageOv");
+        }
+    });
 }
 
 function addImageOv(){
@@ -509,4 +545,6 @@ function makeExif(elem) {
         img.onload(img);
         }
 }
+
+
 

@@ -18,6 +18,7 @@ import ThreadHeader from "./ThreadHeader"
 import ThreadToolbarBottom from "./ThreadToolbarBottom"
 import ThreadToolbarThird from "./ThreadToolbarThird"
 import ThreadToolbarTop from "./ThreadToolbarTop"
+import sendEvent from "misago/utils/dprevived"
 
 export default class extends React.Component {
   constructor(props) {
@@ -119,6 +120,8 @@ export default class extends React.Component {
     }
 
     this.setPageTitle()
+    //update dprevived
+    sendEvent("updatePost",{});
   }
 
   openPollForm = () => {

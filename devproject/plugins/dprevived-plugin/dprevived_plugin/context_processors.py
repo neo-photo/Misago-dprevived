@@ -4,7 +4,7 @@
 from django.db import connection
 from devproject import settings
 
-__version__ = "9"
+__version__ = "15"
 
 def dictfetchall(cursor):
     """
@@ -93,7 +93,8 @@ def dprevived_context(request):
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
     else:
-        ip = request.META.get('REMOTE_ADDR',"none")                    
+        pass
+    ip = request.META.get('REMOTE_ADDR',"none")                    
     CT["dprevived"]["log"] = ip
     if (request.META.get("QUERY_STRING","").endswith("time")):
       CT["dprevived"]["Time"] = "%.08f"%(time.time() - start_time)
