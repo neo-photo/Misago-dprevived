@@ -1,10 +1,14 @@
 #from misago.threads.models import Post, Thread, Attachment
 #from django.contrib.auth import get_user_model
 #User = get_user_model()
+from logging import getLogger
+
 from django.db import connection
 from devproject import settings
 
 __version__ = "14"
+logger = getLogger("the-photo")
+logger.info("The-Photo Version:%s"%__version__)
 
 def dictfetchall(cursor):
     """
@@ -96,6 +100,7 @@ def dprevived_context(request):
         pass
     ip = request.META.get('REMOTE_ADDR',"none")                    
     CT["dprevived"]["log"] = ip
+    logger.info("IP:%s"%ip)
     if (request.META.get("QUERY_STRING","").endswith("time")):
       CT["dprevived"]["Time"] = "%.08f"%(time.time() - start_time)
      

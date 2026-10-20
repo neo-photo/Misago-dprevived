@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from devproject import settings
 # AJ 03.10.26: Misago treats posts older than the readtracker cutoff as read, so they need no row
 from misago.readtracker.cutoffdate import get_cutoff_date
+from logging import getLogger
+
+logger = getLogger("the-photo")
 
 def dictfetchall(cursor):
     """
@@ -84,6 +87,7 @@ def mark_thread_read(request, thread_pk):
 def mark_category_read(request, category_pk):
     lines = -1
     threads = -1
+    logger.info("category read cat:%s"%category_pk)
     with connection.cursor() as cursor:
         cursor.execute("SELECT level from misago_categories_category WHERE id=%s"%int(category_pk))
         res = cursor.fetchone()[0]
