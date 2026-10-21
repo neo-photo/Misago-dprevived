@@ -375,7 +375,7 @@ function startup(){
         document.querySelector("body").classList.add("dark");
     }
     else if (window.matchMedia('(prefers-color-scheme:dark').matches) {
-        {changeStyle(global.styles['dark']);}       
+        {switchStyle('dark');}
     }
     
         let selectElement = document.querySelector("#styleSwitch");

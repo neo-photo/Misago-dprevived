@@ -88,9 +88,17 @@ def mark_category_read(request, category_pk):
     lines = -1
     threads = -1
     logger.info("category read cat:%s"%category_pk)
+    
     with connection.cursor() as cursor:
-        cursor.execute("SELECT level from misago_categories_category WHERE id=%s"%int(category_pk))
-        res = cursor.fetchone()[0]
+        if (int(category_pk)==2): 
+            cursor.execute("SELECT id from misago_categories_category WHERE level=1")
+            category_pk =  cursor.fetchone()[0]
+            res = 1
+        else:
+            cursor.execute("SELECT level from misago_categories_category WHERE id=%s"%int(category_pk))
+            res = cursor.fetchone()[0]
+            res= res[0]
+        logger.info("category id+level:%s,%s"%(category_pk ,res))
         if int(res)>2:
            cats =[[category_pk]]
         elif int(res)<1: 
@@ -98,10 +106,18 @@ def mark_category_read(request, category_pk):
         else: # Level 1 und 2
             cursor.execute("SELECT id from misago_categories_category WHERE parent_id=%s"%int(category_pk))
             cats = cursor.fetchall()
+            cats =  [str(x[0]) for x in cats]
+            logger.info("%r"%cats)
             if int(res)==1:
-                cursor.execute("SELECT id from misago_categories_category WHERE parent_id in ()"%(",".join(cats)))
-                cats += cursor.fetchall()
-                #print(cats)
+                sql ="SELECT id from misago_categories_category WHERE parent_id in (%s)"%",".join(cats)
+                logger.info(sql)
+                cursor.execute(sql)
+                rcats = cursor.fetchall()
+                [str(x[0]) for x in rcats]
+                cats += rcats
+                logger.info("%r"%rcats)
+                
+        logger.info("cats: %r"%cats)
         for x in cats:
             cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
             rows = cursor.fetchall()
