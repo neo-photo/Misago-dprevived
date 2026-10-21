@@ -84,7 +84,7 @@ def mark_thread_read(request, thread_pk):
     return JsonResponse({"read":lines, "user": request.user.id})
 
 
-def mark_category_read(request, category_pk):
+def mark_category_read2(request, category_pk):
     lines = -1
     threads = -1
     logger.info("category read cat:%s"%category_pk)
@@ -133,10 +133,11 @@ def mark_category_read(request, category_pk):
             cursor.execute("update misago_users_user set unread_notifications = %s where id = %s"%(nr,request.user.id))
     return JsonResponse({"read":lines, "threads":threads,"user": request.user.id})
 
-def mark_category_read2(request, category_pk):
+def mark_category_read(request, category_pk):
     # AJ 03.10.26: both were -1, so the counts came back one too low, and "read" was -1 when nothing needed marking
-    lines = 0
-    threads = 0
+    logger.info("category read cat:%s"%category_pk)
+    lines = -1
+    threads = -1
     with connection.cursor() as cursor:
         # AJ 03.10.26: the category itself plus all its descendants in one query; the old level branching crashed on level 1, and marked nothing for the root or for a category without children
         cursor.execute("SELECT c.id FROM misago_categories_category c, misago_categories_category p WHERE p.id = %s AND c.tree_id = p.tree_id AND c.lft >= p.lft AND c.rght <= p.rght"%int(category_pk))
