@@ -65,8 +65,9 @@ const ThreadsToolbar = ({
       </ToolbarSection>
     )}
     <ToolbarSpacer />
-    {!!user.id && (
+    {!!user.id &&  (
       <ToolbarSection>
+      {list.type=='all' && (
         <ToolbarItem>
           <Button
             className="btn btn-primary btn-outline btn-block"
@@ -77,6 +78,7 @@ const ThreadsToolbar = ({
             <span className="material-icon">check</span> mark all read
           </Button>
         </ToolbarItem>
+        )}
         <ToolbarItem>
           <Button
             className="btn-primary btn-outline btn-block"

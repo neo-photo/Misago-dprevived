@@ -108,7 +108,7 @@
 
     <script src="{% url 'django-i18n' %}?l={{ LANGUAGE_CODE }}&v={{ I18N_VERSION_SIGNATURE }}"></script>
     <script src="{% static 'misago/js/vendor.js' %}"></script>
-    <script src="{% static 'misago/js/misago.js' %}"></script>
+    <script src="{% static 'misago/js/misago.js'  %}?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
     {% include "misago/scripts.html" %}
     <script type="text/javascript">
       misago.init({{ frontend_context|as_json }});

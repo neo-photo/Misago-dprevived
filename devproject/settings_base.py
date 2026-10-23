@@ -44,7 +44,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 CACHES = {
     "default": {
         # Misago doesn't run well with LocMemCache in production environments
-        #"BACKEND": "django.core.cache.backends.locmem.LocMemCache"   
+        #"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
@@ -329,21 +329,28 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": "misago.conf.debugtoolbar.enable_debug_toolbar"
 }
 
-LOGGING = {    
-	"version": 1,     
-	"disable_existing_loggers": False,  
-	"handlers": {     
-			"file": {           
-					"class": "logging.FileHandler",
+LOGGING = {
+	"version": 1,
+	"disable_existing_loggers": False,
+	"handlers": {
+			"file": {
+				"class": "logging.FileHandler",
 			        "filename": "../general.log",        },
-			        },     
-		"loggers": {        
-				   "django": {            
-				   				"handlers": ["file"],            
-				   				"level": "WARNING",            
-				   				"propagate": True,        },    
-				},
+            		"photofile": {
+				"class": "logging.FileHandler",
+			        "filename": "../the-photo.log",        },
+                    },
+	"loggers": {
+		   "django": {
+      				"handlers": ["file"],
+   				"level": "ERROR",
+   				"propagate": True,        },
+		   "the-photo": {
+       				"handlers": ["photofile"],
+   				"level": "WARNING",
+   				"propagate": False, },
+			},
 		}
 
 
-		
+

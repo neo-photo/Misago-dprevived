@@ -6,8 +6,8 @@ from misago.settings import *
 
 
 include(
-    'settings_secure.py',
     'settings_base.py',
+    'settings_secure.py',
     optional('settings_local.py')
 )
 
