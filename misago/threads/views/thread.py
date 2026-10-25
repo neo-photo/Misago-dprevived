@@ -11,7 +11,7 @@ class ThreadBase(View):
 
     template_name = None
 
-    def get(self, request, pk, slug, page=0):
+    def get(self, request, pk, slug, page = 0):
         thread = self.get_thread(request, pk, slug)
         posts = self.get_posts(request, thread, page)
 
@@ -62,6 +62,25 @@ class ThreadBase(View):
 
         return context
 
+class ThreadViewThreaded(ThreadBase):
+    thread = ForumThread
+    template_name = "misago/thread/threadthreaded.html"
+
+    def get_default_frontend_context(self):
+        return {"THREADS_API": reverse("misago:api:thread-list")}
+
+    def get(self, request, pk, slug, post=0):
+        thread = self.get_thread(request, pk, slug)
+        posts = self.get_posts(request, thread, 0 ,post)
+
+        frontend_context = self.get_frontend_context(request, thread, posts)
+        request.frontend_context.update(frontend_context)
+
+        template_context = self.get_template_context(request, thread, posts)
+        return render(request, self.template_name, template_context)
+
+    def get_posts(self, request, thread, page, post):
+        return self.posts(request, thread, page, post)
 
 class ThreadView(ThreadBase):
     thread = ForumThread

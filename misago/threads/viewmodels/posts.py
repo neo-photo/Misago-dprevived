@@ -6,18 +6,22 @@ from ..paginator import PostsPaginator
 from ..permissions import exclude_invisible_posts
 from ..serializers import PostSerializer
 from ..utils import add_likes_to_posts
+from django.db.models import Q,F
+from logging import getLogger
+from django.db import connection
 
 __all__ = ["ThreadPosts"]
+logger = getLogger("the-photo")
 
 
 class ViewModel:
-    def __init__(self, request, thread, page):  # pylint: disable=too-many-locals
+    def __init__(self, request, thread, page, post = 0):  # pylint: disable=too-many-locals
         try:
             thread_model = thread.unwrap()
         except AttributeError:
             thread_model = thread
 
-        posts_queryset = self.get_posts_queryset(request, thread_model)
+        posts_queryset = self.get_posts_queryset(request, thread_model , post)
 
         posts_limit = request.settings.posts_per_page
         posts_orphans = request.settings.posts_per_page_orphans
@@ -67,7 +71,15 @@ class ViewModel:
         self.posts = posts
         self.paginator = paginator
 
-    def get_posts_queryset(self, request, thread):
+    def get_posts_queryset(self, request, thread , post = 0):
+        myfilter = Q(is_event=False)
+        if post>0 :
+            #logger.info("view: %s "%(post))
+            uname = "xxx"
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT poster_name FROM misago_threads_post where id = %s"%int(post))
+                uname = cursor.fetchall()[0][0]
+            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains='[quote="@%s"'%uname)))
         queryset = (
             thread.post_set.select_related(
                 "category",
@@ -76,9 +88,10 @@ class ViewModel:
                 "poster__ban_cache",
                 "poster__online_tracker",
             )
-            .filter(is_event=False)
+            .filter(myfilter)
             .order_by("id")
         )
+        #logger.info("view: %s "%(queryset.query))
         return exclude_invisible_posts(request.user_acl, thread.category, queryset)
 
     def get_events_queryset(

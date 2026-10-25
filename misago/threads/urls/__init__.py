@@ -15,7 +15,7 @@ from ..views.goto import (
 )
 from ..views.list import ForumThreadsList, CategoryThreadsList, PrivateThreadsList
 from ..views.subscribed import redirect_subscribed_to_watched
-from ..views.thread import ThreadView, PrivateThreadView
+from ..views.thread import ThreadView, PrivateThreadView, ThreadViewThreaded
 
 LISTS_TYPES = ("all", "my", "new", "unread", "watched", "unapproved")
 
@@ -149,7 +149,7 @@ def goto_patterns(prefix, **views):
 
 urlpatterns += goto_patterns(
     "thread",
-    post=ThreadGotoPostView,
+    post=ThreadViewThreaded,
     last=ThreadGotoLastView,
     new=ThreadGotoNewView,
     best_answer=ThreadGotoBestAnswerView,
