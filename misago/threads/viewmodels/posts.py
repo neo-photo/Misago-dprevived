@@ -75,11 +75,12 @@ class ViewModel:
         myfilter = Q(is_event=False)
         if post>0 :
             #logger.info("view: %s "%(post))
-            uname = "xxx"
             with connection.cursor() as cursor:
-                cursor.execute("SELECT poster_name FROM misago_threads_post where id = %s"%int(post))
-                uname = cursor.fetchall()[0][0]
-            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains='[quote="@%s"'%uname)))
+                cursor.execute("SELECT poster_id, poster_name FROM misago_threads_post where id = %s"%int(post))
+                res = cursor.fetchall()
+                #logger.info(res[0])
+                (posterId, posterName) = res[0]
+            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId)   | Q(original__icontains='[quote="@%s"'%posterName))))
         queryset = (
             thread.post_set.select_related(
                 "category",
