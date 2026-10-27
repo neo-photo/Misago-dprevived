@@ -180,12 +180,19 @@ function getImageSrc(e) {
     return imageSrc;
 }
 
-function openImage(e) {
+function openImage(e,isLink) {
     let elem = e.target;
-    while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
+    let imageSrc;
+    if (isLink) {
+        while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
+        imageSrc = getImageSrc(elem);
+    }
+    else {
+        imageSrc = elem.src;
+    }
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
-    let imageSrc = getImageSrc(elem);
+
     iOvE.querySelector(".exifOverlay").innerHTML = "";
     let mylink = iOvE.querySelector(".head .nav-ov a.ext");
     if (imageSrc !=  elem.href ) {        
@@ -208,7 +215,7 @@ function openImage(e) {
         }
      );
     }
-    makeExif(iOv);
+    //makeExif(iOv);
 }
 
 function switchImage(e) {
@@ -370,12 +377,16 @@ function startup(){
     let dpreviedBGSet="";
     document.cookie.split(';').forEach((e)=> {let [name,value] = e.split("=",2); if (name.trim()=="dpreviedBGSet") dpreviedBGSet=value;});
     if (dpreviedBGSet!="") 
-        {changeStyle(global.styles[dpreviedBGSet]);}
+        {   
+        changeStyle(global.styles[dpreviedBGSet]);
+        document.getElementById("styleSwitch").value = dpreviedBGSet;
+        }
     else if (document.location.pathname.search("/2599/")>0) {
         document.querySelector("body").classList.add("dark");
     }
     else if (window.matchMedia('(prefers-color-scheme:dark').matches) {
-        {switchStyle('dark');}
+        switchStyle('dark');
+        document.getElementById("styleSwitch").value = 'dark';
     }
     
         let selectElement = document.querySelector("#styleSwitch");
@@ -432,18 +443,31 @@ function startup2(){
                 e.classList.add("exif");
                 let newdiv = document.createElement("div");
                 newdiv.classList.add("exifOverlay");
-                e.parentElement.appendChild(newdiv);
+                let pe = e.parentElement;
+                pe.appendChild(newdiv);
                 makeExif(e);
+                if (pe.tagName.toUpperCase()=="A") {
+                    if ( (!pe.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
+                            {
+                            pe.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e,true);return false;});
+                            pe.classList.add("imageOv");
+                            }
+                }
+                else {
+                    e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e, false);return false;});
+                }
+                
             }
         }
     );
-    document.querySelectorAll("article.misago-markup a:has(img)").forEach(
+    /*document.querySelectorAll("article.misago-markup a:has(img)").forEach(
     (e) => {if ( (!e.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
         {
         e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
         e.classList.add("imageOv");
         }
     });
+    */
 }
 
 function addImageOv(){
