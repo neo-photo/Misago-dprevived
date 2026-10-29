@@ -1,4 +1,47 @@
 
+function mouseUp() {
+    window.removeEventListener('mousemove', divMove, true);
+}
+
+function mouseDown(e) {
+    global.gMouseDownX = e.clientX;
+    global.gMouseDownY = e.clientY;
+
+    var div = document.querySelector('#image-ov img');
+
+    //The following block gets the X offset (the difference between where it starts and where it was clicked)
+    let leftPart = "";
+    if(!div.style.left)
+        leftPart+="0px";    //In case this was not defined as 0px explicitly.
+    else
+        leftPart = div.style.left;
+    let leftPos = leftPart.indexOf("px");
+    let leftNumString = leftPart.slice(0, leftPos); // Get the X value of the object.
+    global.gMouseDownOffsetX = global.gMouseDownX - parseInt(leftNumString,10);
+
+    //The following block gets the Y offset (the difference between where it starts and where it was clicked)
+    let topPart = "";
+    if(!div.style.top)
+        topPart+="0px";     //In case this was not defined as 0px explicitly.
+    else
+        topPart = div.style.top;
+    let topPos = topPart.indexOf("px");
+    let topNumString = topPart.slice(0, topPos);    // Get the Y value of the object.
+    global.gMouseDownOffsetY = global.gMouseDownY - parseInt(topNumString,10);
+
+    window.addEventListener('mousemove', divMove, true);
+}
+
+function divMove(e){
+    var div = document.querySelector('#image-ov img');
+    div.style.position = 'absolute';
+    let topAmount = e.clientY - global.gMouseDownOffsetY;
+    div.style.top = topAmount + 'px';
+    let leftAmount = e.clientX - global.gMouseDownOffsetX;
+    div.style.left = leftAmount + 'px';
+}
+
+
 function setCountdown(time) {
     
     setInterval( () => {
@@ -116,6 +159,8 @@ function markCategoryRead(ev, category) {
 function runInit(){
     initStyles();
     startup();
+    window.addEventListener('mouseup', mouseUp, false);
+    document.querySelector('#image-ov img').addEventListener('mousedown', mouseDown, false);
     document.querySelector("body").addEventListener("dprevived", (e) => {catchEvent(e);});
     //Test url
     if (document.location.pathname.search("/2599/")>0) document.querySelectorAll("#fire div").forEach((e)=>e.classList.add("firework"));
