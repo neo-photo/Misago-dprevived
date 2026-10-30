@@ -1,6 +1,8 @@
 
 function mouseUp() {
     window.removeEventListener('mousemove', divMove, true);
+    var div = document.querySelector('#image-ov img');
+    div.style.cursor='inherit';
 }
 
 function mouseDown(e) {
@@ -8,6 +10,8 @@ function mouseDown(e) {
     global.gMouseDownY = e.clientY;
 
     var div = document.querySelector('#image-ov img');
+    div.style.position = 'absolute';
+    div.style.cursor='all-scroll';
 
     //The following block gets the X offset (the difference between where it starts and where it was clicked)
     let leftPart = "";
@@ -34,7 +38,6 @@ function mouseDown(e) {
 
 function divMove(e){
     var div = document.querySelector('#image-ov img');
-    div.style.position = 'absolute';
     let topAmount = e.clientY - global.gMouseDownOffsetY;
     div.style.top = topAmount + 'px';
     let leftAmount = e.clientX - global.gMouseDownOffsetX;
@@ -317,6 +320,11 @@ function changeCss(e) {
         elem.classList.toggle("active");
     }
     else {
+        if (elem.dataset.class=="smallImage") {
+            let div = document.querySelector('#image-ov img');
+            div.style.top="0px";
+            div.style.left="0px";
+        }
         tElem.classList.forEach((cname)=>{ if (cname!="full") old = cname; });
         if (old!= elem.dataset.class) {
             tElem.classList.replace(old, elem.dataset.class);

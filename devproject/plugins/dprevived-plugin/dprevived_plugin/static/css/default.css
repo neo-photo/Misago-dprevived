@@ -433,10 +433,11 @@ button.btn-image-ov .material-icon {
 
 #image-ov.full {
     width: 100%;
-    height: 100%;
-    top: 60px;
+    height: 100vh;
+    top: 0;
     left: 0;
     margin: 0;
+    z-index: 2000;
 }
 #image-ov div.nav div.filler {
     border: 0 none;
