@@ -15,7 +15,7 @@ from ..views.goto import (
 )
 from ..views.list import ForumThreadsList, CategoryThreadsList, PrivateThreadsList
 from ..views.subscribed import redirect_subscribed_to_watched
-from ..views.thread import ThreadView, PrivateThreadView
+from ..views.thread import ThreadView, PrivateThreadView, ThreadViewThreaded
 
 LISTS_TYPES = ("all", "my", "new", "unread", "watched", "unapproved")
 
@@ -130,11 +130,16 @@ def goto_patterns(prefix, **views):
     urls = []
 
     post_view = views.pop("post", None)
+    threaded_view = views.pop("threaded", None)
     if post_view:
         url_pattern = "%s/<slug:slug>/<int:pk>/post/<int:post>/" % prefix[0]
         url_name = "%s-post" % prefix
         urls.append(path(url_pattern, post_view.as_view(), name=url_name))
-
+    elif threaded_view:
+        url_pattern = "%s/<slug:slug>/<int:pk>/postq/<int:post>/" % prefix[0]
+        url_name = "%s-postq" % prefix
+        urls.append(path(url_pattern, post_view.as_view(), name=url_name))
+        
     for name, view in views.items():
         name = name.replace("_", "-")
         url_pattern = "%s/<slug:slug>/<int:pk>/%s/" % (
@@ -146,10 +151,11 @@ def goto_patterns(prefix, **views):
 
     return urls
 
+urlpatterns += [path( "t/<slug:slug>/<int:pk>/postq/<int:post>/", ThreadViewThreaded.as_view(), name= "t-postq" )]
 
 urlpatterns += goto_patterns(
     "thread",
-    post=ThreadGotoPostView,
+    post=ThreadGotoPostView,    
     last=ThreadGotoLastView,
     new=ThreadGotoNewView,
     best_answer=ThreadGotoBestAnswerView,

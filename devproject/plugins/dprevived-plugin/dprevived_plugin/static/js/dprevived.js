@@ -1,4 +1,50 @@
 
+function mouseUp() {
+    window.removeEventListener('mousemove', divMove, true);
+    var div = document.querySelector('#image-ov img');
+    div.style.cursor='inherit';
+}
+
+function mouseDown(e) {
+    global.gMouseDownX = e.clientX;
+    global.gMouseDownY = e.clientY;
+
+    var div = document.querySelector('#image-ov img');
+    div.style.position = 'absolute';
+    div.style.cursor='all-scroll';
+
+    //The following block gets the X offset (the difference between where it starts and where it was clicked)
+    let leftPart = "";
+    if(!div.style.left)
+        leftPart+="0px";    //In case this was not defined as 0px explicitly.
+    else
+        leftPart = div.style.left;
+    let leftPos = leftPart.indexOf("px");
+    let leftNumString = leftPart.slice(0, leftPos); // Get the X value of the object.
+    global.gMouseDownOffsetX = global.gMouseDownX - parseInt(leftNumString,10);
+
+    //The following block gets the Y offset (the difference between where it starts and where it was clicked)
+    let topPart = "";
+    if(!div.style.top)
+        topPart+="0px";     //In case this was not defined as 0px explicitly.
+    else
+        topPart = div.style.top;
+    let topPos = topPart.indexOf("px");
+    let topNumString = topPart.slice(0, topPos);    // Get the Y value of the object.
+    global.gMouseDownOffsetY = global.gMouseDownY - parseInt(topNumString,10);
+
+    window.addEventListener('mousemove', divMove, true);
+}
+
+function divMove(e){
+    var div = document.querySelector('#image-ov img');
+    let topAmount = e.clientY - global.gMouseDownOffsetY;
+    div.style.top = topAmount + 'px';
+    let leftAmount = e.clientX - global.gMouseDownOffsetX;
+    div.style.left = leftAmount + 'px';
+}
+
+
 function setCountdown(time) {
     
     setInterval( () => {
@@ -133,6 +179,8 @@ function markCategoryRead(ev, category) {
 function runInit(){
     initStyles();
     startup();
+    window.addEventListener('mouseup', mouseUp, false);
+    document.querySelector('#image-ov img').addEventListener('mousedown', mouseDown, false);
     document.querySelector("body").addEventListener("dprevived", (e) => {catchEvent(e);});
     //Test url
     if (document.location.pathname.search("/2599/")>0) document.querySelectorAll("#fire div").forEach((e)=>e.classList.add("firework"));
@@ -197,12 +245,19 @@ function getImageSrc(e) {
     return imageSrc;
 }
 
-function openImage(e) {
+function openImage(e,isLink) {
     let elem = e.target;
-    while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
+    let imageSrc;
+    if (isLink) {
+        while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
+        imageSrc = getImageSrc(elem);
+    }
+    else {
+        imageSrc = elem.src;
+    }
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
-    let imageSrc = getImageSrc(elem);
+
     iOvE.querySelector(".exifOverlay").innerHTML = "";
     let mylink = iOvE.querySelector(".head .nav-ov a.ext");
     if (imageSrc !=  elem.href ) {        
@@ -225,7 +280,7 @@ function openImage(e) {
         }
      );
     }
-    makeExif(iOv);
+    //makeExif(iOv);
 }
 
 function switchImage(e) {
@@ -282,6 +337,11 @@ function changeCss(e) {
         elem.classList.toggle("active");
     }
     else {
+        if (elem.dataset.class=="smallImage") {
+            let div = document.querySelector('#image-ov img');
+            div.style.top="0px";
+            div.style.left="0px";
+        }
         tElem.classList.forEach((cname)=>{ if (cname!="full") old = cname; });
         if (old!= elem.dataset.class) {
             tElem.classList.replace(old, elem.dataset.class);
@@ -387,12 +447,16 @@ function startup(){
     let dpreviedBGSet="";
     document.cookie.split(';').forEach((e)=> {let [name,value] = e.split("=",2); if (name.trim()=="dpreviedBGSet") dpreviedBGSet=value;});
     if (dpreviedBGSet!="") 
-        {changeStyle(global.styles[dpreviedBGSet]);}
+        {   
+        changeStyle(global.styles[dpreviedBGSet]);
+        document.getElementById("styleSwitch").value = dpreviedBGSet;
+        }
     else if (document.location.pathname.search("/2599/")>0) {
         document.querySelector("body").classList.add("dark");
     }
     else if (window.matchMedia('(prefers-color-scheme:dark').matches) {
-        {switchStyle('dark');}
+        switchStyle('dark');
+        document.getElementById("styleSwitch").value = 'dark';
     }
     
         let selectElement = document.querySelector("#styleSwitch");
@@ -449,18 +513,31 @@ function startup2(){
                 e.classList.add("exif");
                 let newdiv = document.createElement("div");
                 newdiv.classList.add("exifOverlay");
-                e.parentElement.appendChild(newdiv);
+                let pe = e.parentElement;
+                pe.appendChild(newdiv);
                 makeExif(e);
+                if (pe.tagName.toUpperCase()=="A") {
+                    if ( (!pe.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
+                            {
+                            pe.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e,true);return false;});
+                            pe.classList.add("imageOv");
+                            }
+                }
+                else {
+                    e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e, false);return false;});
+                }
+                
             }
         }
     );
-    document.querySelectorAll("article.misago-markup a:has(img)").forEach(
+    /*document.querySelectorAll("article.misago-markup a:has(img)").forEach(
     (e) => {if ( (!e.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
         {
         e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
         e.classList.add("imageOv");
         }
     });
+    */
 }
 
 function addImageOv(){
