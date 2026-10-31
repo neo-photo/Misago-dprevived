@@ -10,6 +10,10 @@ body.dark .modal-content {
 background-color: chocolate;
 }
 
+html:has(#image-ov.full:not([style*="none"])) {
+  overflow: hidden;
+}
+
 .origin li.threads-list-item.list-group-item:nth-child(2n+1) {
     background: inherit;
 }
