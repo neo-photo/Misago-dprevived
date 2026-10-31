@@ -151,7 +151,10 @@ def goto_patterns(prefix, **views):
 
     return urls
 
-urlpatterns += [path( "t/<slug:slug>/<int:pk>/postq/<int:post>/", ThreadViewThreaded.as_view(), name= "t-postq" )]
+# dpwin39: Martin's threaded/quoted-posts view demo is off unless
+# DPREVIVED_THREADED_VIEW = True is set (e.g. in settings_local.py).
+if getattr(settings, "DPREVIVED_THREADED_VIEW", False):
+    urlpatterns += [path( "t/<slug:slug>/<int:pk>/postq/<int:post>/", ThreadViewThreaded.as_view(), name= "t-postq" )]
 
 urlpatterns += goto_patterns(
     "thread",
