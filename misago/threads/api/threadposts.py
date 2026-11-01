@@ -29,6 +29,7 @@ class ViewSet(viewsets.ViewSet):
     thread = None
     posts = ThreadPosts
     post_ = ThreadPost
+    postQ = False
 
     def get_thread(
         self, request, pk, path_aware=False, read_aware=False, watch_aware=False
@@ -41,7 +42,7 @@ class ViewSet(viewsets.ViewSet):
             watch_aware=watch_aware,
         )
 
-    def get_posts(self, request, thread, page):
+    def get_posts(self, request, thread, page, post = postQ):
         return self.posts(request, thread, page)
 
     def get_post(self, request, thread, pk):
@@ -59,7 +60,11 @@ class ViewSet(viewsets.ViewSet):
             read_aware=True,
             watch_aware=True,
         )
-        posts = self.get_posts(request, thread, page)
+        if self.postQ:
+            postRef = pk
+        else:
+            postRef = 0
+        posts = self.get_posts(request, thread, page, post = postRef)
 
         data = thread.get_frontend_context()
         data["post_set"] = posts.get_frontend_context()
@@ -265,6 +270,10 @@ class ThreadPostsViewSet(ViewSet):
     tree_name = THREADS_ROOT_NAME
     thread = ForumThread
 
+class ThreadPostsViewSetQ(ViewSet):
+    tree_name = THREADS_ROOT_NAME
+    thread = ForumThread
+    postQ = True
 
 class PrivateThreadPostsViewSet(ViewSet):
     tree_name = PRIVATE_THREADS_ROOT_NAME

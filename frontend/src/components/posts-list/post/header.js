@@ -15,6 +15,8 @@ export default function (props) {
       <UnreadLabel {...props} />
       <UnreadCompact {...props} />
       <PostedOn {...props} />
+      &nbsp;
+      <PostedQ {...props} />
       <PostedOnCompact {...props} />
       <PostEdits {...props} />
       <PostEditsCompacts {...props} />
@@ -62,6 +64,18 @@ export function PostedOn(props) {
     >
       {props.post.posted_on.fromNow()}
     </a>
+      
+  )
+}
+
+export function PostedQ(props) {
+
+  return (
+    <a
+      href={props.post.url.indexq}
+      className="btn btn-link posted-on hidden-xs"
+    > see quotes    </a>
+      
   )
 }
 

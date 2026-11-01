@@ -143,6 +143,7 @@ class PostSerializer(serializers.ModelSerializer, MutableFields):
     def get_api(self, obj):
         api_links = {
             "index": obj.get_api_url(),
+            "index2": obj.get_api_urlq(),
             "likes": obj.get_likes_api_url(),
             "editor": obj.get_editor_api_url(),
             "edits": obj.get_edits_api_url(),
@@ -157,6 +158,7 @@ class PostSerializer(serializers.ModelSerializer, MutableFields):
     def get_url(self, obj):
         return {
             "index": obj.get_absolute_url(),
+            "indexq": obj.get_absolute_urlq(),
             "last_editor": self.get_last_editor_url(obj),
             "hidden_by": self.get_hidden_by_url(obj),
         }

@@ -14,6 +14,7 @@
       {{ post.posted_on|date:'DATETIME_FORMAT' }}
     </time>
   </a>
+  <a href="{{ post.get_absolute_urlq }}" class="btn btn-link posted-on hidden-xs">see quotes</a>
   <a href="{{ post.get_absolute_url }}" class="btn btn-link posted-on visible-xs-inline-block">
     {{ post.posted_on|date:'DATETIME_FORMAT' }}
   </a>

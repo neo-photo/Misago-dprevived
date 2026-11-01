@@ -15,13 +15,19 @@ export function select(store) {
 
 export function paths() {
   const thread = misago.get("THREAD")
+  const posts = misago.get("POSTS")  
   const basePath = thread.url.index.replace(
     thread.slug + "-" + thread.pk,
     ":slug"
   )
+  //console.log(posts.results[0].id)
   return [
     {
       path: basePath,
+      component: connect(select)(Route),
+    },
+    {
+      path: basePath+"postq/"+posts.results[0].id,
       component: connect(select)(Route),
     },
     {

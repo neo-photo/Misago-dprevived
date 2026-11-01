@@ -151,7 +151,7 @@ def goto_patterns(prefix, **views):
 
     return urls
 
-urlpatterns += [path( "t/<slug:slug>/<int:pk>/postq/<int:post>/", ThreadViewThreaded.as_view(), name= "t-postq" )]
+urlpatterns += [path( "t/<slug:slug>/<int:pk>/postq/<int:post>/", ThreadViewThreaded.as_view(), name= "thread-postq" )]
 
 urlpatterns += goto_patterns(
     "thread",

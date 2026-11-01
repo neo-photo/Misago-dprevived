@@ -66,10 +66,13 @@ class ThreadType:
     def get_post_split_api_url(self, thread):
         return None
 
-    def get_post_absolute_url(self, post):
+    def get_post_absolute_url(self, post, quote = False):
         return None
 
     def get_post_api_url(self, post):
+        return None
+        
+    def get_post_api_urlq(self, post):
         return None
 
     def get_post_likes_api_url(self, post):
