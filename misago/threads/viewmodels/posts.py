@@ -80,8 +80,9 @@ class ViewModel:
                 res = cursor.fetchall()
                 #logger.info(res[0])
                 (posterId, posterName) = res[0]
+            #myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains='[quote="@%s"'%posterName)))
             #myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId)   | Q(original__icontains='[quote="@%s"'%posterName))))
-            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains='[quote="@%s"'%posterName)))
+            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId) & ((~Q(original__icontains='[quote="')) | Q(original__icontains='[quote="@%s"'%posterName)  )  | Q(original__icontains='[quote="@%s"'%posterName))))
         queryset = (
             thread.post_set.select_related(
                 "category",

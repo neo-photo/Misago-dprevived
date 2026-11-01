@@ -184,6 +184,9 @@ class Post(PluginDataModel):
 
     def get_api_url(self):
         return self.thread_type.get_post_api_url(self)
+        
+    def get_api_urlq(self):
+        return self.thread_type.get_post_api_urlq(self)
 
     def get_likes_api_url(self):
         return self.thread_type.get_post_likes_api_url(self)
@@ -199,6 +202,9 @@ class Post(PluginDataModel):
 
     def get_absolute_url(self):
         return self.thread_type.get_post_absolute_url(self)
+
+    def get_absolute_urlq(self):
+        return self.thread_type.get_post_absolute_url(self, quote=True)        
 
     def set_search_document(self, thread_title=None):
         if thread_title:

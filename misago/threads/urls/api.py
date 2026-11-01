@@ -1,7 +1,7 @@
 from ...core.apirouter import MisagoApiRouter
 from ..api.attachments import AttachmentViewSet
 from ..api.threadpoll import ThreadPollViewSet
-from ..api.threadposts import PrivateThreadPostsViewSet, ThreadPostsViewSet
+from ..api.threadposts import PrivateThreadPostsViewSet, ThreadPostsViewSet, ThreadPostsViewSetQ
 from ..api.threads import PrivateThreadViewSet, ThreadViewSet
 
 router = MisagoApiRouter()
@@ -11,6 +11,9 @@ router.register(r"attachments", AttachmentViewSet, basename="attachment")
 router.register(r"threads", ThreadViewSet, basename="thread")
 router.register(
     r"threads/(?P<thread_pk>[^/.]+)/posts", ThreadPostsViewSet, basename="thread-post"
+)
+router.register(
+    r"threads/(?P<thread_pk>[^/.]+)/postsq", ThreadPostsViewSetQ, basename="thread-postq"
 )
 router.register(
     r"threads/(?P<thread_pk>[^/.]+)/poll", ThreadPollViewSet, basename="thread-poll"

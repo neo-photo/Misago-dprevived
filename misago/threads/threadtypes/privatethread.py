@@ -71,7 +71,7 @@ class PrivateThread(ThreadType):
             "misago:api:private-thread-post-merge", kwargs={"thread_pk": thread.pk}
         )
 
-    def get_post_absolute_url(self, post):
+    def get_post_absolute_url(self, post, quote = False):
         return reverse(
             "misago:private-thread-post",
             kwargs={"slug": post.thread.slug, "pk": post.thread.pk, "post": post.pk},

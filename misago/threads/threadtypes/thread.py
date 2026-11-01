@@ -109,11 +109,17 @@ class Thread(ThreadType):
     def get_post_split_api_url(self, thread):
         return reverse("misago:api:thread-post-split", kwargs={"thread_pk": thread.pk})
 
-    def get_post_absolute_url(self, post):
-        return reverse(
-            "misago:thread-post",
-            kwargs={"slug": post.thread.slug, "pk": post.thread.pk, "post": post.pk},
-        )
+    def get_post_absolute_url(self, post, quote = False):
+        if quote:
+            return reverse(
+                "misago:thread-postq",
+                kwargs={"slug": post.thread.slug, "pk": post.thread.pk, "post": post.pk},
+            )
+        else:
+            return reverse(
+                "misago:thread-post",
+                kwargs={"slug": post.thread.slug, "pk": post.thread.pk, "post": post.pk},
+            )
 
     def get_post_api_url(self, post):
         return reverse(
