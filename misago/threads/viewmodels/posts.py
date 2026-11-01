@@ -76,13 +76,16 @@ class ViewModel:
         if post>0 :
             #logger.info("view: %s "%(post))
             with connection.cursor() as cursor:
-                cursor.execute("SELECT poster_id, poster_name FROM misago_threads_post where id = %s"%int(post))
+                cursor.execute("SELECT poster_id, poster_name, original FROM misago_threads_post where id = %s"%int(post))
                 res = cursor.fetchall()
                 #logger.info(res[0])
-                (posterId, posterName) = res[0]
+                (posterId, posterName, original) = res[0]
+                find = '[quote="@%s"]\n%s'%(posterName,original[0:10])
             #myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains='[quote="@%s"'%posterName)))
+            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & Q(original__icontains=find)))
+            #logger.info("view: %s "%(find))
             #myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId)   | Q(original__icontains='[quote="@%s"'%posterName))))
-            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId) & ((~Q(original__icontains='[quote="')) | Q(original__icontains='[quote="@%s"'%posterName)  )  | Q(original__icontains='[quote="@%s"'%posterName))))
+#            myfilter = Q(is_event=False) & (Q(id=post) | (Q(id__gte=post) & (Q(poster_id=posterId) & ((~Q(original__icontains='[quote="')) | Q(original__icontains='[quote="@%s"'%posterName)  )  | Q(original__icontains='[quote="@%s"'%posterName))))
         queryset = (
             thread.post_set.select_related(
                 "category",
