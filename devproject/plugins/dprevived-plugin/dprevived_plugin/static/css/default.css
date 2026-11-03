@@ -54,7 +54,7 @@ li.list-group-item:nth-child(2n+1) {
 .exifOverlay span {
   display: block;
 }
-#image-ov.progress, #image-ov.progress .nav div {
+#image-ov.progress, #image-ov.progress div.nav {
     cursor:progress;
 }
 
