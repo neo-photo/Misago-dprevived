@@ -543,7 +543,7 @@ function makeExif(elem) {
       while (elem.id!="image-ov") {elem = elem.parentElement;}
       src = elem.querySelector("div.backImage").style.backgroundImage.slice(5, -2);      
     }
-    let spath = src.slice(7);
+    let spath = src.slice(src.search("://")+3);
     spath = spath.slice(spath.search("/"));
     //console.log(spath);
     let tDiv = elem.querySelector(".exifOverlay");
