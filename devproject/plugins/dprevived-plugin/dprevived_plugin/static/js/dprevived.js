@@ -253,7 +253,7 @@ function openImage(e,isLink) {
     iOvE.querySelector(".head .nav-ov a.download").href = imageSrc ;
     iOv.style.backgroundImage = "url('"+imageSrc+"')";
     iOv.querySelector("img.picture").src = imageSrc ;
-    iOvE.style.cursor="progress";
+    iOvE.classList.add("progress");
     iOv.querySelector("img.picture").classList.remove("lost");
     iOvE.style.display = "block";
     if ((!("ovImages" in global)) || (global.ovImages.length==0)) {
@@ -314,7 +314,7 @@ function switchImage(e) {
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
-        iOvE.style.cursor="progress";
+        iOvE.classList.add("progress");
         iOv.querySelector("img.picture").classList.remove("lost");
         iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
         iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
@@ -431,7 +431,7 @@ function changeStyle(opts) {
 
 function loadedOvImage(e){
     console.log("src:",e.target.src);
-    document.querySelector("#image-ov").style.cursor="inherit";
+    document.querySelector("#image-ov").classList.remove("progress");
     //e.addEventListener('load',loadedOvImage(e));
     //cursor: progress;
 }
