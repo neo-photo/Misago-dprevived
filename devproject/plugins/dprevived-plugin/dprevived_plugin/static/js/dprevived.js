@@ -257,13 +257,25 @@ function openImage(e,isLink) {
     if ((!("ovImages" in global)) || (global.ovImages.length==0)) {
      global.ovImages = []; 
      document.querySelectorAll("article.misago-markup a.imageOv").forEach((item)=> { 
-        let imageSrc = getImageSrc(item);
-        //console.log(imageSrc);
-        if (!(global.ovImages.includes(imageSrc))) {global.ovImages.push(imageSrc); }
+        let imageSrc2 = getImageSrc(item);
+        //console.log(imageSrc2);
+        if (!(global.ovImages.includes(imageSrc2))) {global.ovImages.push(imageSrc2); }
         }
      );
     }
-    makeExif(iOv);
+    if (global.ovImages.indexOf(imageSrc) == 0) {
+         iOvE.querySelector(".nav-prev").classList.add("disable");
+    }
+    else {
+       iOvE.querySelector(".nav-prev").classList.remove("disable");
+    }
+    if (global.ovImages.indexOf(imageSrc) == global.ovImages.length-1) {
+         iOvE.querySelector(".nav-next").classList.add("disable");
+    }
+    else {
+       iOvE.querySelector(".nav-next").classList.remove("disable");
+    }
+    makeExif(iOv);    
 }
 
 function switchImage(e) {
@@ -277,7 +289,7 @@ function switchImage(e) {
     let iOv = iOvE.querySelector("div.backImage");
     let curHref = iOv.style.backgroundImage.slice(5, -2);
     let nextHref = "";
-    //console.log("cur:",curHref);
+    console.log("cur:",curHref);
     
     if (curHref==undefined)
     {
@@ -302,6 +314,18 @@ function switchImage(e) {
         iOv.querySelector("img.picture").src = nextHref ;
         iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
         iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
+        if (global.ovImages.indexOf(nextHref) == 0) {
+             iOvE.querySelector(".nav-prev").classList.add("disable");
+        }
+        else {
+           iOvE.querySelector(".nav-prev").classList.remove("disable");
+        }
+        if (global.ovImages.indexOf(nextHref) == global.ovImages.length-1) {
+             iOvE.querySelector(".nav-next").classList.add("disable");
+        }
+        else {
+           iOvE.querySelector(".nav-next").classList.remove("disable");
+        }
         makeExif(iOv);
     }
 
