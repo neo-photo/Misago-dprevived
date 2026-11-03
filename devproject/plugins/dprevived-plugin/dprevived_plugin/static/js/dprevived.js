@@ -253,6 +253,8 @@ function openImage(e,isLink) {
     iOvE.querySelector(".head .nav-ov a.download").href = imageSrc ;
     iOv.style.backgroundImage = "url('"+imageSrc+"')";
     iOv.querySelector("img.picture").src = imageSrc ;
+    iOvE.style.cursor="progress";
+    iOv.querySelector("img.picture").classList.remove("lost");
     iOvE.style.display = "block";
     if ((!("ovImages" in global)) || (global.ovImages.length==0)) {
      global.ovImages = []; 
@@ -289,7 +291,7 @@ function switchImage(e) {
     let iOv = iOvE.querySelector("div.backImage");
     let curHref = iOv.style.backgroundImage.slice(5, -2);
     let nextHref = "";
-    console.log("cur:",curHref);
+    //console.log("cur:",curHref);
     
     if (curHref==undefined)
     {
@@ -312,6 +314,8 @@ function switchImage(e) {
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
+        iOvE.style.cursor="progress";
+        iOv.querySelector("img.picture").classList.remove("lost");
         iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
         iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
         if (global.ovImages.indexOf(nextHref) == 0) {
@@ -425,7 +429,22 @@ function changeStyle(opts) {
     });
 }
 
+function loadedOvImage(e){
+    console.log("src:",e.target.src);
+    document.querySelector("#image-ov").style.cursor="inherit";
+    //e.addEventListener('load',loadedOvImage(e));
+    //cursor: progress;
+}
+
 function startup(){ 
+    document.querySelectorAll("#image-ov img").forEach((e)=>{
+        e.addEventListener('load',loadedOvImage);
+        e.addEventListener('error',  (e) =>{let t = e.target;
+                                            console.log(t.src);
+                                            t.src= "/static/lost.jpg"; //window.location.origin
+                                            t.classList.add("lost");
+                                            });
+        });
     document.querySelectorAll(".hoveropen").forEach((e)=>{e.addEventListener('click', (ev) => {
         let t = ev.target;
         //console.log(t);
