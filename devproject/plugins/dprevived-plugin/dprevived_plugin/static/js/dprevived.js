@@ -263,7 +263,7 @@ function openImage(e,isLink) {
         }
      );
     }
-    //makeExif(iOv);
+    makeExif(iOv);
 }
 
 function switchImage(e) {
@@ -543,67 +543,82 @@ function makeExif(elem) {
       while (elem.id!="image-ov") {elem = elem.parentElement;}
       src = elem.querySelector("div.backImage").style.backgroundImage.slice(5, -2);
     }
-    //console.log(src);
-    
     let tDiv = elem.querySelector(".exifOverlay");
-    let img = new Image();
-    img.onload = function(item) {
-        //console.log("exif",img.src,tDiv);
-        EXIF.getData(img, (el)=> {
-            //console.log(JSON.stringify(EXIF.getAllTags(this), null, "\t"));
-            let iso = EXIF.getTag(this, "ISOSpeedRatings");
-            let fmm = EXIF.getTag(this, "FocalLength");
-            let brand = EXIF.getTag(this, "Make");
-            let fmm35 = EXIF.getTag(this, "FocalLengthIn35mmFilm");
-            let fnr = EXIF.getTag(this, "FNumber");
-            let ex = EXIF.getTag(this, "ExposureTime");
-            let model = EXIF.getTag(this, "Model");
-            let line1 = "";
-            let line2 = "";
-            
-            if (model!=undefined || brand!=undefined) {
-            	if (model!=undefined && brand!=undefined) {
-            	 	line1 = `<span>Camera: ${model}/${brand} </span>` ;
-            	}
-            	else {
-            		line1 = `<span>Camera: ${model}${brand} </span>` ;
-            	}
-            
+    if (src in global.cache.exif) {
+        //console.log("hit",src)
+        if (global.cache.exif[src]["ready"] == true) {
+            let line1 = global.cache.exif[src].line1;
+            let line2 = global.cache.exif[src].line2;
+            tDiv.innerHTML = line1 + line2 ;
             }
-
-            if (iso !=undefined ) {
-                line2 = `ISO${iso} ` ;
+            else {
+                global.cache.exif[src]["elems"].push(tDiv);
             }
-            
-            if (fmm != undefined){ 
-            	line2 += `${fmm}mm `;
-                if (fmm35 != undefined && fmm35 != fmm && fmm35 != 0 ){ 
-            	line2 += `(35mm eq. ${fmm35}mm) `;
-                }
-            }
-            if (ex != undefined){ 
-            	if (ex<1) {
-                	ex = (1/ex).toFixed(0);
-                	ex = "1/" + ex;
-				}
-				line2 += `${ex}s `;
-            }            
-            
-            if (fnr != undefined) {
-                fnr =fnr.toFixed(1);
-                line2 += `𝑓/${fnr}`;
-         	}   
-         	
-		 if (line2 != '') line2 = `<span>` + line2 +`</span>`;    
-
-         tDiv.innerHTML = line1 + line2 ;
-        });
     }
-    img.addEventListener('load',(e)=>{img.onload(img)});
-    img.src=src;
-    if (img.complete) {
-        img.onload(img);
+    else {
+        //console.log("fail",src)
+        global.cache.exif[src] = {"ready":false,"line1":"", "line2":"", "elems": [tDiv]};
+        let img = new Image();
+        img.onload = function(item) {
+            //console.log("exif",img.src,tDiv);
+            EXIF.getData(img, (el)=> {
+                //console.log(JSON.stringify(EXIF.getAllTags(this), null, "\t"));
+                let iso = EXIF.getTag(this, "ISOSpeedRatings");
+                let fmm = EXIF.getTag(this, "FocalLength");
+                let brand = EXIF.getTag(this, "Make");
+                let fmm35 = EXIF.getTag(this, "FocalLengthIn35mmFilm");
+                let fnr = EXIF.getTag(this, "FNumber");
+                let ex = EXIF.getTag(this, "ExposureTime");
+                let model = EXIF.getTag(this, "Model");
+                let line1 = "";
+                let line2 = "";
+                
+                if (model!=undefined || brand!=undefined) {
+                	if (model!=undefined && brand!=undefined) {
+                	 	line1 = `<span>Camera: ${model}/${brand} </span>` ;
+                	}
+                	else {
+                		line1 = `<span>Camera: ${model}${brand} </span>` ;
+                	}
+                
+                }
+
+                if (iso !=undefined ) {
+                    line2 = `ISO${iso} ` ;
+                }
+                
+                if (fmm != undefined){ 
+                	line2 += `${fmm}mm `;
+                    if (fmm35 != undefined && fmm35 != fmm && fmm35 != 0 ){ 
+                	line2 += `(35mm eq. ${fmm35}mm) `;
+                    }
+                }
+                if (ex != undefined){ 
+                	if (ex<1) {
+                    	ex = (1/ex).toFixed(0);
+                    	ex = "1/" + ex;
+				    }
+				    line2 += `${ex}s `;
+                }            
+                
+                if (fnr != undefined) {
+                    fnr =fnr.toFixed(1);
+                    line2 += `𝑓/${fnr}`;
+             	}   
+             	
+		     if (line2 != '') line2 = `<span>` + line2 +`</span>`;    
+            let tDivs = global.cache.exif[img.src].elems;
+            global.cache.exif[img.src] = {"ready":true,"line1":line1, "line2":line2, "elems": []};
+            tDivs.forEach((ediv)=>{ediv.innerHTML = line1 + line2 ;});
+             
+            });
         }
+        img.addEventListener('load',(e)=>{img.onload(img)});
+        img.src=src;
+        if (img.complete) {
+            img.onload(img);
+            }
+    }
 }
 
 
