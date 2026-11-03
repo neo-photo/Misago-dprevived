@@ -291,7 +291,7 @@ function switchImage(e) {
      }
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
-    let curPos = iOvE.dataset.pos;
+    let curPos = parseInt(iOvE.dataset.pos);
     let nextHref = "";
     //console.log("cur:",curHref);
     
@@ -301,6 +301,7 @@ function switchImage(e) {
     else {
          curPos = Math.max(0, curPos-1);
     }
+    
     nextHref =  global.ovImages[curPos]
         
     if (nextHref!="") {
@@ -431,6 +432,7 @@ function loadedOvImage(e){
 }
 
 function startup(){ 
+    //alert("2");
     document.querySelectorAll("#image-ov img").forEach((e)=>{
         e.addEventListener('load',loadedOvImage);
         e.addEventListener('error',  (e) =>{let t = e.target;
