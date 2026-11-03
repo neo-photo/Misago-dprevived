@@ -281,7 +281,7 @@ function switchImage(e) {
     let pos = global.ovImages.indexOf(curHref);
 
     if (direction == "next"){
-         nextHref =  global.ovImages[Math.min(pos,global.ovImages.length-1)];
+         nextHref =  global.ovImages[Math.min(pos+1,global.ovImages.length-1)];
     }
     else {
          nextHref =  global.ovImages[Math.max(0,pos-1)];

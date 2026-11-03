@@ -6,7 +6,7 @@ from logging import getLogger
 from django.db import connection
 from devproject import settings
 
-__version__ = "19"
+__version__ = "20"
 logger = getLogger("the-photo")
 logger.info("The-Photo Version:%s"%__version__)
 
