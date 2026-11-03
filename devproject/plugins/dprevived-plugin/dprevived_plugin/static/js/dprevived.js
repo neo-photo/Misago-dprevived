@@ -618,6 +618,9 @@ function makeExif(elem) {
         if (img.complete) {
             img.onload(img);
             }
+        else {
+            tDiv.innerHTML = document.querySelector('a[href="'+src+'"] div.exifOverlay').innerHTML;
+        }
     }
 }
 
