@@ -541,8 +541,11 @@ function makeExif(elem) {
     }
     else {
       while (elem.id!="image-ov") {elem = elem.parentElement;}
-      src = elem.querySelector("div.backImage").style.backgroundImage.slice(5, -2);
+      src = elem.querySelector("div.backImage").style.backgroundImage.slice(5, -2);      
     }
+    let spath = src.slice(7);
+    spath = spath.slice(spath.search("/"));
+    //console.log(spath);
     let tDiv = elem.querySelector(".exifOverlay");
     if (src in global.cache.exif) {
         //console.log("hit",src)
@@ -619,7 +622,10 @@ function makeExif(elem) {
             img.onload(img);
             }
         else {
-            tDiv.innerHTML = document.querySelector('a[href="'+src+'"] div.exifOverlay').innerHTML;
+            //console.log(spath);
+            
+            let prev = document.querySelector('a[href="' + spath + '"] div.exifOverlay');
+            if (prev!= null) tDiv.innerHTML = prev.innerHTML;
         }
     }
 }
