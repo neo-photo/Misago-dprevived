@@ -277,28 +277,18 @@ function switchImage(e) {
     let iOv = iOvE.querySelector("div.backImage");
     let curHref = iOv.style.backgroundImage.slice(5, -2);
     let nextHref = "";
-    let startHref = "";
-    let targetHref = "";
-    let prevHref ="";
     //console.log("cur:",curHref);
-    global.ovImages.forEach((href) => {
-        if ( startHref == "") startHref = href;
-        let myHref = href;
-        if (targetHref != "") {
-            nextHref = myHref; targetHref = "";
-        }
-        else if (myHref==curHref) {
-            if (direction == "next"){
-                targetHref = "1";
-            }
-            else {
-                nextHref = prevHref;
-            }
-        }
-        prevHref = myHref;
-    });
+    let pos = global.ovImages.indexOf(curHref);
+
+    if (direction == "next"){
+         nextHref =  global.ovImages[Math.min(pos,global.ovImages.length-1)];
+    }
+    else {
+         nextHref =  global.ovImages[Math.max(0,pos-1)];
+    }    
+    
     //console.log(direction,nextHref)
-    if (nextHref=="" && startHref != "" ) nextHref=startHref;
+        
     if (nextHref!="") {
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
