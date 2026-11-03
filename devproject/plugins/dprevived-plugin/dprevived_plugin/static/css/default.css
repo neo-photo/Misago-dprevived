@@ -63,6 +63,7 @@ li.list-group-item:nth-child(2n+1) {
   width: 80%;
   height: auto;
   margin: 0 auto;
+  max-height: 100%;
 }
 
  @media (min-width: 768px){

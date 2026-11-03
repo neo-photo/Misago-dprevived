@@ -265,13 +265,15 @@ function openImage(e,isLink) {
         }
      );
     }
-    if (global.ovImages.indexOf(imageSrc) == 0) {
+    let iPos = global.ovImages.indexOf(imageSrc);
+    iOvE.dataset.pos = iPos;
+    if (iPos == 0) {
          iOvE.querySelector(".nav-prev").classList.add("disable");
     }
     else {
        iOvE.querySelector(".nav-prev").classList.remove("disable");
     }
-    if (global.ovImages.indexOf(imageSrc) == global.ovImages.length-1) {
+    if (iPos == global.ovImages.length-1) {
          iOvE.querySelector(".nav-next").classList.add("disable");
     }
     else {
@@ -289,28 +291,20 @@ function switchImage(e) {
      }
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
-    let curHref = iOv.style.backgroundImage.slice(5, -2);
+    let curPos = iOvE.dataset.pos;
     let nextHref = "";
     //console.log("cur:",curHref);
     
-    if (curHref==undefined)
-    {
-        nextHref =  global.ovImages[0];
+    if (direction == "next"){
+         curPos = Math.min(curPos+1, global.ovImages.length-1);
     }
     else {
-        let pos = global.ovImages.indexOf(curHref);
-
-        if (direction == "next"){
-             nextHref =  global.ovImages[Math.min(pos+1,global.ovImages.length-1)];
-        }
-        else {
-             nextHref =  global.ovImages[Math.max(0,pos-1)];
-        }
-       }    
-    
-    //console.log(direction,nextHref)
+         curPos = Math.max(0, curPos-1);
+    }
+    nextHref =  global.ovImages[curPos]
         
     if (nextHref!="") {
+        iOvE.dataset.pos = curPos;
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
