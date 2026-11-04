@@ -267,18 +267,7 @@ function openImage(e,isLink) {
     }
     let iPos = global.ovImages.indexOf(imageSrc);
     iOvE.dataset.pos = iPos;
-    if (iPos == 0) {
-         iOvE.querySelector(".nav-prev").classList.add("disable");
-    }
-    else {
-       iOvE.querySelector(".nav-prev").classList.remove("disable");
-    }
-    if (iPos == global.ovImages.length-1) {
-         iOvE.querySelector(".nav-next").classList.add("disable");
-    }
-    else {
-       iOvE.querySelector(".nav-next").classList.remove("disable");
-    }
+    ivChangeNav(iPos, iOvE);
     makeExif(iOv);    
 }
 
@@ -291,21 +280,29 @@ function switchImage(e) {
      }
     let iOvE = document.querySelector("#image-ov");
     let iOv = iOvE.querySelector("div.backImage");
-    let curPos = parseInt(iOvE.dataset.pos);
-    let nextHref = "";
-    //console.log("cur:",curHref);
+    let cPos = parseInt(iOvE.dataset.pos);
     
+    /* STOP 
     if (direction == "next"){
-         curPos = Math.min(curPos+1, global.ovImages.length-1);
+         iPos = Math.min(cPos+1, global.ovImages.length-1);
     }
     else {
-         curPos = Math.max(0, curPos-1);
+         iPos = Math.max(0, cPos-1);
     }
+    */
     
-    nextHref =  global.ovImages[curPos]
+    // cycle
+    if (direction == "next") {
+        iPos = cPos == global.ovImages.length-1 ? 0 : cPos+1;
+    }
+    else {
+         iPos = cPos == 0 ? global.ovImages.length-1 : cPos-1;
+    }
         
-    if (nextHref!="") {
-        iOvE.dataset.pos = curPos;
+    if (iPos!=cPos) {
+        let nextHref = "";
+        nextHref =  global.ovImages[iPos]
+        iOvE.dataset.pos = iPos;
         iOvE.querySelector(".exifOverlay").innerHTML = "";
         iOv.style.backgroundImage = "url('"+nextHref+"')";
         iOv.querySelector("img.picture").src = nextHref ;
@@ -313,21 +310,29 @@ function switchImage(e) {
         iOv.querySelector("img.picture").classList.remove("lost");
         iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
         iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
-        if (global.ovImages.indexOf(nextHref) == 0) {
-             iOvE.querySelector(".nav-prev").classList.add("disable");
-        }
-        else {
-           iOvE.querySelector(".nav-prev").classList.remove("disable");
-        }
-        if (global.ovImages.indexOf(nextHref) == global.ovImages.length-1) {
-             iOvE.querySelector(".nav-next").classList.add("disable");
-        }
-        else {
-           iOvE.querySelector(".nav-next").classList.remove("disable");
-        }
+        ivChangeNav(iPos, iOvE);
         makeExif(iOv);
     }
 
+}
+
+function ivChangeNav(iPos, iOvE) {
+    if (iPos == 0) {
+         iOvE.querySelector("div.nav .left").classList.add("hide");
+         iOvE.querySelector("div.nav .down").classList.remove("hide");
+    }
+    else {
+         iOvE.querySelector("div.nav .down").classList.add("hide");
+         iOvE.querySelector("div.nav .left").classList.remove("hide");
+    }
+    if (iPos == global.ovImages.length-1) {
+         iOvE.querySelector("div.nav .right").classList.add("hide");
+         iOvE.querySelector("div.nav .up").classList.remove("hide");
+    }
+    else {
+         iOvE.querySelector("div.nav .up").classList.add("hide");
+         iOvE.querySelector("div.nav .right").classList.remove("hide");
+    }
 }
 
 function changeCss(e) {

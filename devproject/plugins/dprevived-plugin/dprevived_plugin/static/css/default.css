@@ -42,7 +42,7 @@ li.list-group-item:nth-child(2n+1) {
     background: darkgrey;
 }
 
-.nav.dprev-btn.disable {
+.hide {
   display: none;
 }
 
