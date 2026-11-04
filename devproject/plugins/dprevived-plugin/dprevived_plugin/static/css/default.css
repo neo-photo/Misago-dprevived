@@ -342,9 +342,6 @@ height:100%;
 a .exifOverlay {
     color: initial;
 }
-body.dark #image-ov .nav {
-text-shadow: black;
-}
 
 #image-ov .nav {
     font-size: 3em;
@@ -415,6 +412,11 @@ text-shadow: black;
 body.dark .panel-post, body.dark .panel-body {
   color: black;
 }
+
+body.dark #image-ov .nav {
+    text-shadow: 1px 1px black;
+}
+
 
 #image-ov.big img.picture {
     display:block;
