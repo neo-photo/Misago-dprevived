@@ -433,7 +433,7 @@ function startup(){
         e.addEventListener('load',loadedOvImage);
         e.addEventListener('error',  (e) =>{let t = e.target;
                                             console.log(t.src);
-                                            t.src= "/static/lost.jpg?x"; //window.location.origin
+                                            t.src= "/static/lost.jpg"; //window.location.origin
                                             t.classList.add("lost");
                                             });
         });
