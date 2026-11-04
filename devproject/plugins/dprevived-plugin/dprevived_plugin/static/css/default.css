@@ -342,6 +342,9 @@ height:100%;
 a .exifOverlay {
     color: initial;
 }
+body.dark #image-ov .nav {
+text-shadow: black;
+}
 
 #image-ov .nav {
     font-size: 3em;
