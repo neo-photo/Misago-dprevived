@@ -1,5 +1,5 @@
 
-function initGallery(){
+function initGallery(selector = "article.misago-markup img"){
     //alert("g4");
     window.addEventListener('mouseup', mouseUp, false);
     document.querySelector('#image-ov .backImage img').addEventListener('mousedown', mouseDown, false);
@@ -22,7 +22,7 @@ function initGallery(){
     document.querySelectorAll("#image-ov div.nav").forEach(
     (e) => { e.addEventListener('click',(e) =>{switchImage(e);return false;});}
     );
-    refreshGallery();
+    refreshGallery(selector);
 }
 
 function mouseUp() {
@@ -354,12 +354,12 @@ function makeExif(elem) {
     }
 }
 
-function refreshGallery(){
+function refreshGallery( selector = "article.misago-markup img"){
         if (document.querySelectorAll(".exif").length>0) return;
         global.ovImages = {}; 
         document.querySelector("#image-ov div.album").innerHTML = "";
         //console.log("refresh images");
-        document.querySelectorAll("article.misago-markup img").forEach(
+        document.querySelectorAll(selector).forEach(
         (e) => {
             let pe = e.parentElement;
             if (!e.classList.contains("exif")) {
