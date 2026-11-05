@@ -1,50 +1,4 @@
 
-function mouseUp() {
-    window.removeEventListener('mousemove', divMove, true);
-    var div = document.querySelector('#image-ov img');
-    div.style.cursor='inherit';
-}
-
-function mouseDown(e) {
-    global.gMouseDownX = e.clientX;
-    global.gMouseDownY = e.clientY;
-
-    var div = document.querySelector('#image-ov img');
-    div.style.position = 'absolute';
-    div.style.cursor='all-scroll';
-
-    //The following block gets the X offset (the difference between where it starts and where it was clicked)
-    let leftPart = "";
-    if(!div.style.left)
-        leftPart+="0px";    //In case this was not defined as 0px explicitly.
-    else
-        leftPart = div.style.left;
-    let leftPos = leftPart.indexOf("px");
-    let leftNumString = leftPart.slice(0, leftPos); // Get the X value of the object.
-    global.gMouseDownOffsetX = global.gMouseDownX - parseInt(leftNumString,10);
-
-    //The following block gets the Y offset (the difference between where it starts and where it was clicked)
-    let topPart = "";
-    if(!div.style.top)
-        topPart+="0px";     //In case this was not defined as 0px explicitly.
-    else
-        topPart = div.style.top;
-    let topPos = topPart.indexOf("px");
-    let topNumString = topPart.slice(0, topPos);    // Get the Y value of the object.
-    global.gMouseDownOffsetY = global.gMouseDownY - parseInt(topNumString,10);
-
-    window.addEventListener('mousemove', divMove, true);
-}
-
-function divMove(e){
-    var div = document.querySelector('#image-ov img');
-    let topAmount = e.clientY - global.gMouseDownOffsetY;
-    div.style.top = topAmount + 'px';
-    let leftAmount = e.clientX - global.gMouseDownOffsetX;
-    div.style.left = leftAmount + 'px';
-}
-
-
 function setCountdown(time) {
     
     setInterval( () => {
@@ -59,7 +13,7 @@ function setCountdown(time) {
 function catchEvent(e) {
     //console.log(e);
     if (e.detail.action=="updatePost") {
-         startup2();
+         refreshGallery();
          document.querySelectorAll("#limitSwitch").forEach((ee) =>ee.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let st = document.querySelector("#limitSwitch").selectedOptions[0].value;
                                                       if (st!="") setPostLimit(st);
@@ -162,8 +116,6 @@ function markCategoryRead(ev, category) {
 function runInit(){
     initStyles();
     startup();
-    window.addEventListener('mouseup', mouseUp, false);
-    document.querySelector('#image-ov img').addEventListener('mousedown', mouseDown, false);
     document.querySelector("body").addEventListener("dprevived", (e) => {catchEvent(e);});
     //Test url
     if (document.location.pathname.search("/2599/")>0) document.querySelectorAll("#fire div").forEach((e)=>e.classList.add("firework"));
@@ -196,7 +148,7 @@ function runInit(){
 function swichBg(e) {
     let elem = e.target;
     while (!elem.classList.contains("dprev-btn")) {elem = elem.parentElement;}
-    console.log(elem);
+    //console.log(elem);
     let bodyElement = document.querySelector("#page-mount");
     document.querySelectorAll("#bg-ov div.images div.dprev-btn").forEach((e) => {e.style.borderColor='black'});
     elem.style.borderColor='gold';
@@ -210,144 +162,6 @@ function switchStyle(cvalue) {
     changeStyle(global.styles[cvalue]);
 }
 
-function getImageSrc(e) {
-    let aSrc = e.href;
-    let imageSrc = "";
-    //console.log(aSrc);
-    if (aSrc.indexOf("/a/")>-1) {
-        imageSrc = aSrc;
-    }
-    else if ((aSrc.indexOf(".jpg")>-1)) {
-        imageSrc = aSrc;    
-    }
-    else  {
-        //console.log(e);
-        imageSrc = e.querySelector("img").src;
-    }
-    //console.log(imageSrc);
-    return imageSrc;
-}
-
-function openImage(e,isLink) {
-    let elem = e.target;
-    let imageSrc;
-    if (isLink) {
-        while (elem.tagName.toUpperCase()!="A") {elem = elem.parentElement;}
-        imageSrc = getImageSrc(elem);
-    }
-    else {
-        imageSrc = elem.src;
-    }
-    let iOvE = document.querySelector("#image-ov");
-    let iOv = iOvE.querySelector("div.backImage");
-
-    iOvE.querySelector(".exifOverlay").innerHTML = "";
-    let mylink = iOvE.querySelector(".head .nav-ov a.ext");
-    if (imageSrc !=  elem.href ) {        
-        mylink.href = elem.href ;
-        mylink.style.display = "block";
-    }
-    else {
-        mylink.style.display = "none";    
-    }
-    iOvE.querySelector(".head .nav-ov a.download").href = imageSrc ;
-    iOv.style.backgroundImage = "url('"+imageSrc+"')";
-    iOv.querySelector("img.picture").src = imageSrc ;
-    iOvE.classList.add("progress");
-    iOv.querySelector("img.picture").classList.remove("lost");
-    iOvE.style.display = "block";
-    let iPos = global.ovImages.indexOf(imageSrc);
-    iOvE.dataset.pos = iPos;
-    ivChangeNav(iPos, iOvE);
-    makeExif(iOv);    
-}
-
-function switchImage(e) {
-     let elem = e.target;
-    while (!elem.classList.contains("dprev-btn")) {elem = elem.parentElement;}
-     let direction ="next";
-     if (elem.classList.contains("nav-prev")){
-         direction ="prev";
-     }
-    let iOvE = document.querySelector("#image-ov");
-    let iOv = iOvE.querySelector("div.backImage");
-    let cPos = parseInt(iOvE.dataset.pos);
-    
-    /* STOP 
-    if (direction == "next"){
-         iPos = Math.min(cPos+1, global.ovImages.length-1);
-    }
-    else {
-         iPos = Math.max(0, cPos-1);
-    }
-    */
-    
-    // cycle
-    if (direction == "next") {
-        iPos = cPos >= global.ovImages.length-1 ? 0 : cPos+1;
-    }
-    else {
-         iPos = cPos <= 0 ? global.ovImages.length-1 : cPos-1;
-    }
-        
-    if (iPos!=cPos) {
-        let nextHref = "";
-        nextHref =  global.ovImages[iPos]
-        iOvE.dataset.pos = iPos;
-        iOvE.querySelector(".exifOverlay").innerHTML = "";
-        iOv.style.backgroundImage = "url('"+nextHref+"')";
-        iOv.querySelector("img.picture").src = nextHref ;
-        iOvE.classList.add("progress");
-        iOv.querySelector("img.picture").classList.remove("lost");
-        iOvE.querySelector(".head .nav-ov a.download").href = nextHref ;
-        iOvE.querySelector(".head .nav-ov a.ext").style.display = "none"  ;
-        ivChangeNav(iPos, iOvE);
-        makeExif(iOv);
-    }
-
-}
-
-function ivChangeNav(iPos, iOvE) {
-    if (iPos == 0) {
-         iOvE.querySelector("div.nav .left").classList.add("hide");
-         iOvE.querySelector("div.nav .down").classList.remove("hide");
-    }
-    else {
-         iOvE.querySelector("div.nav .down").classList.add("hide");
-         iOvE.querySelector("div.nav .left").classList.remove("hide");
-    }
-    if (iPos == global.ovImages.length-1) {
-         iOvE.querySelector("div.nav .right").classList.add("hide");
-         iOvE.querySelector("div.nav .up").classList.remove("hide");
-    }
-    else {
-         iOvE.querySelector("div.nav .up").classList.add("hide");
-         iOvE.querySelector("div.nav .right").classList.remove("hide");
-    }
-}
-
-function changeCss(e) {
-    let elem = e.target;
-    while (elem.tagName.toUpperCase()!="BUTTON") {elem = elem.parentElement;}
-    let old = "smallImage";
-    let tElem = document.getElementById("image-ov");
-    if (elem.dataset.class=="full") {
-        tElem.classList.toggle(elem.dataset.class);
-        elem.classList.toggle("active");
-    }
-    else {
-        if (elem.dataset.class=="smallImage") {
-            let div = document.querySelector('#image-ov img');
-            div.style.top="0px";
-            div.style.left="0px";
-        }
-        tElem.classList.forEach((cname)=>{ if (cname!="full") old = cname; });
-        if (old!= elem.dataset.class) {
-            tElem.classList.replace(old, elem.dataset.class);
-            document.querySelectorAll("#image-ov button.size").forEach((el)=> {if (el==elem) {el.classList.add("active")} else {el.classList.remove("active")};});
-        }
-    }
-}
 
 function swichBgOpt() {
     let opts = {"opacity":"",
@@ -420,23 +234,9 @@ function changeStyle(opts) {
     });
 }
 
-function loadedOvImage(e){
-    console.log("src:",e.target.src);
-    document.querySelector("#image-ov").classList.remove("progress");
-    //e.addEventListener('load',loadedOvImage(e));
-    //cursor: progress;
-}
-
 function startup(){ 
-    //alert("2");
-    document.querySelectorAll("#image-ov img").forEach((e)=>{
-        e.addEventListener('load',loadedOvImage);
-        e.addEventListener('error',  (e) =>{let t = e.target;
-                                            console.log(t.src);
-                                            t.src= "/static/lost.jpg"; //window.location.origin
-                                            t.classList.add("lost");
-                                            });
-        });
+    //alert("3");
+    initGallery();
     document.querySelectorAll(".hoveropen").forEach((e)=>{e.addEventListener('click', (ev) => {
         let t = ev.target;
         //console.log(t);
@@ -493,8 +293,6 @@ function startup(){
                                                       if (st!="") setPostLimit(st);
                                                       return false;
                                                       }));
-        startup2();
-        addImageOv();
 }
 
 function hamburgerEvent(e,elem) {
@@ -517,165 +315,6 @@ function hamburgerEvent(e,elem) {
 		}
 		return false;
 	}
-}
-
-
-function startup2(){
-        global.ovImages = []; 
-        document.querySelectorAll("article.misago-markup img").forEach(
-        (e) => {
-            let pe = e.parentElement;
-            if (!e.classList.contains("exif")) {
-                e.classList.add("exif");
-                let newdiv = document.createElement("div");
-                newdiv.classList.add("exifOverlay");           
-                pe.appendChild(newdiv);
-                makeExif(e);
-                if (pe.tagName.toUpperCase()=="A") {
-                    if ( (!pe.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
-                            {
-                            pe.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e,true);return false;});
-                            pe.classList.add("imageOv");
-                            if (!(global.ovImages.includes(pe.href))) {global.ovImages.push(pe.href); }
-                            console.log("big:",pe.href);
-                            console.log(pe.querySelector("img").src);
-                            }
-                }
-                else {
-                    e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e, false);return false;});
-                    if (!(global.ovImages.includes(e.src))) {global.ovImages.push(e.src); }                
-                    console.log("single",e.src);
-                }
-            }
-           else {
-                if (pe.tagName.toUpperCase()=="A") {
-                    if ( (!pe.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
-                            {
-                            if (!(global.ovImages.includes(pe.href))) {global.ovImages.push(pe.href); }
-                            }
-                }
-                else {
-                    if (!(global.ovImages.includes(e.src))) {global.ovImages.push(e.src); }                
-                    console.log("single",e.src);
-                }
-           }
-        }
-    );
-    /*document.querySelectorAll("article.misago-markup a:has(img)").forEach(
-    (e) => {if ( (!e.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
-        {
-        e.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();openImage(e);return false;});
-        e.classList.add("imageOv");
-        }
-    });
-    */
-}
-
-function addImageOv(){
-        document.querySelectorAll("#image-ov button.btn-css").forEach(
-        (e) => { e.addEventListener('click',(e) =>{changeCss(e);return false;});}
-        );
-        document.querySelectorAll("#image-ov div.nav").forEach(
-        (e) => { e.addEventListener('click',(e) =>{switchImage(e);return false;});}
-        );
-    }
-    
-function makeExif(elem) {
-    //console.log(elem);
-    let src;
-    if (elem.tagName.toUpperCase()=="IMG" && (!elem.classList.contains("picture"))) {
-        src = elem.src;
-        elem = elem.parentElement;
-    }
-    else {
-      while (elem.id!="image-ov") {elem = elem.parentElement;}
-      src = elem.querySelector("div.backImage").style.backgroundImage.slice(5, -2);      
-    }
-    let spath = src.slice(src.search("://")+3);
-    spath = spath.slice(spath.search("/"));
-    //console.log(spath);
-    let tDiv = elem.querySelector(".exifOverlay");
-    if (src in global.cache.exif) {
-        //console.log("hit",src)
-        if (global.cache.exif[src]["ready"] == true) {
-            let line1 = global.cache.exif[src].line1;
-            let line2 = global.cache.exif[src].line2;
-            tDiv.innerHTML = line1 + line2 ;
-            }
-            else {
-                global.cache.exif[src]["elems"].push(tDiv);
-            }
-    }
-    else {
-        //console.log("fail",src)
-        global.cache.exif[src] = {"ready":false,"line1":"", "line2":"", "elems": [tDiv]};
-        let img = new Image();
-        img.onload = function(item) {
-            //console.log("exif",img.src,tDiv);
-            EXIF.getData(img, (el)=> {
-                //console.log(JSON.stringify(EXIF.getAllTags(this), null, "\t"));
-                let iso = EXIF.getTag(this, "ISOSpeedRatings");
-                let fmm = EXIF.getTag(this, "FocalLength");
-                let brand = EXIF.getTag(this, "Make");
-                let fmm35 = EXIF.getTag(this, "FocalLengthIn35mmFilm");
-                let fnr = EXIF.getTag(this, "FNumber");
-                let ex = EXIF.getTag(this, "ExposureTime");
-                let model = EXIF.getTag(this, "Model");
-                let line1 = "";
-                let line2 = "";
-                
-                if (model!=undefined || brand!=undefined) {
-                	if (model!=undefined && brand!=undefined) {
-                	 	line1 = `<span>Camera: ${model}/${brand} </span>` ;
-                	}
-                	else {
-                		line1 = `<span>Camera: ${model}${brand} </span>` ;
-                	}
-                
-                }
-
-                if (iso !=undefined ) {
-                    line2 = `ISO${iso} ` ;
-                }
-                
-                if (fmm != undefined){ 
-                	line2 += `${fmm}mm `;
-                    if (fmm35 != undefined && fmm35 != fmm && fmm35 != 0 ){ 
-                	line2 += `(35mm eq. ${fmm35}mm) `;
-                    }
-                }
-                if (ex != undefined){ 
-                	if (ex<1) {
-                    	ex = (1/ex).toFixed(0);
-                    	ex = "1/" + ex;
-				    }
-				    line2 += `${ex}s `;
-                }            
-                
-                if (fnr != undefined) {
-                    fnr =fnr.toFixed(1);
-                    line2 += `𝑓/${fnr}`;
-             	}   
-             	
-		     if (line2 != '') line2 = `<span>` + line2 +`</span>`;    
-            let tDivs = global.cache.exif[img.src].elems;
-            global.cache.exif[img.src] = {"ready":true,"line1":line1, "line2":line2, "elems": []};
-            tDivs.forEach((ediv)=>{ediv.innerHTML = line1 + line2 ;});
-             
-            });
-        }
-        img.addEventListener('load',(e)=>{img.onload(img)});
-        img.src=src;
-        if (img.complete) {
-            img.onload(img);
-            }
-        else {
-            //console.log(spath);
-            
-            let prev = document.querySelector('a[href="' + spath + '"] div.exifOverlay');
-            if (prev!= null) tDiv.innerHTML = prev.innerHTML;
-        }
-    }
 }
 
 
