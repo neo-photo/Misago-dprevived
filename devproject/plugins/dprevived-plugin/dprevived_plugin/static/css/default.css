@@ -42,13 +42,59 @@ li.list-group-item:nth-child(2n+1) {
     background: darkgrey;
 }
 
+.hide {
+  display: none;
+}
+
 .exifOverlay {
   display: flex;
   flex-flow: column;
 }
 
+.lighttable {
+  position: relative;
+  height: 100%;
+}
+
+
+.album {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  background: wheat;
+  align-content: flex-start;
+  padding-top: 25px;
+  overflow-y: auto;
+}
+
+.album img {
+  width: 15vh;
+  height: 15vh;
+  margin: 20px;
+  border-radius:10px;
+}
+
+.album img.cur {
+border: 4px solid rgba(0,255,0,0.5);
+}
+
 .exifOverlay span {
   display: block;
+}
+#image-ov.progress, #image-ov.progress div.nav {
+    cursor:progress;
+}
+
+#image-ov div img.lost {
+  display: block;
+  width: 100%;
+  height:100%;
+  margin: 0 auto;
+  max-height: 100%;
 }
 
  @media (min-width: 768px){
@@ -300,6 +346,7 @@ body.dark .text-muted {
   left: 0;
   border: 1px solid grey;
   border-radius: 3px;
+padding: 0;
 }
 
 #image-ov.big .backImage {overflow: scroll;}
@@ -316,7 +363,7 @@ height:100%;
 #image-ov.big .backImage {
     background-size: 0;
 }
-#image-ov.smallImage .backImage {
+#image-ov .backImage {
     background-size: contain;
 }
 
@@ -363,8 +410,9 @@ a .exifOverlay {
     display: flex;
     flex-flow: row;
     background-color: rgba(155,155,155,0.5);
-    position:relative;
     z-index:100;
+position: absolute;
+width: 100%;
 }
 #image-ov img.picture {
     display:none;
@@ -397,6 +445,11 @@ a .exifOverlay {
 body.dark .panel-post, body.dark .panel-body {
   color: black;
 }
+
+body.dark #image-ov .nav {
+    text-shadow: 1px 1px black;
+}
+
 
 #image-ov.big img.picture {
     display:block;
