@@ -16,6 +16,7 @@ class thePhotoGallery {
         this.myId = "image-ov";
         this.errorImage = "/static/lost.jpg" 
         this.useExif = true;
+        this.addExif = true;
         this.cylce = true;
         this.clearOnRefresh = true;
         /*    
@@ -30,8 +31,24 @@ class thePhotoGallery {
         */
     }
 
+  bootstrap() {
+  const template ='<!DOCTYPE html><html><body><div class="head">        <div class="exifOverlay"></div>        <div class="nav-ov">            <a href="" target="_blank" title="download preview version" style="display:none;" class="ext" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">picture_in_picture</span></button></a>            <a href="" target="_blank" title="download big version" class="download" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">file_download</span></button></a>            <button data-class="slideshow" title="run slideshow" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">slideshow</span></button>            <button data-class="album" title="show gallery" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">photo_album</span></button>            <button data-class="big" title="zoom in / out" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">zoom_in</span></button>            <button data-class="full" title="fullscreen mode" class="btn-default btn-outline  btn btn-image-ov btn-css"><span class="material-icon">fullscreen</span></button>            <button data-class="close" title="close popup" class="btn-default btn btn-block btn-image-ov btn-css"><span class="material-icon">close</span></button>        </div>    </div></body></html>';
+  const template2='<!DOCTYPE html><html><body>    <div class="lighttable">        <div class="album hide"></div>        <div class="nav nav-prev dprev-btn" ><span class="material-icon left">keyboard_arrow_left</span><span class="hide material-icon down">keyboard_arrow_down</span></div>        <div class="nav nav-next dprev-btn" ><span class="material-icon right">keyboard_arrow_right</span><span class="hide material-icon up">keyboard_arrow_up</span></div>            <div class="backImage">            <img class="picture" draggable="false" >        </div>         <div class="layer2"><img class="picture" draggable="false" >            <svg  version="1.1" viewBox="-58 -58 116 116" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <!-- https://freesvg.org/1544764567 -->            <g stroke-linecap="round" stroke-width="15"><path id="a" d="m0 35 0,14"/>                <use transform="rotate(210)" xlink:href="#a" stroke="#f0f0f0"/><use transform="rotate(240)" xlink:href="#a" stroke="#ebebeb"/><use transform="rotate(270)" xlink:href="#a" stroke="#d3d3d3"/><use transform="rotate(300)" xlink:href="#a" stroke="#bcbcbc"/><use transform="rotate(330)" xlink:href="#a" stroke="#a4a4a4"/><use transform="rotate(0)" xlink:href="#a" stroke="#8d8d8d"/><use transform="rotate(30)" xlink:href="#a" stroke="#757575"/><use transform="rotate(60)" xlink:href="#a" stroke="#5e5e5e"/><use transform="rotate(90)" xlink:href="#a" stroke="#464646"/><use transform="rotate(120)" xlink:href="#a" stroke="#2f2f2f"/><use transform="rotate(150)" xlink:href="#a" stroke="#171717"/><use transform="rotate(180)" xlink:href="#a" stroke="#000"/>            <animateTransform  attributeName="transform"  begin="0s"  dur="36s"  type="rotate"  from="0 0 0" to="360 0 0" repeatCount="indefinite" />            </g></svg>        </div>    </div></body></html>';
+    let parser = new DOMParser();
+    let code = parser.parseFromString(template, 'text/html');
+    let newdiv = document.createElement("div");
+    newdiv.style.display = "none";
+    newdiv.id = this.myId;
+    newdiv.appendChild(code.body.firstElementChild);
+    code = parser.parseFromString(template2, 'text/html');
+    
+    newdiv.appendChild(code.body.firstElementChild);
+    document.body.insertBefore(newdiv,document.body.firstChild);
+  }
+
   initGallery(){
     //alert("g4");
+    if (document.querySelector('#' + this.myId) == undefined) {this.bootstrap();}
     window.addEventListener('mouseup', (e) => {this.mouseUp()}, false);
     document.querySelector('#' + this.myId +' .backImage img.picture').addEventListener('mousedown',(e) =>{ this.mouseDown(e)}, false);
     document.querySelectorAll("#" + this.myId +" .backImage img.picture").forEach((e)=>{
@@ -166,7 +183,7 @@ class thePhotoGallery {
     //console.log(imageSrc,iPos);
     iOvE.dataset.pos = iPos;
     this.ivChangeNav(iPos, iOvE);
-    this.makeExif(iOv);    
+    if (this.useExif) this.makeExif(iOv);    
 }
 
  switchImage(e) {
@@ -386,15 +403,15 @@ class thePhotoGallery {
         }
         img.addEventListener('load',(e)=>{img.onload(img)});
         img.src=src;
-        if (img.complete) {
+        /*if (img.complete) {
             console.log("exif ever?",img.scr)
             img.onload(img);
             }
-        else {
+       else {
             console.log("exif wrong?",spath);
             let prev = document.querySelector('a[href="' + spath + '"] div.exifOverlay');
             if (prev!= null) tDiv.innerHTML = prev.innerHTML;
-        }
+        }*/
     }
 }
 
@@ -410,16 +427,20 @@ class thePhotoGallery {
             this.#ovImages = {}; 
             document.querySelector("#" + this.myId +" div.album").innerHTML = "";
         }
-        //console.log("refresh images");
+        //console.log("refresh images",this.selector);
         document.querySelectorAll(this.selector).forEach(
         (e) => {
             let pe = e.parentElement;
             if (!e.classList.contains("exif")) {
                 e.classList.add("exif");
-                let newdiv = document.createElement("div");
-                newdiv.classList.add("exifOverlay");           
-                pe.appendChild(newdiv);
-                this.makeExif(e);
+                if (this.useExif) {
+                    if (this.addExif) {
+                        let newdiv = document.createElement("div");
+                        newdiv.classList.add("exifOverlay");           
+                        pe.appendChild(newdiv);
+                    }
+                    this.makeExif(e);
+                }
                 if (pe.tagName.toUpperCase()=="A") {
                     if ( (!pe.classList.contains("imageOv"))) //(e.href.indexOf("/a/")>-1) &&
                             {
