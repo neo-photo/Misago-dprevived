@@ -331,7 +331,7 @@ class thePhotoGallery {
         let img = new Image();
         let exifCache = this.#cache.exif;
         img.onload =(item) => {
-            //console.log("exif",img.src,tDiv);
+            console.log("exif",img.src);
             EXIF.getData(img, function() {
                 //console.log(JSON.stringify(EXIF.getAllTags(this), null, "\t"));
                 let iso = EXIF.getTag(this, "ISOSpeedRatings");
@@ -387,21 +387,29 @@ class thePhotoGallery {
         img.addEventListener('load',(e)=>{img.onload(img)});
         img.src=src;
         if (img.complete) {
+            console.log("exif ever?",img.scr)
             img.onload(img);
             }
         else {
-            //console.log(spath);
-            
+            console.log("exif wrong?",spath);
             let prev = document.querySelector('a[href="' + spath + '"] div.exifOverlay');
             if (prev!= null) tDiv.innerHTML = prev.innerHTML;
         }
     }
 }
 
+  resetGallery(){
+    this.#ovImages = {}; 
+    document.querySelector("#" + this.myId +" div.album").innerHTML = "";
+    this.refreshGallery()
+  }
+
  refreshGallery(){
         if (document.querySelectorAll(".exif").length>0) return;
-        if (this.clearOnRefresh) this.#ovImages = {}; 
-        document.querySelector("#" + this.myId +" div.album").innerHTML = "";
+        if (this.clearOnRefresh) {
+            this.#ovImages = {}; 
+            document.querySelector("#" + this.myId +" div.album").innerHTML = "";
+        }
         //console.log("refresh images");
         document.querySelectorAll(this.selector).forEach(
         (e) => {
