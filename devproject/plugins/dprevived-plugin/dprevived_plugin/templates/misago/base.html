@@ -67,10 +67,11 @@
       window.misago_csrf = {{ CSRF_COOKIE_NAME|safe }}
     </script>
 <script src="/static/js/dprevived.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
-<script src="/static/js/gallery.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
+<script src="/static/js/thePhotoGallery.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
 <script src="/static/js/styles.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
 <script src="/static/js/exif.js"></script>
 <link rel="stylesheet" href="/static/css/default.css?v{{settings.forum_version}}.{{dprevived.Version}}">
+<link rel="stylesheet" href="/static/css/thePhotoGallery.css?v{{settings.forum_version}}.{{dprevived.Version}}">
   </head>
   <body data-sclass="{{dprevived.BodyClass}}" class="misago-{% if user.is_authenticated %}authenticated{% else %}anonymous{% endif %}{% if misago_agreement %} agreement-overlay-visible{% endif %} {{dprevived.BodyClass}}">
     {% if settings.google_tracking_id %}

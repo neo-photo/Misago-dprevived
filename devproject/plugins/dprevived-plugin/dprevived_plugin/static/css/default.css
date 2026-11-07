@@ -10,10 +10,6 @@ body.dark .modal-content {
 background-color: chocolate;
 }
 
-html:has(#image-ov.full:not([style*="none"])) {
-  overflow: hidden;
-}
-
 .origin li.threads-list-item.list-group-item:nth-child(2n+1) {
     background: inherit;
 }
@@ -42,69 +38,6 @@ li.list-group-item:nth-child(2n+1) {
     background: darkgrey;
 }
 
-.hide {
-  display: none;
-}
-
-.exifOverlay {
-  display: flex;
-  flex-flow: column;
-}
-
-.lighttable {
-  position: relative;
-  height: 100%;
-}
-
-
-.album {
-  position: absolute;
-  top: 0;
-  z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  height: 100%;
-  background: wheat;
-  align-content: flex-start;
-  padding-top: 25px;
-  overflow-y: auto;
-}
-
-.album img {
-  width: 15vh;
-  height: 15vh;
-  margin: 20px;
-  border-radius:10px;
-}
-
-.album img.cur {
-border: 4px solid rgba(0,255,0,0.5);
-}
-
-.exifOverlay span {
-  display: block;
-}
-#image-ov.progress, #image-ov.progress div.nav {
-    cursor:progress;
-}
-
-#image-ov div img.lost {
-  display: block;
-  width: 100%;
-  height:100%;
-  margin: 0 auto;
-  max-height: 100%;
-}
-
- @media (min-width: 768px){
-    div#image-ov {
-        width:80%;
-        left:10%
-    }
-
- }
-
 .misago-anonymous #cokie-msg {display:block;}
 #cokie-msg {display:none;}
 #misago-container .event-body {
@@ -121,6 +54,16 @@ padding: 5px;
     background: rgba(255,255,255,0.3);
     line-height: 1em;
 }
+.dprev-btn {
+  width: 80px;
+  height: 80px;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin: 5px;
+  background-size: cover;
+  cursor: pointer;
+}
+
 body.dark {
   color: lightyellow;
 }
@@ -260,9 +203,6 @@ color:wheat;
     }
 } */
 
-#image-ov button {
-  opacity: 0.8;
-}
 
 .popmenu li {position:relative;list-style:none;padding:8px 5px;}
 
@@ -336,88 +276,6 @@ body.dark .text-muted {
 .posts-list .event .event-body {
 	align-items: center;
 }
-#image-ov {
-	height: 80%;
-	position: fixed;
-	width: 99%;
-	z-index: 1001;
-  background-color: rgba(200,200,200.9);
-  top: 10%;
-  left: 0;
-  border: 1px solid grey;
-  border-radius: 3px;
-padding: 0;
-}
-
-#image-ov.big .backImage {overflow: scroll;}
-#image-ov .backImage {
-position:absolute;
-	background-repeat: no-repeat;
-        background-position: center;
-width:100%;
-height:100%;
-    top: 0;
-    left: 0;
-    z-index:1;
-}
-#image-ov.big .backImage {
-    background-size: 0;
-}
-#image-ov .backImage {
-    background-size: contain;
-}
-
-.nav.nav-next.dprev-btn {
-  right: 0;
-}
-
-a .exifOverlay {
-    color: initial;
-}
-
-#image-ov .nav {
-    font-size: 3em;
-    font-weight: bold;
-    text-shadow: 1px 1px white;
-    z-index: 2;
-  position: absolute;
-  top: 48%;
-  border: none;
-}
-#image-ov .nav div {
-    border: 1px solid black;
-    border-radius: 5px;
-    height: 1em;
-    width: 1.2em;
-    text-align: center;
-    background-color: rgba(255,255,255,0.7);
-    cursor:pointer;
-    line-height: 0.5em;
-}
-#image-ov .exifOverlay {
-    margin-left: 5px;
-    line-height: 36px;
-    flex-flow: row;
-    justify-content: space-between;
-}
-
-#image-ov .head:hover {
-    background-color:white;
-}
-
-#image-ov .head {
-    min-height: 2.5em;
-    display: flex;
-    flex-flow: row;
-    background-color: rgba(155,155,155,0.5);
-    z-index:100;
-position: absolute;
-width: 100%;
-}
-#image-ov img.picture {
-    display:none;
-    height: auto;
-}
 
 #error777dialog {
   position: absolute;
@@ -445,70 +303,8 @@ width: 100%;
 body.dark .panel-post, body.dark .panel-body {
   color: black;
 }
-
-body.dark #image-ov .nav {
-    text-shadow: 1px 1px black;
-}
-
-
-#image-ov.big img.picture {
-    display:block;
-}
-#image-ov button.btn-image-ov {
-    flex-shrink: 1;
-    width: auto;
-    margin: 0 0 0 5px;
-  padding:0;
-  font-size: 1.3em;
-  min-width: 1.7em;
-  height: 1.7em;
-  line-height: 1.5em;
-}
-
-button.btn-image-ov .material-icon {
-  line-height: inherit;
- height:inherit;
-  margin:0;
-  position:inherit;
-
-}
-
-.exifOverlay span {
-  margin: 0 3px;
-}
-
-.nav-ov {
-    display: flex;
-    flex-grow: 1;
-    justify-content: right;
-  padding-top: 2px;
-  padding-right: 3px;
-}
-#image-ov .active {
-    background-color: lightgreen;
-}
-
-#image-ov.full {
-    width: 100%;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    margin: 0;
-    z-index: 2000;
-}
-#image-ov div.nav div.filler {
-    border: 0 none;
-    background-color: transparent;
-    flex-grow: 1;
-}
-
 .navbar-misago {
   background-color: rgba(255,255,255,0.2);
-}
-
-.imageOv {
-  background-color: white;
-  opacity: 1;
 }
 
 #bg-ov {
@@ -530,15 +326,7 @@ label {
   flex-wrap: wrap;
 }
 
-.dprev-btn {
-  width: 80px;
-  height: 80px;
-  border: 1px solid black;
-  border-radius: 3px;
-  margin: 5px;
-  background-size: cover;
-  cursor: pointer;
-}
+
 #fire {z-index:1010;}
 @keyframes firework {
   0% { transform: translate(var(--x), var(--initialY)); width: var(--initialSize); opacity: 1; }
