@@ -46,6 +46,7 @@ html:has(#image-ov.full:not([style*="none"])) {
   align-content: flex-start;
   padding-top: 25px;
   overflow-y: auto;
+  justify-content: center;
 }
 
 .album img {
@@ -65,9 +66,9 @@ html:has(#image-ov.full:not([style*="none"])) {
 
 .layer2 svg {
     position:absolute;
-    max-width:20vw;
+    max-width:15vw;
     width:15%;
-    min-width:0vw;
+    min-width:10vw;
     height:auto;
     top:45%;
     left:45%;
