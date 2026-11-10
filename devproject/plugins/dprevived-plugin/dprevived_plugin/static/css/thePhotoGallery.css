@@ -1,9 +1,19 @@
 #image-ov div.unhide {
  /*transition: opacity 0.5s;*/
- transition: transform 1s;
+ transition: transform .5s;
+  transition-delay: .5s;
  opacity:1;
- transform: rotateX(0deg);
+ transform: rotateY(0deg);
+ /*transform: rotate3d(0, 1, 0, 0deg);*/
+ /* transform-style: preserve-3d;
+ /* transform: perspective(500px) rotateX(0deg);*/
 } 
+#image-ov div.dohide {
+   transition: transform .5s;
+    transform: rotateY(90deg);
+ /*  transform-style: preserve-3d;
+  transform: perspective(500px) rotateX(90deg);*/
+}
 
 html:has(#image-ov.full:not([style*="none"])) {
   overflow: hidden;
@@ -55,8 +65,9 @@ html:has(#image-ov.full:not([style*="none"])) {
 
 .layer2 svg {
     position:absolute;
-    max-width:100px;
-    width:10%;
+    max-width:20vw;
+    width:15%;
+    min-width:0vw;
     height:auto;
     top:45%;
     left:45%;
@@ -108,16 +119,22 @@ html:has(#image-ov.full:not([style*="none"])) {
 }
 
 #image-ov {
-	height: 80%;
+	height: 80vh;
 	position: fixed;
-	width: 99%;
+	width: 80vw;
 	z-index: 1001;
   background-color: rgb(200,200,200);
-  top: 10%;
-  left: 0;
+  top: 10vh;
+  left: 10vw;
   border: 1px solid grey;
   border-radius: 3px;
 padding: 0;
+}
+@media screen and (max-width: 800px) {
+    #image-ov {
+	    width: 100vw;
+	    left:0;
+    }
 }
 
 #image-ov.big .backImage {overflow: scroll;}
@@ -137,7 +154,11 @@ padding: 0;
 #image-ov .backImage {
     z-index:1;
     /* opacity:0;*/
-    transform: rotateX(90deg);        
+    transform: rotateY(90deg);  
+/*     transform: rotate3d(0, 1, 0, 90deg);
+   transform-style: preserve-3d;
+  transform: perspective(10cm) rotateX(90deg);*/
+
 }
 
 
@@ -240,7 +261,7 @@ button.btn-image-ov .material-icon {
 }
 
 #image-ov.full {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     top: 0;
     left: 0;
@@ -252,7 +273,6 @@ button.btn-image-ov .material-icon {
     background-color: transparent;
     flex-grow: 1;
 }
-
 
 .imageOv {
   opacity: 1;
