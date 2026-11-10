@@ -57,7 +57,7 @@ class thePhotoGallery {
         e.addEventListener('load', (e) => {this.loadedOvImage();});
         e.addEventListener('error',  (e) =>{let t = e.target;
                                             //console.log(t.src);
-                                            if ((t.src == document.querySelector("#" + this.myId +" .download").href) && (document.querySelector("#" + this.myId +" .download").href)!=document.querySelector("#" + this.myId +" .ext").href)) && (document.querySelector("#" + this.myId +" .ext").href !="" ))) {
+                                            if ((t.src == document.querySelector("#" + this.myId +" .download").href) && (document.querySelector("#" + this.myId +" .download").href!=document.querySelector("#" + this.myId +" .ext").href) && (document.querySelector("#" + this.myId +" .ext").href !="" )) {
                                               t.src = document.querySelector("#" + this.myId +" .ext").href;
                                             }
                                             else { 
