@@ -2,13 +2,13 @@ body {line-height:1.2;}
 ul.posts-list li:nth-child(odd) .panel-post {
   background-color: lightgray;
 }
-.dark ul.posts-list li:nth-child(2n+1) .panel-post {
+/* old dark template, superseded by the theme: .dark ul.posts-list li:nth-child(2n+1) .panel-post {
   background-color: rgb(120,110,100);
-}
+} */
 
-body.dark .modal-content {
+/* old dark template, superseded by the theme: body.dark .modal-content {
 background-color: chocolate;
-}
+} */
 
 .origin li.threads-list-item.list-group-item:nth-child(2n+1) {
     background: inherit;
@@ -34,9 +34,9 @@ li.list-group-item:nth-child(2n+1) {
     background: inherit;
 }
 
-.dark li.list-group-item:nth-child(2n+1) {
+/* old dark template, superseded by the theme: .dark li.list-group-item:nth-child(2n+1) {
     background: darkgrey;
-}
+} */
 
 .misago-anonymous #cokie-msg {display:block;}
 #cokie-msg {display:none;}
@@ -64,55 +64,55 @@ padding: 5px;
   cursor: pointer;
 }
 
-body.dark {
+/* old dark template, superseded by the theme: body.dark {
   color: lightyellow;
-}
+} */
 .quickmenu .popmenu {
     color: black;
 }
 .posting-dialog {
   color: black;
 }
-.dark .panel-post {
+/* old dark template, superseded by the theme: .dark .panel-post {
   background: rgb(100,100,100);
-}
+} */
 
-.dark button.btn.btn.btn-primary.btn-outline.btn-block {
+/* old dark template, superseded by the theme: .dark button.btn.btn.btn-primary.btn-outline.btn-block {
     border-color: powderblue;
-}
+} */
 
 
-.dark .navbar-misago {
+/* old dark template, superseded by the theme: .dark .navbar-misago {
   background: black;
-}
+} */
 
-body.dark {
+/* old dark template, superseded by the theme: body.dark {
   background-color: black;
-}
+} */
 
-.dark  .list-group-item {
+/* old dark template, superseded by the theme: .dark  .list-group-item {
   border: 1px solid lightsteelblue;
   background-color: inherit;
-}
-.dark li.list-group-item {
+} */
+/* old dark template, superseded by the theme: .dark li.list-group-item {
     background-color: darkgrey;
-}
-.dark  .list-group .list-group-item:first-child {
+} */
+/* old dark template, superseded by the theme: .dark  .list-group .list-group-item:first-child {
   border-top-color: lightsteelblue;
-}
+} */
 
-.dark .list-group .list-group-item {
+/* old dark template, superseded by the theme: .dark .list-group .list-group-item {
   border-left-color: lightsteelblue;
   border-right-color: lightsteelblue;
-}
+} */
 
-.dark  .btn-default:focus,.dark  .btn-default:hover {
+/* old dark template, superseded by the theme: .dark  .btn-default:focus,.dark  .btn-default:hover {
   background: darkgray;
-}
+} */
 
-.dark .btn-default,.dark  .btn-default.disabled,.dark  .btn-default.disabled:active,.dark  .btn-default.disabled:hover,.dark .btn-default:disabled,.dark  .btn-default:disabled:hover {
+/* old dark template, superseded by the theme: .dark .btn-default,.dark  .btn-default.disabled,.dark  .btn-default.disabled:active,.dark  .btn-default.disabled:hover,.dark .btn-default:disabled,.dark  .btn-default:disabled:hover {
   background: darkgoldenrod;
-}
+} */
 
 
 .threads-list-category-label.threads-list-category-label-color, .threads-list-category-label.threads-list-category-label-color:active, .threads-list-category-label.threads-list-category-label-color:focus, .threads-list-category-label.threads-list-category-label-color:hover, .threads-list-category-label.threads-list-category-label-color:link, .threads-list-category-label.threads-list-category-label-color:visited {
@@ -124,21 +124,21 @@ body.dark {
 }
 
 
-.dark .misago-markup .quote-block, .dark .misago-markup blockquote {
+/* old dark template, superseded by the theme: .dark .misago-markup .quote-block, .dark .misago-markup blockquote {
   background-color: rgb(45, 45, 45);
-}
+} */
 
-.dark .post-side {
+/* old dark template, superseded by the theme: .dark .post-side {
   color: #afc5ea;
-}
+} */
 
-.dark .post-heading > .btn-link, .dark .post-heading > .btn-link:link, .dark .post-heading > .btn-link:visited {
+/* old dark template, superseded by the theme: .dark .post-heading > .btn-link, .dark .post-heading > .btn-link:link, .dark .post-heading > .btn-link:visited {
   color: #a6b0bf;
-}
+} */
 
-.dark .misago-markup .quote-block,.dark .misago-markup blockquote {
+/* old dark template, superseded by the theme: .dark .misago-markup .quote-block,.dark .misago-markup blockquote {
   color: #2c7aa8;
-}
+} */
 
 button.nopad {padding:0}
 
@@ -245,21 +245,21 @@ a.nav-to-footer {
 }
 
 
-body.dark .panel-post, body.dark .panel-post {
+/* old dark template, superseded by the theme: body.dark .panel-post, body.dark .panel-post {
   color: black;
-}
+} */
 
-body.dark .breadcrumbs-item a, body.dark .breadcrumbs-item a:visited {
+/* old dark template, superseded by the theme: body.dark .breadcrumbs-item a, body.dark .breadcrumbs-item a:visited {
   color: aliceblue;
-}
+} */
 
-body.dark .item-title, body.dark a.item-title:active, body.dark a.item-title:hover, body.dark a.item-title:link, body.dark a.item-title:visited {
+/* old dark template, superseded by the theme: body.dark .item-title, body.dark a.item-title:active, body.dark a.item-title:hover, body.dark a.item-title:link, body.dark a.item-title:visited {
   color: #b668ff;
-}
+} */
 
-body.dark .text-muted {
+/* old dark template, superseded by the theme: body.dark .text-muted {
   color: lightblue;
-}
+} */
 
 .panel-post  {
     background-color:inhert;
@@ -300,9 +300,9 @@ body.dark .text-muted {
 }
 
 
-body.dark .panel-post, body.dark .panel-body {
+/* old dark template, superseded by the theme: body.dark .panel-post, body.dark .panel-body {
   color: black;
-}
+} */
 .navbar-misago {
   background-color: rgba(255,255,255,0.2);
 }
