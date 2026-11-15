@@ -10,7 +10,9 @@ from ..models import Attachment, AttachmentType
 def attachment_server(request, pk, secret, thumbnail=False):
     try:
         url = serve_file(request, pk, secret, thumbnail)
-        return redirect(url)
+        response = redirect(url)
+        response['Cache-Control'] = "private, max-age=86400"
+        return response
     except PermissionDenied:
         error_image = request.settings.attachment_403_image
         if not error_image:

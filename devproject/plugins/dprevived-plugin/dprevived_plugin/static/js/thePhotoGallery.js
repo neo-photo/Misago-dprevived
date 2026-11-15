@@ -1,3 +1,11 @@
+function thePhotoGalleryReady(fn) {
+  if (document.readyState != 'loading'){
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
 class thePhotoGallery {
 
     version = "1";
@@ -8,33 +16,66 @@ class thePhotoGallery {
     #ovImages = {};
     #cache = {"exif":{}};
     #moveMouse = (e) => {this.divMove(e)};    
+    #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
+    #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
+    #fallBackCss = "H4sIAAAAAAAAA41XS2/jNhA+x7+C2CJAvIi0tB1vXBsFeu1pz0WxB0qkJTYyKVD0I7vY/97hU6JkBUUgxx4OyXl8882o1qdmX5Pu6Td+IhXL5CU/nptmL6R++qfT7w37/McnIQX79H25RD8XCMkLU8dGXveo5pQycVj8Wixy+M6yE7MalHdtQ973yOxzy+zGj99gI4hTlWPDbgcQmP+ZO7aUzfnkj214VWtNisad3MqOay7FHinWEM0vzOytmdHaoxXGj24baYrzabSDFB0crO0OLds9wubbj4wLym57tDnMmnVVBNTNpxFdOdV1uGx8OUIFKd8qJc+CZuCIVGBqVZCnNcbPyH5g9Izz16XRJeCeADWhmdDu0qzTRGmz2BJKuagya+t621p7QvAzsJGctTSyf8+d5sf3/pwSPpkaRoKfKhuNYPv2Uie2+98noioOoVpjd1shFWUqU4Tyc7dfWWlyaF6elT046O7RS3tDEGhOnd/4eb3dPmNwebu0m3uctUpWinUdyiHkTK1Rd6n8YSEPRSPLt4ORODSM9WJ2h8k1fkDSrKvg2dXJwu9Hr8JFUMFBxYcjxNXB5CXsaNhR97+ChRHiKca7logU6M4V0JwG4BndCQrll1yQi3cU4twBlsJqGklUnLWW7j7ZkpJruA/nu5EWnGhz1shO37VtDtvhZ4AHjtAzgZ5UH/rzxCgn6KmPMXr9umtvy5DcS2+UE/UJ2mEf4BjyFX60AnOyAQEEJaetYpes0MLv97f0mQtG9ZK+LkNFAi7Dg/PN0meZC9a7xE7Go9F1/rKdL5KgvEuKBjbHQiga4sKb1hPauA0hrL7EBwTS8R/M8OHFVHMEAaCexwIfRvKhN8XU80PPfUd+YxQk0XQD+YfIfZC61Sx3WeryzzKS5wo7yrApQqGGpr4DXN/nXPcMZ5n418KjpisVYwIRQQFAsY7BZAjv0qc7cXqQf/DDOhaxgw8eOgnxFLxCufH1LyNBP/uOBpfLpjkkce01B3UaOetDHgoEEzA9qqdhHwqRxGO0zmfiIVFTrGVEm57rv04O6uEQGsRIIcBNaMLFlDzyszBd3rn85bNWRIQDPesA6Wy7w+cvRmG4bL8fpTohs56uZpRZDgorgcBWvZ7ZCQGQmmj29xOmrLKtBI3Mo7I373/cnp76ezz2bup9nkPFOOOirT5p88e6/jWHwCH/25UEW5MEYdeEDQ/Ckwl20yOGUo4GnCJBk+kLIQ8qLiBGpBm73fedI4DBX7sxZBhlV081hWyo9x7syLqaUFNIhgDMc615KIbINuvDx3PZy+5xyCWhw47sM90snTzuEO6EdzzHDkaf4FWgkHwdJNYhO6LNVkwy4SX95NX3k9C4A2VPegyUjOsyA/+m+XI9InMcEZ1IDtp8DeLBLK2kn20mQyJMKCXLCqavjI2LPa8Zofva8OIUhM5nn9jptmAwWBssWzsXh2NTHLDvWzsT4hWENjxuoEyKEgPg7+EqmWqGgTbTUMtLfVZsNHg60E0nCfC3kPQ9p0S9obsVc7cMPCDNmJiW+rwF03nRj3k5VHk2mp/cm0OtuHiDSxNA9xNQP76ZPw+i0IMthQ2qfZX7eh8Mcav81cli8QRBOjUFRC/uGZyfgBgVkE7GSz+zJru5qGHZdC8v6QXBA5wQSFyfvGjGIbz3fBNeYQxzxvDNoRIgeI3xnFSQZdnpm1oS18xTsb93gBhSmtfXufJC9sW3UpPatG/n6dTrp56E1bAfzz4YMWJQxvSMMU5tDa8i5v+RNw0bv/Nh1NfL1BXbFluiIGj3YmuyYa/6dknfYNza4j85yHy2ohAAAA==";
+    #decompress = base64string => {
+    const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
+    const cs = new DecompressionStream('gzip');
+    const writer = cs.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+    return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
+        return new TextDecoder().decode(arrayBuffer);
+    });
+}
+
+
     
     constructor(selector = "article.misago-markup img") {
         // config Vars
         this.selector = selector;
         this.timeout = 1500;
         this.myId = "image-ov";
-        this.errorImage = "/static/lost.jpg" 
         this.useExif = true;
         this.addExif = false;
         this.cylce = true;
         this.clearOnRefresh = true;
         this.addDownload = true;
         this.addPreviewDownload = true;
+        this.bootstrap = ["css", "html" , "font"];
+        this.absPath = "."; // must not contain host because of same orgin policy
+        this.errorImage = "/img/lost.webp" ;
+        this.fontUrl = '/font/MaterialIcons-Regular.woff2';
+        this.css = '/css/thePhotoGallery.css';
         
-        /*    
-        //Private Vars
-        this.gMouseDownX = 0;
-        this.gMouseDownY = 0;
-        this.gMouseDownOffsetX = 0;
-        this.gMouseDownOffsetY = 0;
-        this.ovImages = {};
-        this.cache = {"exif":{}};
-        this.moveMouse = (e) => {this.divMove(e)};
-        */
     }
 
-  bootstrap() {
+  bootstrapCss() {
+  
+    let foundCss = false;
+    //console.log(this.absPath +this.css);
+    for (const sheet of document.styleSheets) {
+      if (sheet.href != null )
+      { if(sheet.ownerNode.attributes.href.value.split("?")[0] == this.absPath + this.css) foundCss = true;}
+    }
+    //console.log(foundCss);
+    if (foundCss == false) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.addEventListener('error',  (e) =>{
+         const css = document.createElement('style');
+        Promise.resolve(this.#fallBackCss)
+        .then(v => this.#decompress(v))
+        .then(v => {css.innerHTML = v;document.head.appendChild(css);})
+        .catch(e => console.log("Got a promise error when decompressing  css: " + e));         
+      });
+      link.href = this.absPath + this.css; 
+      document.head.appendChild(link);
+    }
+  }
+
+  bootstrapHtml() {
   const template ='<!DOCTYPE html><html><body><div class="head">        <div class="exifOverlay"></div>        <div class="nav-ov">            <a href="" target="_blank" title="download preview version" style="display:none;" class="ext" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">picture_in_picture</span></button></a>            <a href="" target="_blank" title="download big version" class="download" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">file_download</span></button></a>            <button data-class="slideshow" title="run slideshow" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">slideshow</span></button>            <button data-class="album" title="show gallery" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">photo_album</span></button>            <button data-class="big" title="zoom in / out" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">zoom_in</span></button>            <button data-class="full" title="fullscreen mode" class="btn-default btn-outline  btn btn-image-ov btn-css"><span class="material-icon">fullscreen</span></button>            <button data-class="close" title="close popup" class="btn-default btn btn-block btn-image-ov btn-css"><span class="material-icon">close</span></button>        </div>    </div></body></html>';
   const template2='<!DOCTYPE html><html><body>    <div class="lighttable">        <div class="album hide"></div>        <div class="nav nav-prev dprev-btn" ><span class="material-icon left">keyboard_arrow_left</span><span class="hide material-icon down">keyboard_arrow_down</span></div>        <div class="nav nav-next dprev-btn" ><span class="material-icon right">keyboard_arrow_right</span><span class="hide material-icon up">keyboard_arrow_up</span></div>            <div class="backImage">            <img class="picture" draggable="false" >        </div>         <div class="layer2"><img class="picture" draggable="false" > <svg version="1.1" viewBox="-58 -58 116 116" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <!-- https://freesvg.org/1544764567 -->   <style>.shadow {font-size:12px;filter: drop-shadow(3px 3px 5px rgb(255,255,255));}</style> <text x="-20" y="5" class="shadow" fill="#000">preview</text> <g stroke-linecap="round" stroke-width="15"> <path id="a" d="m0 35 0,14"/> <use transform="rotate(210)" xlink:href="#a" stroke="#f0f0f0"/> <use transform="rotate(240)" xlink:href="#a" stroke="#ebebeb"/> <use transform="rotate(270)" xlink:href="#a" stroke="#d3d3d3"/> <use transform="rotate(300)" xlink:href="#a" stroke="#bcbcbc"/> <use transform="rotate(330)" xlink:href="#a" stroke="#a4a4a4"/> <use transform="rotate(0)" xlink:href="#a" stroke="#8d8d8d"/> <use transform="rotate(30)" xlink:href="#a" stroke="#757575"/> <use transform="rotate(60)" xlink:href="#a" stroke="#5e5e5e"/> <use transform="rotate(90)" xlink:href="#a" stroke="#464646"/> <use transform="rotate(120)" xlink:href="#a" stroke="#2f2f2f"/> <use transform="rotate(150)" xlink:href="#a" stroke="#171717"/> <use transform="rotate(180)" xlink:href="#a" stroke="#33a"/> <animateTransform attributeName="transform" begin="0s" dur="16s" type="rotate" from="0 0 0" to="360 0 0" repeatCount="indefinite" /> </g> </svg>       </div>    </div></body></html>';
     let parser = new DOMParser();
@@ -47,9 +88,29 @@ class thePhotoGallery {
     newdiv.appendChild(code.body.firstElementChild);
     document.body.insertBefore(newdiv,document.body.firstChild);
   }
+  
+  bootstrapFont() {
+    if ((document.fonts.status == "loaded") && (!document.fonts.check("12px Material"))) {
+      const font = new FontFace("Material", 'url('+ this.absPath +this.fontUrl + ')'); 
+      document.fonts.add(font);
+      }
+    else {
+      document.fonts.addEventListener("loaded", (v) => { 
+      if (!document.fonts.check("12px Material")) {
+        const font = new FontFace("Material", 'url('+ this.absPath +this.fontUrl + ')'); 
+        document.fonts.add(font);
+        }
+      });
+   }
+  }
+  
   initGallery(){
     //alert("g4");
-    if (document.querySelector('#' + this.myId) == undefined) {this.bootstrap();}
+    if (this.absPath[0] in [".","/"]) {console.error("Error wrong absPath:",this.absPath)}
+    if (this.bootstrap.indexOf("html")>-1 && document.querySelector('#' + this.myId) == undefined) {this.bootstrapHtml();}
+    if (this.bootstrap.indexOf("css")>-1) {this.bootstrapCss()}
+    if (this.bootstrap.indexOf("font")>-1) {this.bootstrapFont()}
+    
     window.addEventListener('mouseup', (e) => {this.mouseUp()}, false);
     document.querySelector('#' + this.myId +' .backImage img.picture').addEventListener('mousedown',(e) =>{ this.mouseDown(e)}, false);
     document.querySelector('#' + this.myId +' svg').addEventListener('click', (e) => {this.preview();});
@@ -58,6 +119,7 @@ class thePhotoGallery {
         e.addEventListener('error',  (e) =>{let t = e.target;
                                             //console.log(t.src);
                                             let small = document.querySelector("#" + this.myId +" .ext").href;
+                                            //console.log(t.src, small, this.absPath + this.errorImage);
                                             if ((t.src == document.querySelector("#" + this.myId +" .download").href) && (document.querySelector("#" + this.myId +" .download").href!=small) && (small !="" )) {
                                               t.src = small;
                                               document.querySelector("#" + this.myId +" .backImage").style.backgroundImage = "url('"+small+"')";
@@ -65,10 +127,16 @@ class thePhotoGallery {
                                             else { 
                                               if (document.querySelector("#" + this.myId +" button[data-class='slideshow']").classList.contains("active") ) {
                                                document.querySelector("#" + this.myId +" div.nav-next").click();}
-                                              else {
-                                                  t.src= this.errorImage; //window.location.origin
+                                              else if (t.getAttribute("src") != this.absPath + this.errorImage) {
+                                                  console.log(t.src, this.absPath + this.errorImage);
+                                                  t.src = this.absPath + this.errorImage; //window.location.origin
                                                   t.classList.add("lost");
                                                   }
+                                              else {
+                                                console.log("error Image not found");
+                                                t.src = this.#fallBackError;
+                                                t.classList.add("lost");
+                                              }
                                              }
                                               });
         });
@@ -456,5 +524,9 @@ class thePhotoGallery {
 }
 
 }
-
+function thePhotoGalleryBootstrap(selector) {
+  thePhotoGalleryReady((e)=>{let gallery = new thePhotoGallery(selector); gallery.initGallery()});
+}
+// bootstrap single file only 
+//thePhotoGalleryBootstrap(".slide img");
 
