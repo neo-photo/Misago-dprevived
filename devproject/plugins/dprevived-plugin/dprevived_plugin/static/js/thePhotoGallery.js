@@ -7,7 +7,15 @@ class thePhotoGallery {
     #gMouseDownOffsetY = 0;
     #ovImages = {};
     #cache = {"exif":{}};
-    #moveMouse = (e) => {this.divMove(e)};    
+    #moveMouse = (e) => {this.divMove(e)};
+    #final = {};      // image address -> the address it redirects to (filled in by #resolve)
+    #resolving = {};  // image address -> promise of that final address
+    #prepared = {};   // final address -> promise, resolved when the image is loaded and decoded
+    #openToken = 0;   // the latest openImage() call; an older one that is still waiting gives up
+    #drag = {vx: 0, vy: 0, t: 0, x: 0, y: 0, glide: 0};  // zoom drag: speed (px/ms), last event, glide frame
+    #zoomSpot = null; // zoomed: the photo's spot in the middle (fractions), kept over a size change
+    #idleTimer = 0;   // fullscreen: hides the controls when the mouse rests
+    #restTimer = 0;   // fullscreen: hides the mouse pointer when the mouse rests
     
     constructor(selector = "article.misago-markup img") {
         // config Vars
@@ -79,53 +87,157 @@ class thePhotoGallery {
     document.querySelectorAll("#" + this.myId +" div.nav").forEach(
     (e) => { e.addEventListener('click',(e) =>{this.switchImage(e);return false;});}
     );
+    // mouse in the left/right 10% of the image area: .near-prev / .near-next on the
+    // viewer, so CSS can make that arrow more visible
+    let area = document.querySelector("#" + this.myId + " .lighttable");
+    let ov = document.getElementById(this.myId);
+    area.addEventListener('mousemove', (e) => {
+        let r = area.getBoundingClientRect();
+        let x = (e.clientX - r.left) / r.width;
+        ov.classList.toggle("near-prev", x < 0.1);
+        ov.classList.toggle("near-next", x > 0.9);
+    });
+    area.addEventListener('mouseleave', (e) => { ov.classList.remove("near-prev", "near-next"); });
+    // fullscreen: mouse movement near an edge (10% of the screen) shows the controls again,
+    // any movement shows the mouse pointer
+    ov.addEventListener('mousemove', (e) => {
+        if (!ov.classList.contains("full")) return;
+        this.#rest();
+        let x = e.clientX / window.innerWidth, y = e.clientY / window.innerHeight;
+        if (x < 0.1 || x > 0.9 || y < 0.1 || y > 0.9) this.#idle(true);
+    });
+    // leaving browser fullscreen (Esc, F11 ...) leaves the viewer's fullscreen too
+    document.addEventListener('fullscreenchange', (e) => {
+        if (!document.fullscreenElement && ov.classList.contains("full")) this.setFull(false);
+        else this.#restoreZoomSpot();
+    });
+    // keyboard: left/right arrow = previous/next image, Esc = close (in browser fullscreen
+    // the browser takes Esc itself and leaves fullscreen first)
+    document.addEventListener('keydown', (e) => {
+        if (ov.style.display == "none" || e.altKey || e.ctrlKey || e.metaKey) return;
+        if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+        if (e.key == "ArrowLeft") { ov.querySelector("div.nav-prev").click(); e.preventDefault(); }
+        else if (e.key == "ArrowRight") { ov.querySelector("div.nav-next").click(); e.preventDefault(); }
+        else if (e.key == "Escape") { this.close(); }
+    });
     this.refreshGallery();
 }
 
+  // Zoom: dragging the image scrolls the image area, so dragging and the scrollbars are
+  // one mechanism (the image edges are the limits; CSS adds a little room around the
+  // image for looking at its edges). .dragging on the viewer while dragging, for the cursor.
+  // Released while moving, the image glides on and slows down (mouse only: touch screens
+  // scroll the area natively, with their own momentum).
   mouseUp() {
     window.removeEventListener('mousemove', this.#moveMouse, true);
-    let div = document.querySelector('#' + this.myId +' .backImage img.picture');
-    div.style.cursor='inherit';
+    let ov = document.getElementById(this.myId);
+    if (!ov.classList.contains("dragging")) return;
+    ov.classList.remove("dragging");
+    let d = this.#drag;
+    if (performance.now() - d.t > 80) return;          // had stopped before letting go
+    let area = document.querySelector('#' + this.myId +' .backImage');
+    let last = performance.now();
+    let step = (now) => {
+        let dt = Math.min(now - last, 50);
+        last = now;
+        area.scrollLeft -= d.vx * dt;
+        area.scrollTop -= d.vy * dt;
+        let slow = Math.pow(0.995, dt);                // about 8% less speed per frame
+        d.vx *= slow;
+        d.vy *= slow;
+        if (Math.abs(d.vx) + Math.abs(d.vy) > 0.02) d.glide = requestAnimationFrame(step);
+    };
+    d.glide = requestAnimationFrame(step);
 }
 
   mouseDown(e) {
+    e.preventDefault();
+    let area = document.querySelector('#' + this.myId +' .backImage');
+    cancelAnimationFrame(this.#drag.glide);
     this.#gMouseDownX = e.clientX;
     this.#gMouseDownY = e.clientY;
-
-    let div = document.querySelector('#' + this.myId +' .backImage img.picture');
-    div.style.position = 'absolute';
-    div.style.cursor='all-scroll';
-
-    //The following block gets the X offset (the difference between where it starts and where it was clicked)
-    let leftPart = "";
-    if(!div.style.left)
-        leftPart+="0px";    //In case this was not defined as 0px explicitly.
-    else
-        leftPart = div.style.left;
-    let leftPos = leftPart.indexOf("px");
-    let leftNumString = leftPart.slice(0, leftPos); // Get the X value of the object.
-    this.#gMouseDownOffsetX = this.#gMouseDownX - parseInt(leftNumString,10);
-
-    //The following block gets the Y offset (the difference between where it starts and where it was clicked)
-    let topPart = "";
-    if(!div.style.top)
-        topPart+="0px";     //In case this was not defined as 0px explicitly.
-    else
-        topPart = div.style.top;
-    let topPos = topPart.indexOf("px");
-    let topNumString = topPart.slice(0, topPos);    // Get the Y value of the object.
-    this.#gMouseDownOffsetY = this.#gMouseDownY - parseInt(topNumString,10);
-
+    this.#gMouseDownOffsetX = area.scrollLeft;
+    this.#gMouseDownOffsetY = area.scrollTop;
+    this.#drag = {vx: 0, vy: 0, t: performance.now(), x: e.clientX, y: e.clientY, glide: 0};
+    document.getElementById(this.myId).classList.add("dragging");
     window.addEventListener('mousemove', this.#moveMouse, true);
 }
 
  divMove(e){
-    var div = document.querySelector('#' + this.myId +' .backImage img.picture');
-    let topAmount = e.clientY - this.#gMouseDownOffsetY;
-    div.style.top = topAmount + 'px';
-    let leftAmount = e.clientX - this.#gMouseDownOffsetX;
-    div.style.left = leftAmount + 'px';
+    let area = document.querySelector('#' + this.myId +' .backImage');
+    area.scrollLeft = this.#gMouseDownOffsetX - (e.clientX - this.#gMouseDownX);
+    area.scrollTop = this.#gMouseDownOffsetY - (e.clientY - this.#gMouseDownY);
+    // speed of the last moves (smoothed), for the glide after letting go
+    let d = this.#drag, now = performance.now(), dt = Math.max(now - d.t, 1);
+    d.vx = 0.7 * (e.clientX - d.x) / dt + 0.3 * d.vx;
+    d.vy = 0.7 * (e.clientY - d.y) / dt + 0.3 * d.vy;
+    d.t = now; d.x = e.clientX; d.y = e.clientY;
 }
+
+  // Fullscreen: the viewer fills the window (.full) and, where the browser allows, the
+  // whole screen (Fullscreen API). Zoomed, the same spot of the photo stays in the middle.
+  setFull(on) {
+    let tElem = document.getElementById(this.myId);
+    let btn = tElem.querySelector("button[data-class='full']");
+    this.#keepZoomSpot(() => {
+        tElem.classList.toggle("full", on);
+        if (btn) btn.classList.toggle("active", on);
+    });
+    if (on && !document.fullscreenElement && tElem.requestFullscreen) tElem.requestFullscreen().catch(() => {});
+    if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    this.#idle(on);
+  }
+
+  // fullscreen: .idle on the viewer 2.5 s after the controls were shown (CSS hides the
+  // header and arrows then); #idle(true) shows them and starts that time again
+  #idle(on) {
+    let ov = document.getElementById(this.myId);
+    clearTimeout(this.#idleTimer);
+    ov.classList.remove("idle");
+    if (on) this.#idleTimer = setTimeout(() => ov.classList.add("idle"), 2500);
+    this.#rest(on);
+  }
+
+  // fullscreen: .resting on the viewer 2.5 s after the last mouse movement (CSS hides the
+  // mouse pointer then)
+  #rest(on = true) {
+    let ov = document.getElementById(this.myId);
+    clearTimeout(this.#restTimer);
+    ov.classList.remove("resting");
+    if (on) this.#restTimer = setTimeout(() => ov.classList.add("resting"), 2500);
+  }
+
+  // zoomed: remember which spot of the photo is in the middle, change the size, show that
+  // spot again (once more on 'fullscreenchange', when the screen size has settled)
+  #keepZoomSpot(change) {
+    let ov = document.getElementById(this.myId);
+    let area = ov.querySelector(".backImage");
+    this.#zoomSpot = ov.classList.contains("big") && area.scrollWidth
+        ? [(area.scrollLeft + area.clientWidth / 2) / area.scrollWidth,
+           (area.scrollTop + area.clientHeight / 2) / area.scrollHeight]
+        : null;
+    change();
+    this.#restoreZoomSpot();
+  }
+
+  #restoreZoomSpot() {
+    if (!this.#zoomSpot) return;
+    let [fx, fy] = this.#zoomSpot;
+    let area = document.querySelector('#' + this.myId +' .backImage');
+    requestAnimationFrame(() => {
+        area.scrollLeft = fx * area.scrollWidth - area.clientWidth / 2;
+        area.scrollTop = fy * area.scrollHeight - area.clientHeight / 2;
+    });
+  }
+
+  // zoom: show the middle of the zoomed image
+  centreZoom() {
+    let area = document.querySelector('#' + this.myId +' .backImage');
+    requestAnimationFrame(() => {
+      area.scrollLeft = (area.scrollWidth - area.clientWidth) / 2;
+      area.scrollTop = (area.scrollHeight - area.clientHeight) / 2;
+    });
+  }
 
   preview() {
     console.log("preview");
@@ -139,6 +251,7 @@ class thePhotoGallery {
 
   close() {
       let tElem = document.getElementById(this.myId);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       tElem.style.display='none';    
       document.querySelectorAll("#" + this.myId +" .nav-ov button.active").forEach((e)=>{
                           e.classList.remove("active");
@@ -146,7 +259,69 @@ class thePhotoGallery {
                         });
   }
 
- openImage(src) {
+  // The forum's image addresses (/a/..., /a/thumb/...) redirect to the file under /media/.
+  // Browsers cache the file but not the redirect, so every new use of the address (a
+  // background image, an <img>) costs a round trip to the forum first. Ask once where an
+  // address leads (HEAD request) and use the final address from then on.
+  #resolve(src) {
+    if (!(src in this.#resolving)) {
+      this.#resolving[src] = fetch(src, {method: "HEAD", credentials: "same-origin"})
+        .then((r) => (r.ok && r.url) ? r.url : src)
+        .catch(() => src)       // other sites (no CORS) and errors: the address as it is
+        .then((url) => { this.#final[src] = url; return url; });
+    }
+    return this.#resolving[src];
+  }
+
+  // Load and decode an image, so it can be drawn at once; resolves with its final address.
+  #prepare(src) {
+    return this.#resolve(src).then((url) => {
+      if (!(url in this.#prepared)) {
+        let img = new Image();
+        img.src = url;
+        this.#prepared[url] = img.decode().then(() => url, () => url);
+      }
+      return this.#prepared[url];
+    });
+  }
+
+  // the full-size address of an image (the link around it), or its own address
+  #bigOf(src) {
+    return this.#ovImages[src] ? this.#ovImages[src] : src;
+  }
+
+  // Prepare the neighbours of image number iPos (previews, and the next full-size image),
+  // so that prev/next can start at once.
+  #preloadAround(iPos) {
+    let keys = Object.keys(this.#ovImages);
+    if (keys.length < 2) return;
+    let next = keys[(iPos + 1) % keys.length];
+    let prev = keys[(iPos - 1 + keys.length) % keys.length];
+    this.#prepare(next);
+    this.#prepare(prev);
+    if (this.#bigOf(next) != next) this.#resolve(this.#bigOf(next)).then((url) => this.#prepare(url));
+  }
+
+  // Open an image: the position is updated at once (so quick prev/next clicks count), the
+  // visible change starts when the new preview is decoded and the full-size address is
+  // known, or after 300 ms at the latest; so the transition does not start with nothing
+  // to show. A newer openImage() call in the meantime cancels this one.
+  openImage(src) {
+    let iOvE = document.querySelector("#" + this.myId);
+    let iPos = Object.keys(this.#ovImages).indexOf(src);
+    iOvE.dataset.pos = iPos;
+    let token = ++this.#openToken;
+    let big = this.#bigOf(src);
+    let ready = Promise.all([this.#prepare(src), this.#resolve(big)]);
+    let limit = new Promise((ok) => setTimeout(ok, 300));
+    Promise.race([ready, limit]).then(() => {
+      if (token != this.#openToken) return;
+      this.#showImage(src, this.#final[src] || src, this.#final[big] || big);
+      this.#preloadAround(iPos);
+    });
+  }
+
+ #showImage(src, previewUrl, bigUrl) {
     let div = document.querySelector("#" + this.myId +" .backImage img");
     div.style.top="0px";
     div.style.left="0px";
@@ -178,13 +353,26 @@ class thePhotoGallery {
     }
     //console.log(imageSrc, bigSrc, iOvImg.src);
     iOvE.querySelector(".layer2").classList.remove("dohide");
-    iOvE.querySelector(".layer2").style.backgroundImage = "url('"+ iOvImg.src +"')"; 
+    // the previous image waits on layer2: take over what the image layer showed (full-size
+    // image and preview), not only the full-size image, which may not have loaded yet.
+    // When the viewer is just being opened there is no previous image: the new one
+    // appears from the viewer's background (not from the image shown last time).
+    let wasOpen = iOvE.style.display != "none";
+    iOvE.querySelector(".layer2").style.backgroundImage = wasOpen ? (iOv.style.backgroundImage || "url('"+ iOvImg.src +"')") : "none";
     iOvE.querySelector(".layer2").src = iOvImg.src;
     iOvE.style.display = "block";
     iOv.classList.remove("unhide");
     iOvE.classList.add("progress");
+    // restart the image change transition (CSS animations on .changing), independent of
+    // how long loading takes
+    iOvE.classList.remove("changing");
+    void iOvE.offsetWidth;
+    iOvE.classList.add("changing");
 
-    iOv.style.backgroundImage = "url('"+bigSrc+"')";
+    // full-size image over the preview: the preview is decoded by now (openImage), so it
+    // shows at once and the full-size image builds up over it. The final addresses (after
+    // the forum's redirect) need no round trip to the forum.
+    iOv.style.backgroundImage = (bigSrc != imageSrc) ? "url('"+bigUrl+"'), url('"+previewUrl+"')" : "url('"+previewUrl+"')";
     iOvE.querySelector(".head .nav-ov a.download").href = bigSrc ;
     iOvImg.src = bigSrc ;
     
@@ -269,14 +457,7 @@ class thePhotoGallery {
       this.close();
     }
     else if (action == "full") {
-        if (isActive) {
-            tElem.classList.remove(elem.dataset.class);
-            elem.classList.remove("active");        
-        }
-        else {
-           tElem.classList.add(elem.dataset.class);
-           elem.classList.add("active");        
-        }
+        this.setFull(!isActive);
     }
     else {
         document.querySelectorAll("#" + this.myId +" .nav-ov button.radio-btn").forEach((e)=>{e.classList.remove("active");tElem.classList.remove(e.dataset.class);});
@@ -286,6 +467,7 @@ class thePhotoGallery {
         else {
            tElem.classList.add(elem.dataset.class);
            elem.classList.add("active");
+           if (elem.dataset.class == "big") this.centreZoom();
            if (elem.dataset.class == "slideshow" ) document.querySelector("#" + this.myId +" div.nav-next").click();
            if (elem.dataset.class == "album") {  document.querySelector("#" + this.myId +" div.album").classList.remove("hide"); }   
         }      
@@ -297,6 +479,7 @@ class thePhotoGallery {
  loadedOvImage(e){
     //console.log("loaded:",e.target.src);
     document.querySelector("#" + this.myId +"").classList.remove("progress");
+    if (document.querySelector("#" + this.myId).classList.contains("big")) this.centreZoom();
     //e.addEventListener('load',loadedOvImage(e));
     //cursor: progress;
     //console.log(this.timeout);
@@ -406,7 +589,8 @@ class thePhotoGallery {
              
             });
         }
-        img.addEventListener('load',(e)=>{img.onload(img)});
+        // (a second 'load' listener calling img.onload again was removed: it ran EXIF.getData
+        // twice per image, and each run read the whole file again)
         img.src=src;
         /*if (img.complete) {
             console.log("exif ever?",img.scr)
