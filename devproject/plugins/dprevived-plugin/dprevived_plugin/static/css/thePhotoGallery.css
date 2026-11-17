@@ -1,94 +1,164 @@
-html:has(#image-ov.full:not([style*="none"])) {
-  overflow: hidden;
+/* thePhotoGallery: the image viewer (#image-ov) and its gallery.
+
+   Colours and sizes are --dp-iv-* variables. Their defaults (light) are on :root and the
+   dark fullscreen values on #image-ov.full, so a theme can override them: on body (wins
+   over :root), and with "html #image-ov.full" for fullscreen. A variable built from
+   others (e.g. --dp-iv-bg from the --dp-iv-tone-* values) is worked out where it is
+   defined: a theme that changes the tone redefines the built ones too.
+
+   Several states are set by thePhotoGallery.js: .changing (image change), .progress
+   (full-size image loading), .big (zoom), .dragging, .full (fullscreen), .idle and
+   .resting (fullscreen controls / pointer hidden), .near-prev / .near-next (mouse near an
+   edge), and on thumbnails --r (proportion), .cur (current image), .sel (keyboard).
+
+   Plain CSS, no nesting: Windows 7 browsers (Chrome 109, Firefox 115) must parse it. */
+
+/* ---- variables ---- */
+:root {
+  /* the viewer's tone: a grey with a hint of our warm hue */
+  --dp-iv-tone-h: 38;
+  --dp-iv-tone-s: 2%;
+  --dp-iv-tone-l: 82%;
+  --dp-iv-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), var(--dp-iv-tone-l));
+  --dp-iv-border: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) * 0.5));
+  /* the soft line around images (0.7 of the lightness, 1px blur) */
+  --dp-iv-image-line: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) * 0.7));
+  --dp-iv-image-line-blur: 1px;
+  --dp-iv-backdrop: rgba(0, 0, 0, 0.5);              /* page dimming */
+  --dp-iv-frame-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  /* header: the tone, darker; in fullscreen laid over the image at 80% */
+  --dp-iv-head-h: 38px;
+  --dp-iv-head-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) - 8%));
+  --dp-iv-head-bg-full: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) - 8%), 0.8);
+  --dp-iv-head-text: hsl(218, 22%, 31%);
+  --dp-iv-head-strong: hsl(218, 22%, 31%);           /* position and name */
+  --dp-iv-lost-filter: none;                         /* the error image */
+  /* buttons: a little lighter than the header with a thin darker border; hover a touch
+     lighter than the image area (small areas look darker); .active (a mode switched on)
+     a darker steel blue */
+  --dp-iv-btn-size: 30px;
+  --dp-iv-btn-color: #172b4d;
+  --dp-iv-btn-color-dim: hsl(218, 12%, 62%);         /* a choice not in effect now */
+  --dp-iv-btn-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) - 5%));
+  --dp-iv-btn-hover-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) + 2%));
+  --dp-iv-btn-border: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) * 0.7));
+  --dp-iv-btn-active-bg: hsl(214, 41%, 64%);
+  --dp-iv-btn-active-hover-bg: hsl(214, 41%, 70%);
+  --dp-iv-btn-active-border: hsl(214, 30%, 48%);
+  --dp-iv-btn-active-color: hsl(218, 40%, 15%);
+  --dp-iv-focus: black;                              /* keyboard focus outline */
+  --dp-iv-close-hover: hsl(0, 65%, 38%);             /* the close cross on hover */
+  /* prev/next: the resting button tone, 40% opaque, 70% with the mouse near its edge */
+  --dp-iv-nav-w: 40px;
+  --dp-iv-nav-h: 48px;
+  --dp-iv-nav-bg: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) - 5%), 0.4);
+  --dp-iv-nav-near-bg: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), calc(var(--dp-iv-tone-l) - 5%), 0.7);
+  --dp-iv-nav-color: #172b4d;
+  /* image change: length of the fade + scale, how much it scales, and how much longer a
+     loading image may take before the "Loading..." label appears */
+  --dp-iv-fade: 0.7s;
+  --dp-iv-quick: 0.15s;                              /* the Quick transition */
+  --dp-iv-morph-scale: 0.04;
+  --dp-iv-label-delay: 0.6s;
+  /* zoom: room past the image edges, about 10% of the image area */
+  --dp-iv-overdrag: 8vh 8vw;
+  /* gallery: thumbnail height; gap as a share of it; the box proportion limits (width /
+     height) for wide and tall images, and how much of a box at that limit the image must
+     fill (wide: of its height, tall: of its width; 1 = crop); brightness of the
+     thumbnails not selected (1 = no spotlight); shadows on hover/selection and current */
+  --dp-iv-thumb-h: 120px;
+  --dp-iv-thumb-gap-f: 0.15;
+  --dp-iv-thumb-max-r: 2;
+  --dp-iv-thumb-min-r: 0.35;
+  --dp-iv-thumb-fill-wide: 0.4;
+  --dp-iv-thumb-fill-tall: 0.9;
+  --dp-iv-thumb-dim: 1;
+  --dp-iv-thumb-shadow: hsla(30, 25%, 15%, 0.45);
+  --dp-iv-thumb-current: hsla(30, 30%, 12%, 0.8);
 }
 
+/* fullscreen: dark, the same warm tone */
+#image-ov.full {
+  --dp-iv-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 13%);
+  --dp-iv-image-line: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 24%);
+  --dp-iv-head-bg-full: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 9%, 0.75);
+  --dp-iv-head-text: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 78%);
+  --dp-iv-head-strong: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 88%);
+  --dp-iv-btn-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 19%);
+  --dp-iv-btn-border: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 32%);
+  --dp-iv-btn-hover-bg: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 27%);
+  --dp-iv-btn-color: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 82%);
+  --dp-iv-btn-color-dim: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 50%);
+  --dp-iv-nav-bg: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 19%, 0.4);
+  --dp-iv-nav-near-bg: hsla(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 19%, 0.7);
+  --dp-iv-nav-color: hsl(var(--dp-iv-tone-h), var(--dp-iv-tone-s), 82%);
+  --dp-iv-close-hover: hsl(0, 70%, 62%);
+  --dp-iv-focus: white;
+  --dp-iv-thumb-h: 150px;                            /* the viewer is the whole screen */
+  --dp-iv-thumb-shadow: transparent;                 /* on dark no shadows: a spotlight */
+  --dp-iv-thumb-current: transparent;
+  --dp-iv-thumb-dim: 0.8;
+  --dp-iv-lost-filter: brightness(0.7);              /* the light error image would glare */
+}
+
+/* dark theme (the forum's body.dark): a neutral dark grey with the same warm hint for the
+   photos, the forum's copper text, and copper for a mode switched on (light: steel blue) */
+body.dark {
+  --dp-iv-bg: hsl(38, 3%, 15%);
+  --dp-iv-border: hsl(38, 3%, 28%);
+  --dp-iv-image-line: hsl(38, 3%, 24%);
+  --dp-iv-backdrop: rgba(0, 0, 0, 0.6);
+  --dp-iv-frame-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  --dp-iv-head-bg: hsl(38, 3%, 10%);
+  --dp-iv-head-bg-full: hsla(38, 3%, 9%, 0.75);
+  --dp-iv-head-text: rgb(200, 181, 148);             /* the forum's dim copper text */
+  --dp-iv-head-strong: rgb(246, 224, 185);           /* its full text colour */
+  --dp-iv-btn-color: rgb(200, 181, 148);
+  --dp-iv-btn-color-dim: hsl(38, 18%, 45%);
+  --dp-iv-btn-bg: hsl(38, 3%, 16%);
+  --dp-iv-btn-border: hsl(38, 3%, 30%);
+  --dp-iv-btn-hover-bg: hsl(38, 3%, 24%);
+  --dp-iv-btn-active-bg: hsl(30, 45%, 40%);          /* medium copper */
+  --dp-iv-btn-active-hover-bg: hsl(30, 45%, 46%);
+  --dp-iv-btn-active-border: hsl(30, 40%, 30%);
+  --dp-iv-btn-active-color: rgb(246, 224, 185);
+  --dp-iv-focus: hsl(30, 60%, 60%);
+  --dp-iv-close-hover: hsl(0, 70%, 62%);
+  --dp-iv-nav-bg: hsla(38, 3%, 16%, 0.4);
+  --dp-iv-nav-near-bg: hsla(38, 3%, 16%, 0.7);
+  --dp-iv-nav-color: rgb(200, 181, 148);
+  --dp-iv-thumb-dim: 0.8;                            /* spotlight, no shadows */
+  --dp-iv-thumb-shadow: transparent;
+  --dp-iv-thumb-current: transparent;
+  --dp-iv-lost-filter: brightness(0.7);              /* the light error image would glare */
+}
+/* dark theme in fullscreen: the fullscreen tones above, with the copper text and states */
+body.dark #image-ov.full {
+  --dp-iv-btn-color-dim: hsl(38, 18%, 45%);
+  --dp-iv-head-text: rgb(200, 181, 148);
+  --dp-iv-head-strong: rgb(246, 224, 185);
+  --dp-iv-btn-color: rgb(200, 181, 148);
+  --dp-iv-nav-color: rgb(200, 181, 148);
+  --dp-iv-focus: hsl(30, 60%, 60%);
+}
+
+/* ---- outside the viewer ---- */
 .hide-me {
   display: none;
 }
-
+/* EXIF lines under images in posts */
 .exifOverlay {
   display: flex;
   flex-flow: column;
 }
-
-.lighttable {
-  position: relative;
-  height: 100%;
-}
-
-.album {
-  position: absolute;
-  top: 0;
-  z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(200, 200, 0 ,0.7);
-  align-content: flex-start;
-  padding-top: 25px;
-  overflow-y: auto;
-  justify-content: center;
-}
-
-.album img {
-  width: 15vh;
-  height: 15vh;
-  margin: 20px;
-  border-radius:10px;
-}
-
-.album img.cur {
-    border: 4px solid rgba(0,255,0,0.5);
-}
-
-#image-ov.progress .layer2 svg {
-    display:block;    
-}
-
-.layer2 svg {
-    position:absolute;
-    max-width:15vw;
-    width:15%;
-    min-width:10vw;
-    height:auto;
-    top:45%;
-    left:45%;
-    display:none;
-}
-
-
 .exifOverlay span {
   display: block;
+  margin: 0 3px;
 }
-#image-ov.progress, #image-ov.progress div.nav {
-    cursor:progress;
+a .exifOverlay {
+  color: initial;
 }
-
-#image-ov button {
-  opacity: 0.8;
-}
-
-#image-ov div img.lost {
-  display: block;
-  width: 100%;
-  max-height: 100%;
-}
-
- @media (min-width: 768px){
-    div#image-ov {
-        width:80%;
-        left:10%
-    }
-
- }
-
-.nav.dprev-btn {
-    width: auto;
-    height: auto;
-    background: rgba(255,255,255,0.3);
-    line-height: 1em;
-}
+/* buttons of the background chooser (#bg-ov, default.css) */
 .dprev-btn {
   width: 80px;
   height: 80px;
@@ -98,176 +168,552 @@ html:has(#image-ov.full:not([style*="none"])) {
   background-size: cover;
   cursor: pointer;
 }
-
-#image-ov {
-	height: 80vh;
-	position: fixed;
-	width: 80vw;
-	z-index: 1001;
-  background-color: rgb(200,200,200);
-  top: 10vh;
-  left: 10vw;
-  border: 1px solid grey;
-  border-radius: 3px;
-padding: 0;
-}
-@media screen and (max-width: 800px) {
-    #image-ov {
-	    width: 100vw;
-	    left:0;
-    }
-}
-
-#image-ov.big .backImage {overflow: scroll;}
-
-#image-ov .backImage, #image-ov .layer2 {
-    position:absolute;
-    width:100%;
-    height:100%;
-    top: 0;
-    left: 0;
-    background-color: rgb(200,200,200);
-	background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#image-ov div.unhide {
-   /*transition: opacity 0.5s;*/
-   transition: transform .5s;
-   transition-delay: .5s;
-   opacity:1;
-   transform: rotateY(0deg);
-}
- 
-#image-ov div.dohide {
-   transition: transform .5s;
-   transform: rotateY(90deg);
-}
-
-#image-ov .backImage {
-    z-index:1;
-    opacity:0;
-    transform: rotateY(90deg);  
-}
-
-#image-ov.big .backImage, #image-ov.big .layer2 {
-    background-size: 0;
-}
-
-.nav.nav-next.dprev-btn {
-  right: 0;
-}
-
-a .exifOverlay {
-    color: initial;
-}
-
-#image-ov .nav {
-    font-size: 3em;
-    font-weight: bold;
-    text-shadow: 1px 1px white;
-    z-index: 2;
-  position: absolute;
-  top: 48%;
-  border: none;
-}
-#image-ov .nav div {
-    border: 1px solid black;
-    border-radius: 5px;
-    height: 1em;
-    width: 1.2em;
-    text-align: center;
-    background-color: rgba(255,255,255,0.7);
-    cursor:pointer;
-    line-height: 0.5em;
-}
-#image-ov .exifOverlay {
-    margin-left: 5px;
-    line-height: 36px;
-    flex-flow: row;
-    justify-content: space-between;
-}
-
-#image-ov .head:hover {
-    background-color:white;
-}
-
-#image-ov .head {
-    min-height: 2.5em;
-    display: flex;
-    flex-flow: row;
-    background-color: rgba(155,155,155,0.5);
-    z-index:100;
-position: absolute;
-width: 100%;
-}
-#image-ov img.picture {
-    display:none;
-    height: auto;
-}
-
-body.dark #image-ov .nav {
-    text-shadow: 1px 1px black;
-}
-
-
-#image-ov.big img.picture {
-    display:block;
-}
-#image-ov button.btn-image-ov {
-    flex-shrink: 1;
-    width: auto;
-    margin: 0 0 0 5px;
-  padding:0;
-  font-size: 1.3em;
-  min-width: 1.7em;
-  height: 1.7em;
-  line-height: 1.5em;
-}
-
-button.btn-image-ov .material-icon {
-  line-height: inherit;
- height:inherit;
-  margin:0;
-  position:inherit;
-
-}
-
-.exifOverlay span {
-  margin: 0 3px;
-}
-
-.nav-ov {
-    display: flex;
-    flex-grow: 1;
-    justify-content: right;
-  padding-top: 2px;
-  padding-right: 3px;
-}
-#image-ov .active {
-    background-color: lightgreen;
-}
-
-#image-ov.full {
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    margin: 0;
-    z-index: 2000;
-}
-#image-ov div.nav div.filler {
-    border: 0 none;
-    background-color: transparent;
-    flex-grow: 1;
-}
-
 .imageOv {
   opacity: 1;
 }
+/* fullscreen: the page behind does not scroll */
+html:has(#image-ov.full:not([style*="none"])) {
+  overflow: hidden;
+}
 
+/* ---- frame ----
+   A popup of 80% of the window over the dimmed page (the dimming is a huge shadow), above
+   the navbar (1030) and below modals (1050) and alerts (1060). */
+#image-ov {
+  position: fixed;
+  top: 10vh;
+  left: 10vw;
+  z-index: 1040;
+  width: 80vw;
+  height: 80vh;
+  padding: 0;
+  overflow: hidden;                 /* the corners clip the header and image layers */
+  background-color: var(--dp-iv-bg);
+  border: 1px solid var(--dp-iv-border);
+  border-radius: 4px;
+  box-shadow: var(--dp-iv-frame-shadow), 0 0 0 100vmax var(--dp-iv-backdrop);
+}
+@media (min-width: 768px) {
+  div#image-ov {
+    width: 80%;
+    left: 10%;
+  }
+}
+@media screen and (max-width: 800px) {
+  #image-ov {
+    width: 100vw;
+    left: 0;
+  }
+}
 
+/* nothing to select by double clicks in the controls and the image area (the icons are
+   words drawn by the icon font); the EXIF line and the name stay selectable */
+#image-ov .nav-ov,
+#image-ov .lighttable,
+#image-ov .iv-pos,
+#image-ov .iv-sep {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- header: EXIF and buttons ----
+   Normal view: a solid bar, the image area starts below it. Fullscreen: laid over the
+   image, half-transparent. */
+#image-ov .head {
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  width: 100%;
+  height: var(--dp-iv-head-h);
+  background-color: var(--dp-iv-head-bg);
+  transition: opacity 0.5s;
+}
+#image-ov.full .head {
+  background-color: var(--dp-iv-head-bg-full);
+}
+/* EXIF: small, one line, cut with "..." when it does not fit */
+#image-ov .head .exifOverlay {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 8px 0 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: var(--dp-iv-head-h);
+  font-size: 13px;
+  color: var(--dp-iv-head-text);
+}
+#image-ov .head .exifOverlay span {
+  display: inline;
+  margin: 0 8px 0 0;
+}
+/* position and name ("3 / 6 . name", the JS's .iv-info), then the EXIF; dots between */
+#image-ov .head .iv-info {
+  flex: 0 0 auto;
+  margin: 0 0 0 10px;
+  white-space: nowrap;
+  line-height: var(--dp-iv-head-h);
+  font-size: 13px;
+  color: var(--dp-iv-head-text);
+}
+#image-ov .head .iv-sep {
+  margin: 0 6px;
+}
+#image-ov .head .iv-pos,
+#image-ov .head .iv-name {
+  font-weight: 600;
+  color: var(--dp-iv-head-strong);
+  text-decoration: none;
+}
+#image-ov .head a.iv-name:hover {
+  text-decoration: underline;
+}
+#image-ov .head .iv-info:not(:empty) + .exifOverlay:not(:empty)::before {
+  content: "\00b7";                 /* the same dot as in .iv-info */
+  margin: 0 6px 0 0;
+}
+/* the transition chooser: a letter button left of the others, a little apart, and its menu */
+#image-ov .iv-trans {
+  position: relative;
+  margin-right: 10px;
+}
+#image-ov button.btn-image-ov.iv-trans-btn {
+  width: calc(var(--dp-iv-btn-size) + 6px);
+  padding-top: 2px;                 /* a capital letter sits high in its line (room for
+                                       descenders below): lower it 1px to look centred */
+  font-size: 15px;
+  font-weight: 700;
+}
+#image-ov .iv-trans-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 4px;
+  z-index: 110;
+  min-width: 110px;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background-color: var(--dp-iv-head-bg);
+  border: 1px solid var(--dp-iv-btn-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+#image-ov .iv-trans-menu[hidden] {
+  display: none;
+}
+#image-ov .iv-trans-menu li {
+  padding: 5px 12px;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--dp-iv-btn-color);
+  cursor: pointer;
+}
+#image-ov .iv-trans-menu li b {
+  display: inline-block;
+  width: 1.5em;
+}
+#image-ov .iv-trans-menu li:hover {
+  background-color: var(--dp-iv-btn-hover-bg);
+}
+#image-ov .iv-trans-menu li.cur {
+  color: var(--dp-iv-btn-active-color);
+  background-color: var(--dp-iv-btn-active-bg);
+}
+/* zoomed, Morph is not possible (Pop is used): its letter and menu row look dimmed */
+#image-ov.big[data-transition="morph"] button.btn-image-ov.iv-trans-btn {
+  color: var(--dp-iv-btn-color-dim);
+}
+#image-ov.big .iv-trans-menu li[data-t="morph"] {
+  opacity: 0.5;                     /* whole row, so it also works when it is the current one */
+}
+#image-ov .nav-ov {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  padding: 0 4px 0 0;
+}
+
+/* buttons: shaped like the forum's buttons, but quiet, so they do not distract from the
+   photo. No separate pressed or focus colour (after a click a button looks as before);
+   keyboard focus shows an outline. .active (zoom, gallery, slideshow, fullscreen switched
+   on) is the only coloured state. */
+#image-ov button.btn-image-ov {
+  display: inline-flex;
+  flex-shrink: 1;
+  align-items: center;
+  justify-content: center;
+  width: var(--dp-iv-btn-size);
+  min-width: 0;
+  height: var(--dp-iv-btn-size);
+  margin: 0 0 0 4px;
+  padding: 0;
+  font-size: 1.3em;
+  line-height: 1;
+  color: var(--dp-iv-btn-color);
+  background-color: var(--dp-iv-btn-bg);
+  border-color: var(--dp-iv-btn-border);
+  box-shadow: none;
+}
+#image-ov button.btn-image-ov:hover {
+  color: var(--dp-iv-btn-color);
+  background-color: var(--dp-iv-btn-hover-bg);
+  border-color: var(--dp-iv-btn-border);
+}
+#image-ov button.btn-image-ov .material-icon {
+  position: static;                 /* Misago nudges icons 1px up (relative, top -1px) */
+  display: block;
+  height: auto;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1;
+}
+#image-ov button.btn-image-ov.active {
+  color: var(--dp-iv-btn-active-color);
+  background-color: var(--dp-iv-btn-active-bg);
+  border-color: var(--dp-iv-btn-active-border);
+}
+#image-ov button.btn-image-ov.active:hover {
+  color: var(--dp-iv-btn-active-color);
+  background-color: var(--dp-iv-btn-active-hover-bg);
+  border-color: var(--dp-iv-btn-active-border);
+}
+#image-ov button.btn-image-ov:focus {
+  outline: none;
+}
+#image-ov button.btn-image-ov:focus-visible {
+  outline: 2px solid var(--dp-iv-focus);
+  outline-offset: 1px;
+}
+/* close: some room before it; on hover the cross turns red */
+#image-ov button.btn-image-ov[data-class="close"] {
+  margin-left: 14px;
+}
+#image-ov button.btn-image-ov[data-class="close"]:hover .material-icon,
+#image-ov button.btn-image-ov[data-class="close"]:focus-visible .material-icon {
+  color: var(--dp-iv-close-hover);
+}
+/* buttons with two icons (slideshow, zoom, fullscreen): .off normally, .on while the
+   mode is switched on */
+#image-ov button.btn-image-ov .material-icon.on,
+#image-ov button.btn-image-ov.active .material-icon.off {
+  display: none;
+}
+#image-ov button.btn-image-ov.active .material-icon.on {
+  display: block;
+}
+
+/* ---- image area ---- */
+#image-ov .lighttable {
+  position: relative;
+  height: 100%;
+  overflow: hidden;                 /* the growing old image stays inside */
+}
+#image-ov:not(.full) .lighttable {
+  position: absolute;
+  top: var(--dp-iv-head-h);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
+}
+/* two layers: .backImage the current image (full-size over the preview), .layer2 the
+   previous one during an image change */
+#image-ov .backImage,
+#image-ov .layer2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dp-iv-bg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+#image-ov .backImage {
+  z-index: 1;
+  opacity: 1;
+  transform: none;
+}
+#image-ov .layer2 {
+  opacity: 0;
+  transform: none;
+}
+/* the soft line around the image: a drop-shadow, which follows the image (a background
+   image, no box of its own) once the layer's own background is transparent */
+#image-ov:not(.big) .backImage,
+#image-ov:not(.big) .layer2 {
+  background-color: transparent;
+  filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line));
+}
+#image-ov img.picture {
+  display: none;
+  height: auto;
+}
+/* an image that could not be loaded: the error image (Misago's attachment-404.png, set in
+   the template) centred at its own size, at most 60% of the image area */
+#image-ov div img.lost {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 60%;
+  max-height: 60%;
+  margin: auto;
+  border: 0 none;
+  cursor: default;
+  filter: var(--dp-iv-lost-filter);
+}
+#image-ov.progress,
+#image-ov.progress div.nav {
+  cursor: progress;
+}
+
+/* ---- image change ----
+   The new image fades in growing into place while the previous one fades out growing on.
+   The animations run on .changing, which the JS restarts on every change, independent of
+   loading; the JS starts it once the new preview is decoded. */
+#image-ov.changing .backImage {
+  animation: dp-iv-morph-in var(--dp-iv-fade) ease-in-out both;
+}
+#image-ov.changing .layer2 {
+  animation: dp-iv-morph-out var(--dp-iv-fade) ease-in-out both;
+}
+/* Fade (.t-fade) and Quick (.t-quick): the old image fades out while the new one fades
+   in, at the same time; Morph (.morph) is animated by the JS instead */
+#image-ov.changing.t-fade .backImage {
+  animation: dp-iv-fade-in var(--dp-iv-fade) linear both;
+}
+#image-ov.changing.t-fade .layer2 {
+  animation: dp-iv-fade-out var(--dp-iv-fade) linear both;
+}
+#image-ov.changing.t-quick .backImage {
+  animation: dp-iv-fade-in var(--dp-iv-quick) linear both;
+}
+#image-ov.changing.t-quick .layer2 {
+  animation: dp-iv-fade-out var(--dp-iv-quick) linear both;
+}
+@keyframes dp-iv-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dp-iv-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+#image-ov.changing.morph .backImage,
+#image-ov.changing.morph .layer2 {
+  animation: none;
+}
+@keyframes dp-iv-morph-in {
+  from { opacity: 0; transform: scale(calc(1 - var(--dp-iv-morph-scale))); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes dp-iv-morph-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(calc(1 + var(--dp-iv-morph-scale))); }
+}
+/* the old "preview" spinner is not used */
+#image-ov .layer2 svg {
+  display: none;
+}
+/* "Loading...", under the layers, so any image covers it: only seen when loading takes
+   longer than the fade + --dp-iv-label-delay (in practice images without a preview) */
+#image-ov .lighttable::before {
+  content: "Loading...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  padding: 6px 14px;
+  border-radius: 4px;
+  background-color: var(--dp-iv-bg);
+  color: var(--dp-iv-head-text);
+  font-size: 15px;
+  opacity: 0;
+  pointer-events: none;
+}
+#image-ov.progress .lighttable::before {
+  opacity: 1;
+  transition: opacity 0.2s calc(var(--dp-iv-fade) + var(--dp-iv-label-delay));
+}
+
+/* ---- prev / next ----
+   The header buttons' style, taller. At rest partly transparent (icon and border solid,
+   to be seen on dark, light and busy images); more opaque with the mouse near that edge
+   (.near-prev / .near-next), solid on hover. At the first/last image the JS shows a
+   down/up icon (wrap-around). */
+#image-ov .nav.dprev-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dp-iv-nav-w);
+  height: var(--dp-iv-nav-h);
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid var(--dp-iv-btn-border);
+  border-radius: 4px;
+  background-color: var(--dp-iv-nav-bg);
+  color: var(--dp-iv-nav-color);
+  font-size: 32px;
+  font-weight: normal;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.5s;
+}
+#image-ov .nav.nav-prev {
+  left: 8px;
+}
+#image-ov .nav.nav-next {
+  right: 8px;
+}
+#image-ov.near-prev .nav.nav-prev:not(:hover),
+#image-ov.near-next .nav.nav-next:not(:hover) {
+  background-color: var(--dp-iv-nav-near-bg);
+}
+#image-ov .nav.dprev-btn:hover {
+  background-color: var(--dp-iv-btn-hover-bg);
+}
+#image-ov .nav.dprev-btn .material-icon {
+  display: block;
+  font-size: 32px;
+  line-height: 1;
+}
+#image-ov div.nav div.filler {
+  border: 0 none;
+  background-color: transparent;
+  flex-grow: 1;
+}
+
+/* ---- zoom (.big) ----
+   The image at full pixel size, starting at its middle. Dragging scrolls the image area
+   (the JS), so dragging and the scrollbars are one mechanism. A transparent border leaves
+   a little room past the image edges. An image smaller than the area is centred. */
+#image-ov.big .backImage,
+#image-ov.big .layer2 {
+  background-size: 0;
+}
+#image-ov.big .backImage {
+  display: grid;                    /* with margin: auto below: centred if smaller,
+                                       scrollable from its edge if larger */
+  justify-content: normal;          /* the column fills the width (centring needs room), */
+  align-items: normal;              /* never narrower than the image (no cut-off edge) */
+  overflow: auto;
+}
+#image-ov.big img.picture {
+  display: block;
+}
+#image-ov.big .backImage img.picture {
+  position: static;
+  margin: auto;
+  max-width: none;
+  max-height: none;
+  box-sizing: content-box;
+  border: solid transparent;
+  border-width: var(--dp-iv-overdrag);
+  cursor: grab;
+}
+#image-ov.dragging,
+#image-ov.dragging * {
+  cursor: grabbing;
+}
+
+/* ---- fullscreen (.full) ----
+   The whole screen where the browser allows it (the JS asks for browser fullscreen), else
+   the whole window. Dark (the variables above), no frame. The header and arrows fade out
+   2.5 s after they were shown (.idle) and come back when the mouse moves near a screen
+   edge; the pointer hides 2.5 s after the last movement (.resting). */
+#image-ov.full {
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border: 0 none;
+  border-radius: 0;
+  box-shadow: none;
+}
+#image-ov.full.idle .head,
+#image-ov.full.idle .nav {
+  opacity: 0;
+  pointer-events: none;
+}
+#image-ov.full.resting,
+#image-ov.full.resting * {
+  cursor: none;
+}
+
+/* ---- gallery (.album) ----
+   All images of the page as thumbnails. Boxes keep the image's proportion between
+   --dp-iv-thumb-min-r and --dp-iv-thumb-max-r; a more extreme image keeps a box at that
+   limit and is scaled to fill at least --dp-iv-thumb-fill-wide / -tall of it, the rest
+   cropped (object-fit: cover inside the padding). The JS puts each image's proportion on
+   it as --r. */
+#image-ov .album {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: calc(var(--dp-iv-thumb-h) * var(--dp-iv-thumb-gap-f));
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--dp-iv-bg);
+}
+/* fullscreen: room around the thumbnails (5% of the screen), below the header over it */
+#image-ov.full .album {
+  padding: calc(var(--dp-iv-head-h) + 5vh) 5vw 5vh;
+}
+#image-ov .album img {
+  --h: var(--dp-iv-thumb-h);
+  --max-r: var(--dp-iv-thumb-max-r);
+  --min-r: var(--dp-iv-thumb-min-r);
+  --w: calc(var(--h) * clamp(var(--min-r), var(--r, 1.5), var(--max-r)));
+  box-sizing: border-box;
+  width: var(--w);
+  height: var(--h);
+  /* top/bottom: a wide image shown at least --fill-wide of the box height;
+     left/right: a tall image shown at least --fill-tall of the box width */
+  padding: calc((var(--h) - min(var(--h), max(var(--h) * var(--max-r) / var(--r, 1.5),
+                                               var(--h) * var(--dp-iv-thumb-fill-wide)))) / 2)
+           calc((var(--w) - min(var(--w), max(var(--h) * var(--r, 1.5),
+                                               var(--w) * var(--dp-iv-thumb-fill-tall)))) / 2);
+  object-fit: cover;
+  margin: 0;
+  border: 0 none;
+  border-radius: 0;
+  cursor: pointer;
+  /* every state has the same filter list (line, shadow, brightness), so they fade into
+     each other; at rest no shadow and the spotlight's brightness */
+  filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line))
+          drop-shadow(0 0 0 transparent) brightness(var(--dp-iv-thumb-dim));
+  transition: transform 0.15s, filter 0.15s;
+}
+#image-ov .album img.cur {
+  filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line))
+          drop-shadow(0 0 7px var(--dp-iv-thumb-current)) brightness(var(--dp-iv-thumb-dim));
+}
+#image-ov .album img:hover,
+#image-ov .album img.sel {
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line))
+          drop-shadow(0 3px 8px var(--dp-iv-thumb-shadow)) brightness(1);
+}

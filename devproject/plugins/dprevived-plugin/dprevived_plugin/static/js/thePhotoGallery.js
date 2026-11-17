@@ -18,7 +18,7 @@ class thePhotoGallery {
     #moveMouse = (e) => {this.divMove(e)};    
     #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
     #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
-    #fallBackCss = "H4sIAAAAAAAAA41XS2/jNhA+x7+C2CJAvIi0tB1vXBsFeu1pz0WxB0qkJTYyKVD0I7vY/97hU6JkBUUgxx4OyXl8882o1qdmX5Pu6Td+IhXL5CU/nptmL6R++qfT7w37/McnIQX79H25RD8XCMkLU8dGXveo5pQycVj8Wixy+M6yE7MalHdtQ973yOxzy+zGj99gI4hTlWPDbgcQmP+ZO7aUzfnkj214VWtNisad3MqOay7FHinWEM0vzOytmdHaoxXGj24baYrzabSDFB0crO0OLds9wubbj4wLym57tDnMmnVVBNTNpxFdOdV1uGx8OUIFKd8qJc+CZuCIVGBqVZCnNcbPyH5g9Izz16XRJeCeADWhmdDu0qzTRGmz2BJKuagya+t621p7QvAzsJGctTSyf8+d5sf3/pwSPpkaRoKfKhuNYPv2Uie2+98noioOoVpjd1shFWUqU4Tyc7dfWWlyaF6elT046O7RS3tDEGhOnd/4eb3dPmNwebu0m3uctUpWinUdyiHkTK1Rd6n8YSEPRSPLt4ORODSM9WJ2h8k1fkDSrKvg2dXJwu9Hr8JFUMFBxYcjxNXB5CXsaNhR97+ChRHiKca7logU6M4V0JwG4BndCQrll1yQi3cU4twBlsJqGklUnLWW7j7ZkpJruA/nu5EWnGhz1shO37VtDtvhZ4AHjtAzgZ5UH/rzxCgn6KmPMXr9umtvy5DcS2+UE/UJ2mEf4BjyFX60AnOyAQEEJaetYpes0MLv97f0mQtG9ZK+LkNFAi7Dg/PN0meZC9a7xE7Go9F1/rKdL5KgvEuKBjbHQiga4sKb1hPauA0hrL7EBwTS8R/M8OHFVHMEAaCexwIfRvKhN8XU80PPfUd+YxQk0XQD+YfIfZC61Sx3WeryzzKS5wo7yrApQqGGpr4DXN/nXPcMZ5n418KjpisVYwIRQQFAsY7BZAjv0qc7cXqQf/DDOhaxgw8eOgnxFLxCufH1LyNBP/uOBpfLpjkkce01B3UaOetDHgoEEzA9qqdhHwqRxGO0zmfiIVFTrGVEm57rv04O6uEQGsRIIcBNaMLFlDzyszBd3rn85bNWRIQDPesA6Wy7w+cvRmG4bL8fpTohs56uZpRZDgorgcBWvZ7ZCQGQmmj29xOmrLKtBI3Mo7I373/cnp76ezz2bup9nkPFOOOirT5p88e6/jWHwCH/25UEW5MEYdeEDQ/Ckwl20yOGUo4GnCJBk+kLIQ8qLiBGpBm73fedI4DBX7sxZBhlV081hWyo9x7syLqaUFNIhgDMc615KIbINuvDx3PZy+5xyCWhw47sM90snTzuEO6EdzzHDkaf4FWgkHwdJNYhO6LNVkwy4SX95NX3k9C4A2VPegyUjOsyA/+m+XI9InMcEZ1IDtp8DeLBLK2kn20mQyJMKCXLCqavjI2LPa8Zofva8OIUhM5nn9jptmAwWBssWzsXh2NTHLDvWzsT4hWENjxuoEyKEgPg7+EqmWqGgTbTUMtLfVZsNHg60E0nCfC3kPQ9p0S9obsVc7cMPCDNmJiW+rwF03nRj3k5VHk2mp/cm0OtuHiDSxNA9xNQP76ZPw+i0IMthQ2qfZX7eh8Mcav81cli8QRBOjUFRC/uGZyfgBgVkE7GSz+zJru5qGHZdC8v6QXBA5wQSFyfvGjGIbz3fBNeYQxzxvDNoRIgeI3xnFSQZdnpm1oS18xTsb93gBhSmtfXufJC9sW3UpPatG/n6dTrp56E1bAfzz4YMWJQxvSMMU5tDa8i5v+RNw0bv/Nh1NfL1BXbFluiIGj3YmuyYa/6dknfYNza4j85yHy2ohAAAA==";
+    #fallBackCss = "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";
     #decompress = base64string => {
     const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
     const cs = new DecompressionStream('gzip');
@@ -37,12 +37,21 @@ class thePhotoGallery {
     #zoomSpot = null; // zoomed: the photo's spot in the middle (fractions), kept over a size change
     #idleTimer = 0;   // fullscreen: hides the controls when the mouse rests
     #restTimer = 0;   // fullscreen: hides the mouse pointer when the mouse rests
+    #slideTimer = 0;  // slideshow: the next image
+    #changeStart = 0; // when the last image change (transition) started
+    #ovEls = {};      // image address -> its <img> in the page (the first one), for the header info
+    #sizes = {};      // final preview address -> its pixel size {w, h} (known once decoded)
+    #shownSize = null;  // pixel size of the image shown now (for the Morph transition)
+    #morphAnims = [];   // the running Morph animations
 
     
     constructor(selector = "article.misago-markup img") {
         // config Vars
         this.selector = selector;
-        this.timeout = 1500;
+        this.timeout = 3000;  // slideshow: how long an image is shown (after its transition)
+        this.transition = "pop";  // image change: "quick", "fade", "pop" or "morph"; the
+                                  // viewer's chooser overrides it with the user's last choice
+        this.storageKey = "dp-image-viewer";  // localStorage: last transition, fullscreen
         this.myId = "image-ov";
         this.useExif = true;
         this.addExif = false;
@@ -83,7 +92,7 @@ class thePhotoGallery {
   }
 
   bootstrapHtml() {
-  const template ='<!DOCTYPE html><html><body><div class="head">        <div class="exifOverlay"></div>        <div class="nav-ov">            <a href="" target="_blank" title="download preview version" style="display:none;" class="ext" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">picture_in_picture</span></button></a>            <a href="" target="_blank" title="download big version" class="download" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">file_download</span></button></a>            <button data-class="slideshow" title="run slideshow" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">slideshow</span></button>            <button data-class="album" title="show gallery" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">photo_album</span></button>            <button data-class="big" title="zoom in / out" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">zoom_in</span></button>            <button data-class="full" title="fullscreen mode" class="btn-default btn-outline  btn btn-image-ov btn-css"><span class="material-icon">fullscreen</span></button>            <button data-class="close" title="close popup" class="btn-default btn btn-block btn-image-ov btn-css"><span class="material-icon">close</span></button>        </div>    </div></body></html>';
+  const template ='<!DOCTYPE html><html><body><div class="head">        <div class="exifOverlay"></div>        <div class="nav-ov">            <a href="" target="_blank" title="download preview version" style="display:none;" class="ext" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">picture_in_picture</span></button></a>            <a href="" target="_blank" title="download big version" class="download" ><button class="btn-default btn btn-outline btn-image-ov" ><span class="material-icon">file_download</span></button></a>            <button data-class="slideshow" title="run slideshow" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon off">play_circle_outline</span><span class="material-icon on">pause_circle_outline</span></button>            <button data-class="album" title="show gallery" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon">dashboard</span></button>            <button data-class="big" title="zoom in / out" class="btn-default btn-outline btn btn-image-ov btn-css radio-btn size"><span class="material-icon off">add_circle_outline</span><span class="material-icon on">remove_circle_outline</span></button>            <button data-class="full" title="fullscreen mode" class="btn-default btn-outline  btn btn-image-ov btn-css"><span class="material-icon off">fullscreen</span><span class="material-icon on">fullscreen_exit</span></button>            <button data-class="close" title="close popup" class="btn-default btn btn-block btn-image-ov btn-css"><span class="material-icon">close</span></button>        </div>    </div></body></html>';
   const template2='<!DOCTYPE html><html><body>    <div class="lighttable">        <div class="album hide"></div>        <div class="nav nav-prev dprev-btn" ><span class="material-icon left">keyboard_arrow_left</span><span class="hide material-icon down">keyboard_arrow_down</span></div>        <div class="nav nav-next dprev-btn" ><span class="material-icon right">keyboard_arrow_right</span><span class="hide material-icon up">keyboard_arrow_up</span></div>            <div class="backImage">            <img class="picture" draggable="false" >        </div>         <div class="layer2"><img class="picture" draggable="false" > <svg version="1.1" viewBox="-58 -58 116 116" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <!-- https://freesvg.org/1544764567 -->   <style>.shadow {font-size:12px;filter: drop-shadow(3px 3px 5px rgb(255,255,255));}</style> <text x="-20" y="5" class="shadow" fill="#000">preview</text> <g stroke-linecap="round" stroke-width="15"> <path id="a" d="m0 35 0,14"/> <use transform="rotate(210)" xlink:href="#a" stroke="#f0f0f0"/> <use transform="rotate(240)" xlink:href="#a" stroke="#ebebeb"/> <use transform="rotate(270)" xlink:href="#a" stroke="#d3d3d3"/> <use transform="rotate(300)" xlink:href="#a" stroke="#bcbcbc"/> <use transform="rotate(330)" xlink:href="#a" stroke="#a4a4a4"/> <use transform="rotate(0)" xlink:href="#a" stroke="#8d8d8d"/> <use transform="rotate(30)" xlink:href="#a" stroke="#757575"/> <use transform="rotate(60)" xlink:href="#a" stroke="#5e5e5e"/> <use transform="rotate(90)" xlink:href="#a" stroke="#464646"/> <use transform="rotate(120)" xlink:href="#a" stroke="#2f2f2f"/> <use transform="rotate(150)" xlink:href="#a" stroke="#171717"/> <use transform="rotate(180)" xlink:href="#a" stroke="#33a"/> <animateTransform attributeName="transform" begin="0s" dur="16s" type="rotate" from="0 0 0" to="360 0 0" repeatCount="indefinite" /> </g> </svg>       </div>    </div></body></html>';
     let parser = new DOMParser();
     let code = parser.parseFromString(template, 'text/html');
@@ -178,15 +187,44 @@ class thePhotoGallery {
         if (!document.fullscreenElement && ov.classList.contains("full")) this.setFull(false);
         else this.#restoreZoomSpot();
     });
-    // keyboard: left/right arrow = previous/next image, Esc = close (in browser fullscreen
-    // the browser takes Esc itself and leaves fullscreen first)
+    // keyboard: left/right arrow = previous/next image, Space = slideshow on/off, Esc =
+    // close (in browser fullscreen the browser takes Esc itself and leaves fullscreen first). In the gallery: left/right
+    // move a selection over the thumbnails (.sel), Enter opens it, Esc closes the gallery.
     document.addEventListener('keydown', (e) => {
         if (ov.style.display == "none" || e.altKey || e.ctrlKey || e.metaKey) return;
         if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
+        let menu = ov.querySelector(".iv-trans-menu");
+        if (menu && !menu.hidden) { if (e.key == "Escape") { menu.hidden = true; e.preventDefault(); } return; }
+        // a viewer button clicked before keeps the focus, and a key press would make the
+        // browser show its focus outline: release it for the keys handled here
+        if (["ArrowLeft", "ArrowRight", "Enter", "Escape", " "].includes(e.key)
+            && document.activeElement && ov.contains(document.activeElement)
+            && document.activeElement.tagName == "BUTTON") document.activeElement.blur();
+        let album = ov.querySelector("div.album");
+        if (!album.classList.contains("hide")) { this.#albumKey(e, album); return; }
         if (e.key == "ArrowLeft") { ov.querySelector("div.nav-prev").click(); e.preventDefault(); }
         else if (e.key == "ArrowRight") { ov.querySelector("div.nav-next").click(); e.preventDefault(); }
         else if (e.key == "Escape") { this.close(); }
+        else if (e.key == " ") {                       // Space: slideshow on / off
+            let btn = ov.querySelector("button[data-class='slideshow']");
+            if (btn) { btn.click(); e.preventDefault(); }
+        }
     });
+    // header: position, poster and file name (.iv-info) before the EXIF line; the EXIF
+    // line gets its full text as a tooltip (it is cut with "..." when too long)
+    this.#buildTransitionChooser(ov);
+    let saved = this.#load();
+    if (saved.transition) this.transition = saved.transition;
+    this.setTransition(this.transition, false);
+    let head = ov.querySelector(".head");
+    if (head && !head.querySelector(".iv-info")) {
+        let info = document.createElement("div");
+        info.className = "iv-info";
+        head.insertBefore(info, head.firstChild);
+    }
+    let exifEl = ov.querySelector(".head .exifOverlay");
+    if (exifEl) new MutationObserver(() => { exifEl.title = exifEl.textContent.replace(/\s+/g, " ").trim(); })
+        .observe(exifEl, {childList: true, subtree: true});
     this.refreshGallery();
 }
 
@@ -241,6 +279,150 @@ class thePhotoGallery {
     d.t = now; d.x = e.clientX; d.y = e.clientY;
 }
 
+  // Header info: "3 / 6 · name". The name is the quoted author for an image in a quote,
+  // else the poster; it links to the post the image is in, as an anchor on this page
+  // (#post-<id>: no page reload; the gallery only has this page's images anyway).
+  // Tooltip: the file's original name (from the post's attachment list), else the last
+  // part of its address.
+  #showInfo(src, iPos, ov) {
+    let info = ov.querySelector(".iv-info");
+    if (!info) return;
+    info.textContent = "";
+    let total = Object.keys(this.#ovImages).length;
+    let pos = document.createElement("span");
+    pos.className = "iv-pos";
+    pos.textContent = (iPos + 1) + " / " + total;   // thin spaces around the slash
+    info.appendChild(pos);
+    let el = this.#ovEls[src];
+    let name = "", fileName = "", postLink = "";
+    if (el) {
+        let quote = el.closest("blockquote[data-author]");
+        let post = el.closest("li.post");
+        if (post && post.id) postLink = location.href.split("#")[0] + "#" + post.id;
+        if (quote) name = quote.dataset.author.replace(/^@/, "");
+        else if (post) {
+            let a = post.querySelector("a.item-title[href*='/u/']");
+            if (a) name = a.textContent.trim();
+        }
+        let link = el.parentElement && el.parentElement.href;
+        if (link && post) {
+            let att = Array.from(post.querySelectorAll("a.attachment-name")).find((a) => a.href == link);
+            if (att) fileName = att.textContent.trim();
+        }
+    }
+    if (!fileName) {
+        let parts = src.split("?")[0].split("/").filter((p) => p);
+        fileName = decodeURIComponent(parts[parts.length - 1] || "");
+        if (/^\d+$/.test(fileName)) fileName = "";     // /a/thumb/<secret>/<id>/: no name
+    }
+    if (name) {
+        let sep = document.createElement("span");
+        sep.className = "iv-sep";
+        sep.textContent = "·";
+        let a = document.createElement(postLink ? "a" : "span");
+        a.className = "iv-name";
+        a.textContent = name;
+        if (postLink) {
+            a.href = postLink;
+            a.addEventListener("click", (e) => { this.close(); });
+        }
+        info.appendChild(sep);
+        info.appendChild(a);
+    }
+    info.title = fileName;
+  }
+
+  // length of the image change transition (the CSS variable --dp-iv-fade), in ms
+  #fadeMs() {
+    let ov = document.getElementById(this.myId);
+    let f = getComputedStyle(ov).getPropertyValue(ov.classList.contains("t-quick") ? "--dp-iv-quick" : "--dp-iv-fade").trim();
+    return parseFloat(f) * (f.endsWith("ms") ? 1 : 1000) || 0;
+  }
+
+  // Morph: both layers are put exactly on the new image's rectangle (picture stretched to
+  // fill it) and animated together from the old image's rectangle to the new one (a move
+  // and a scale, so photos of other proportions are squeezed on the way); the old one
+  // stays underneath, the new one fades in on top. At the end the layers go back to
+  // their normal full-area "contain" setup, which draws the same rectangle.
+  #morph(o, n) {
+    this.#endMorph();
+    let ov = document.getElementById(this.myId);
+    let area = ov.querySelector(".lighttable");
+    let W = area.clientWidth, H = area.clientHeight;
+    let fit = (s) => {
+        let k = Math.min(W / s.w, H / s.h);
+        let w = s.w * k, h = s.h * k;
+        return {x: (W - w) / 2, y: (H - h) / 2, w: w, h: h};
+    };
+    let a = fit(o), b = fit(n);
+    let from = "translate(" + ((a.x + a.w / 2) - (b.x + b.w / 2)) + "px, " + ((a.y + a.h / 2) - (b.y + b.h / 2))
+             + "px) scale(" + (a.w / b.w) + ", " + (a.h / b.h) + ")";
+    let timing = {duration: this.#fadeMs(), easing: "ease-in-out"};
+    let layers = [ov.querySelector(".backImage"), ov.querySelector(".layer2")];
+    layers.forEach((l, i) => {
+        Object.assign(l.style, {left: b.x + "px", top: b.y + "px", width: b.w + "px", height: b.h + "px",
+                                backgroundSize: "100% 100%"});
+        let frames = i == 0 ? [{transform: from, opacity: 0}, {transform: "none", opacity: 1}]
+                            : [{transform: from, opacity: 1}, {transform: "none", opacity: 1}];
+        this.#morphAnims.push(l.animate(frames, timing));
+    });
+    let anims = this.#morphAnims;
+    Promise.all(anims.map((x) => x.finished)).then(() => { if (anims === this.#morphAnims) this.#endMorph(); }, () => {});
+  }
+
+  // stop a Morph (finished, or a new change began): layers back to normal
+  #endMorph() {
+    this.#morphAnims.forEach((x) => x.cancel());
+    this.#morphAnims = [];
+    let ov = document.getElementById(this.myId);
+    if (!ov) return;
+    ov.querySelectorAll(".backImage, .layer2").forEach((l) => {
+        l.style.left = l.style.top = l.style.width = l.style.height = l.style.backgroundSize = "";
+    });
+    // (.morph stays until the next change: removing it now would start the Pop animation)
+  }
+
+  // Slideshow: the next image this.timeout ms after the current one is fully there (its
+  // transition over), whatever loading took; started again by every image change, so
+  // prev/next by hand restart the time. Stops when the slideshow button is not active.
+  #scheduleSlide() {
+    clearTimeout(this.#slideTimer);
+    let ov = document.getElementById(this.myId);
+    let btn = ov.querySelector("button[data-class='slideshow']");
+    if (!btn || !btn.classList.contains("active")) return;
+    let fade = this.#fadeMs();
+    let wait = Math.max(0, this.#changeStart + fade - performance.now()) + this.timeout;
+    this.#slideTimer = setTimeout(() => {
+        if (btn.classList.contains("active") && ov.style.display != "none") ov.querySelector("div.nav-next").click();
+    }, wait);
+  }
+
+  // gallery keys: left/right move .sel (starting from the current image), Enter opens the
+  // selected thumbnail, Esc closes the gallery (back to the image)
+  #albumKey(e, album) {
+    let thumbs = Array.from(album.querySelectorAll("img"));
+    if (!thumbs.length) return;
+    let i = thumbs.findIndex((t) => t.classList.contains("sel"));
+    if (i < 0) i = thumbs.findIndex((t) => t.classList.contains("cur"));
+    if (e.key == "ArrowLeft" || e.key == "ArrowRight") {
+        e.preventDefault();
+        i = i < 0 ? 0 : (i + (e.key == "ArrowRight" ? 1 : -1) + thumbs.length) % thumbs.length;
+        thumbs.forEach((t) => t.classList.remove("sel"));
+        let sel = thumbs[i];
+        sel.classList.add("sel");
+        // keep it in view
+        if (sel.offsetTop < album.scrollTop) album.scrollTop = sel.offsetTop - 20;
+        else if (sel.offsetTop + sel.offsetHeight > album.scrollTop + album.clientHeight)
+            album.scrollTop = sel.offsetTop + sel.offsetHeight - album.clientHeight + 20;
+    }
+    else if (e.key == "Enter" && i >= 0) { e.preventDefault(); thumbs[i].click(); }
+    else if (e.key == "Escape") {
+        e.preventDefault();
+        let btn = document.querySelector("#" + this.myId + " button[data-class='album']");
+        if (btn) btn.click();
+    }
+  }
+
   // Fullscreen: the viewer fills the window (.full) and, where the browser allows, the
   // whole screen (Fullscreen API). Zoomed, the same spot of the photo stays in the middle.
   setFull(on) {
@@ -253,6 +435,58 @@ class thePhotoGallery {
     if (on && !document.fullscreenElement && tElem.requestFullscreen) tElem.requestFullscreen().catch(() => {});
     if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
     this.#idle(on);
+    this.#save({full: on});
+  }
+
+  // remembered settings (localStorage; quietly nothing where it is not available)
+  #load() {
+    try { return JSON.parse(localStorage.getItem(this.storageKey)) || {}; } catch (e) { return {}; }
+  }
+  #save(values) {
+    try { localStorage.setItem(this.storageKey, JSON.stringify(Object.assign(this.#load(), values))); } catch (e) {}
+  }
+
+  // Transition chooser: a button with the current mode's letter at the left of the header
+  // buttons, opening a small menu. Q quick fade, F fade, P pop (fade + grow), M morph.
+  #buildTransitionChooser(ov) {
+    let bar = ov.querySelector(".nav-ov");
+    if (!bar || bar.querySelector(".iv-trans")) return;
+    let box = document.createElement("div");
+    box.className = "iv-trans";
+    let btn = document.createElement("button");
+    btn.className = "btn-default btn btn-image-ov iv-trans-btn";
+    btn.title = "image change: Quick, Fade, Pop, Morph (zoomed: Pop instead of Morph)";
+    let menu = document.createElement("ul");
+    menu.className = "iv-trans-menu";
+    menu.hidden = true;
+    [["quick", "Q", "Quick"], ["fade", "F", "Fade"], ["pop", "P", "Pop"], ["morph", "M", "Morph"]].forEach(([key, letter, label]) => {
+        let li = document.createElement("li");
+        li.dataset.t = key;
+        if (key == "morph") li.title = "zoomed images use Pop";
+        let b = document.createElement("b");
+        b.textContent = letter;
+        li.appendChild(b);
+        li.appendChild(document.createTextNode(label));
+        li.addEventListener("click", (e) => { this.setTransition(key); menu.hidden = true; });
+        menu.appendChild(li);
+    });
+    btn.addEventListener("click", (e) => { menu.hidden = !menu.hidden; });
+    document.addEventListener("click", (e) => { if (!box.contains(e.target)) menu.hidden = true; });
+    box.appendChild(btn);
+    box.appendChild(menu);
+    bar.insertBefore(box, bar.firstChild);
+  }
+
+  // set the transition mode (and remember it, unless save is false)
+  setTransition(t, save = true) {
+    if (["quick", "fade", "pop", "morph"].indexOf(t) < 0) t = "pop";
+    this.transition = t;
+    let ov = document.getElementById(this.myId);
+    let btn = ov && ov.querySelector(".iv-trans-btn");
+    if (btn) btn.textContent = t[0].toUpperCase();
+    if (ov) ov.dataset.transition = t;     // CSS dims M while zoomed (Pop is used there)
+    if (ov) ov.querySelectorAll(".iv-trans-menu li").forEach((li) => li.classList.toggle("cur", li.dataset.t == t));
+    if (save) this.#save({transition: t});
   }
 
   // fullscreen: .idle on the viewer 2.5 s after the controls were shown (CSS hides the
@@ -346,7 +580,10 @@ class thePhotoGallery {
       if (!(url in this.#prepared)) {
         let img = new Image();
         img.src = url;
-        this.#prepared[url] = img.decode().then(() => url, () => url);
+        this.#prepared[url] = img.decode().then(() => {
+            if (img.naturalWidth) this.#sizes[url] = {w: img.naturalWidth, h: img.naturalHeight};
+            return url;
+        }, () => url);
       }
       return this.#prepared[url];
     });
@@ -392,13 +629,17 @@ class thePhotoGallery {
     let div = document.querySelector("#" + this.myId +" .backImage img");
     div.style.top="0px";
     div.style.left="0px";
+    // opened from the gallery: the new image appears from the background (as on a fresh
+    // open), not over the image shown before the gallery
+    let fromAlbum = !document.querySelector("#" + this.myId +" div.album").classList.contains("hide");
     document.querySelector("#" + this.myId +" div.album").classList.add("hide"); 
     document.querySelector("#" + this.myId +" button[data-class='album']").classList.remove("active");
-    document.querySelectorAll("#" + this.myId +" .album img.cur").forEach((e)=>e.classList.remove("cur")); 
+    document.querySelectorAll("#" + this.myId +" .album img.cur, #" + this.myId +" .album img.sel").forEach((e)=>e.classList.remove("cur", "sel")); 
     let imageSrc = src;
     let iOvE = document.querySelector("#" + this.myId);
     let iOv = iOvE.querySelector("div.backImage");
     let iOvImg = iOv.querySelector("img.picture")
+    iOvImg.classList.remove("lost");      // an error on the previous image does not stay
     let mylink = iOvE.querySelector(".head .nav-ov a.ext");
     //console.log(src);
     let path = "#" + this.myId +" .album img[src='" + imageSrc + "']";
@@ -424,17 +665,37 @@ class thePhotoGallery {
     // image and preview), not only the full-size image, which may not have loaded yet.
     // When the viewer is just being opened there is no previous image: the new one
     // appears from the viewer's background (not from the image shown last time).
-    let wasOpen = iOvE.style.display != "none";
+    let freshOpen = iOvE.style.display == "none";
+    let wasOpen = !freshOpen && !fromAlbum;
     iOvE.querySelector(".layer2").style.backgroundImage = wasOpen ? (iOv.style.backgroundImage || "url('"+ iOvImg.src +"')") : "none";
     iOvE.querySelector(".layer2").src = iOvImg.src;
     iOvE.style.display = "block";
+    // opened again in fullscreen if it was left in fullscreen (the click that opened it
+    // still counts as the user's action the browser requires for real fullscreen)
+    if (freshOpen && this.#load().full && !iOvE.classList.contains("full")) this.setFull(true);
     iOv.classList.remove("unhide");
     iOvE.classList.add("progress");
     // restart the image change transition (CSS animations on .changing), independent of
     // how long loading takes
+    // Morph instead of Pop when both sizes are known (not on a fresh open, not from the
+    // gallery, not zoomed)
+    let newSize = this.#sizes[previewUrl] || null;
+    let morph = this.transition == "morph" && wasOpen && this.#shownSize && newSize
+                && !iOvE.classList.contains("big");
+    iOvE.classList.toggle("morph", !!morph);
+    // Quick and Fade are CSS animations on .t-quick / .t-fade; Morph without a previous
+    // image (first opening, from the gallery) fades in, and zoomed it uses Pop (both
+    // change the geometry); Pop is the default
+    let zoomed = iOvE.classList.contains("big");
+    iOvE.classList.toggle("t-quick", this.transition == "quick");
+    iOvE.classList.toggle("t-fade", this.transition == "fade" || (this.transition == "morph" && !morph && !zoomed));
     iOvE.classList.remove("changing");
     void iOvE.offsetWidth;
     iOvE.classList.add("changing");
+    this.#changeStart = performance.now();
+    if (morph) this.#morph(this.#shownSize, newSize);
+    else this.#endMorph();
+    this.#shownSize = newSize;
 
     // full-size image over the preview: the preview is decoded by now (openImage), so it
     // shows at once and the full-size image builds up over it. The final addresses (after
@@ -447,6 +708,7 @@ class thePhotoGallery {
     //console.log(imageSrc,iPos);
     iOvE.dataset.pos = iPos;
     this.ivChangeNav(iPos, iOvE);
+    this.#showInfo(imageSrc, iPos, iOvE);
     if (this.useExif) this.makeExif(iOvImg.src, iOvE.querySelector(".exifOverlay"));    
 }
 
@@ -516,8 +778,8 @@ class thePhotoGallery {
     let action = elem.dataset.class;
     let div = document.querySelector("#" + this.myId +" .backImage img");
     
-    // reset
-    document.querySelector("#" + this.myId +" div.album").classList.add("hide");       
+    // reset (switching fullscreen keeps the gallery open)
+    if (action != "full") document.querySelector("#" + this.myId +" div.album").classList.add("hide");       
     div.style.top="0px";
     div.style.left="0px"; 
     if (action == "close") {
@@ -535,8 +797,18 @@ class thePhotoGallery {
            tElem.classList.add(elem.dataset.class);
            elem.classList.add("active");
            if (elem.dataset.class == "big") this.centreZoom();
+           // slideshow: the next image at once (the current one has been seen); from
+           // then on every image is timed by #scheduleSlide()
            if (elem.dataset.class == "slideshow" ) document.querySelector("#" + this.myId +" div.nav-next").click();
-           if (elem.dataset.class == "album") {  document.querySelector("#" + this.myId +" div.album").classList.remove("hide"); }   
+           if (elem.dataset.class == "album") {
+               let album = document.querySelector("#" + this.myId +" div.album");
+               album.classList.remove("hide");
+               album.querySelectorAll("img.sel").forEach((t) => t.classList.remove("sel"));
+               // the current image's thumbnail selected, in the middle of the gallery
+               let cur = album.querySelector("img.cur");
+               if (cur) cur.classList.add("sel");
+               if (cur) album.scrollTop = cur.offsetTop - (album.clientHeight - cur.offsetHeight) / 2;
+           }
         }      
     }
 
@@ -550,12 +822,7 @@ class thePhotoGallery {
     //e.addEventListener('load',loadedOvImage(e));
     //cursor: progress;
     //console.log(this.timeout);
-    if (document.querySelector("#" + this.myId +" button[data-class='slideshow']").classList.contains("active") ) {
-        setTimeout((e)=>{
-              if (document.querySelector("#" + this.myId +" button[data-class='slideshow']").classList.contains("active") ) document.querySelector("#" + this.myId +" div.nav-next").click();
-             }
-             , this.timeout); 
-    }
+    this.#scheduleSlide();
     setTimeout((e)=>{
       document.querySelector("#" + this.myId +" .layer2").classList.add("dohide");
       document.querySelector("#" + this.myId +" .backImage").classList.remove("lost");    
@@ -570,8 +837,14 @@ class thePhotoGallery {
         let big = "";
         if (pe.hasAttribute("href")) big = pe.href;
         this.#ovImages[el.src] = big; 
+        this.#ovEls[el.src] = el;
         let gal = document.querySelector("#" + this.myId +" div.album");
         let nImg = document.createElement("img");
+        // an image that cannot be loaded (dead link, file missing) is left out of the
+        // gallery and of prev/next
+        nImg.addEventListener('error', (e) => { delete this.#ovImages[el.src]; nImg.remove(); });
+        // its proportion (width / height) as --r, for the gallery's CSS
+        nImg.addEventListener('load', (e) => { if (nImg.naturalHeight) nImg.style.setProperty("--r", nImg.naturalWidth / nImg.naturalHeight); });
         nImg.src = el.src;
         nImg.addEventListener('click',(e) =>{this.openImage(el.src)});
         gal.appendChild(nImg);     
