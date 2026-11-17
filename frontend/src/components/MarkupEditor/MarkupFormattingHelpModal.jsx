@@ -337,7 +337,30 @@ export default function MarkupFormattingHelpModal() {
           />
 
           <hr />
+          
+          <h4>{pgettext("markup help", "Quote text with author and post (BBCode)")}</h4>
+          <ExampleFormatting
+            markup={
+              '[quote="' +
+              pgettext("markup help", "Quote author") +
+              ' ,post:' + pgettext("markup help", "Post ID") +
+              '"]\n' +
+              pgettext("markup help", "Quoted text") +
+              "\n[/quote]"
+            }
+            result={
+              <aside className="quote-block">
+                <div className="quote-heading">
+                  {pgettext("markup help", "Quote author has written:")}
+                </div>
+                <blockquote className="quote-body">
+                  <p>{pgettext("markup help", "Quoted text")}</p>
+                </blockquote>
+              </aside>
+            }
+          />
 
+          <hr />
           <h4>{pgettext("markup help", "Spoiler")}</h4>
           <ExampleFormatting
             markup={

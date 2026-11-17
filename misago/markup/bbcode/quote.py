@@ -21,6 +21,7 @@ class QuoteExtension(markdown.Extension):
 
 
 class QuotePreprocessor(Preprocessor):
+
     QUOTE_BLOCK_RE = re.compile(
         r"""
 \[quote\](?P<text>.*?)\[/quote\]
@@ -91,11 +92,15 @@ class QuoteBlockProcessor(BlockProcessor):
             blockquote = SubElement(aside, "blockquote")
             blockquote.set("class", "quote-body")
             blockquote.set("data-block", "quote")
-
             if title:
-                blockquote.set("data-author", title)
-
-            if title:
-                heading.text = title
+              splited = title.split(",",2)
+              title = splited[0].strip()
+              if len(splited)>1 and len(splited[1].split("post:"))>1:
+                post = splited[1].split("post:")[1].strip()
+                blockquote.set("data-post", post)
+                title = title.replace('"','')
+              blockquote.set("data-author", title)
+              heading.text = title
+                  
 
             self.parser.parseBlocks(blockquote, children)

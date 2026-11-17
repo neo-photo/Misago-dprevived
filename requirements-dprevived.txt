@@ -2,4 +2,5 @@ django-split-settings==1.3.2
 gunicorn==26.2.0
 pylibmc==1.6.3
 django-xff
-
+fonttools[ufo,lxml,woff,unicode,repacker]
+pillow>=13
