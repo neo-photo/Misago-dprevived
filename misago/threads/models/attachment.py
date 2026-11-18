@@ -112,7 +112,7 @@ class Attachment(PluginDataModel):
         
         # MG: patched for exif and color profile preservation (as in 0.34)
         exif_data = thumbnail.info.get('exif', b'')
-        icc = thumbnail.info.get('icc_profile', b'')  # empty: Pillow writes no profile
+        icc = thumbnail.info.get('icc_profile', b'')  # if no profile present, then Pillow just ignores that
 
         downscale_image = (
             thumbnail.size[0] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[0]
