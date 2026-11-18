@@ -2,11 +2,11 @@
 #from django.contrib.auth import get_user_model
 #User = get_user_model()
 from logging import getLogger
-
 from django.db import connection
 from devproject import settings
+from .version import version
 
-__version__ = "30"
+__version__ = version
 logger = getLogger("the-photo")
 logger.info("The-Photo Version:%s"%__version__)
 

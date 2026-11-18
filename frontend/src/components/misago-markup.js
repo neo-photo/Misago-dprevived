@@ -23,6 +23,7 @@ export default class extends React.Component {
         className={classnames("misago-markup", this.props.className)}
         dangerouslySetInnerHTML={{ __html: this.props.markup }}
         data-author={this.props.author || undefined}
+        data-post={this.props.postid || undefined}
         ref={(node) => {
           this.documentNode = node
         }}

@@ -13,7 +13,7 @@ from PIL import Image
 from ...conf import settings
 from ...core.utils import slugify
 from ...plugins.models import PluginDataModel
-
+from ...thePhoto.exif import makeExif
 
 def upload_to(instance, filename):
     # pylint: disable=undefined-loop-variable
@@ -106,6 +106,10 @@ class Attachment(PluginDataModel):
         self.image = File(upload, upload.name)
 
         thumbnail = Image.open(upload)
+        
+        # NP: add exif
+        self.plugin_data = {"exif":makeExif(thumbnail)}
+        
         # MG: patched for exif preversation
         exif_data = thumbnail.info.get('exif', b'')
         

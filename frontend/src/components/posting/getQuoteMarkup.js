@@ -1,7 +1,7 @@
 const getQuoteMarkup = (range) => {
   const metadata = getQuoteMetadata(range)
   let markup = convertNodesToMarkup(range.cloneContents().childNodes, [])
-  let prefix = metadata ? `[quote="${metadata}"]\n` : "[quote]\n"
+  let prefix = metadata ? `[quote=${metadata}]\n` : "[quote]\n"
   let suffix = "\n[/quote]\n\n"
 
   const codeBlock = getQuoteCodeBlock(range)
@@ -50,7 +50,12 @@ const isNodeElementWithQuoteMetadata = (node) => {
 
 const getQuoteMetadataFromNode = (element) => {
   if (element.dataset) {
-    return element.dataset.author || null
+    if  (element.dataset.post) {
+      return '"'+ element.dataset.author + '", post: ' + element.dataset.post
+    }
+    else {
+      return '"'+ element.dataset.author+ '"' || null
+    }
   }
   return null
 }

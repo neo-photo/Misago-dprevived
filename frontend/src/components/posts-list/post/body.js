@@ -23,7 +23,7 @@ export function Default({ post }) {
 
   return (
     <Waypoint className="post-body" post={post}>
-      <MisagoMarkup author={poster} markup={post.content} />
+      <MisagoMarkup author={poster} postid={post.id} markup={post.content} />
     </Waypoint>
   )
 }
