@@ -18,7 +18,7 @@ class thePhotoGallery {
     #moveMouse = (e) => {this.divMove(e)};    
     #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
     #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
-    #fallBackCss = "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";
+    #fallBackCss = "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";
     #decompress = base64string => {
     const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
     const cs = new DecompressionStream('gzip');
@@ -43,6 +43,8 @@ class thePhotoGallery {
     #sizes = {};      // final preview address -> its pixel size {w, h} (known once decoded)
     #shownSize = null;  // pixel size of the image shown now (for the Morph transition)
     #morphAnims = [];   // the running Morph animations
+    #sharpToken = 0;    // the latest image change; an older full-size swap still waiting gives up
+    #fullDone = Promise.resolve();  // the shown full-size image is loaded (or failed)
 
     
     constructor(selector = "article.misago-markup img") {
@@ -128,17 +130,21 @@ class thePhotoGallery {
     if (this.bootstrap.indexOf("font")>-1) {this.bootstrapFont()}
     
     window.addEventListener('mouseup', (e) => {this.mouseUp()}, false);
-    document.querySelector('#' + this.myId +' .backImage img.picture').addEventListener('mousedown',(e) =>{ this.mouseDown(e)}, false);
+    // both image layers: they swap roles on every image change (#showImage)
+    document.querySelectorAll('#' + this.myId +' .backImage img.picture, #' + this.myId +' .layer2 img.picture').forEach((e)=>
+        e.addEventListener('mousedown',(e) =>{ this.mouseDown(e)}, false));
     document.querySelector('#' + this.myId +' svg').addEventListener('click', (e) => {this.preview();});
-    document.querySelectorAll("#" + this.myId +" .backImage img.picture").forEach((e)=>{
+    document.querySelectorAll("#" + this.myId +" .backImage img.picture, #" + this.myId +" .layer2 img.picture").forEach((e)=>{
         e.addEventListener('load', (e) => {this.loadedOvImage();});
         e.addEventListener('error',  (e) =>{let t = e.target;
                                             //console.log(t.src);
                                             let small = document.querySelector("#" + this.myId +" .ext").href;
                                             //console.log(t.src, small, this.absPath + this.errorImage);
-                                            if ((t.src == document.querySelector("#" + this.myId +" .download").href) && (document.querySelector("#" + this.myId +" .download").href!=small) && (small !="" )) {
+                                            // the full-size image failed: the preview instead
+                                            if (t.dataset.full && (document.querySelector("#" + this.myId +" .download").href!=small) && (small !="" )) {
+                                              delete t.dataset.full;
                                               t.src = small;
-                                              document.querySelector("#" + this.myId +" .backImage").style.backgroundImage = "url('"+small+"')";
+                                              t.parentElement.style.backgroundImage = "url('"+small+"')";
                                             }
                                             else { 
                                               if (document.querySelector("#" + this.myId +" button[data-class='slideshow']").classList.contains("active") ) {
@@ -339,11 +345,11 @@ class thePhotoGallery {
     return parseFloat(f) * (f.endsWith("ms") ? 1 : 1000) || 0;
   }
 
-  // Morph: both layers are put exactly on the new image's rectangle (picture stretched to
-  // fill it) and animated together from the old image's rectangle to the new one (a move
-  // and a scale, so photos of other proportions are squeezed on the way); the old one
-  // stays underneath, the new one fades in on top. At the end the layers go back to
-  // their normal full-area "contain" setup, which draws the same rectangle.
+  // Morph: the old image's rectangle turns into the new one's (a scale, so photos of other
+  // proportions are squeezed on the way); the old one stays underneath, the new one fades
+  // in on top. Both layers keep their normal full-area "contain" setup and are only
+  // scaled (both images are centred, so a scale about the middle does it): nothing is
+  // redrawn while the change runs.
   #morph(o, n) {
     this.#endMorph();
     let ov = document.getElementById(this.myId);
@@ -355,17 +361,16 @@ class thePhotoGallery {
         return {x: (W - w) / 2, y: (H - h) / 2, w: w, h: h};
     };
     let a = fit(o), b = fit(n);
-    let from = "translate(" + ((a.x + a.w / 2) - (b.x + b.w / 2)) + "px, " + ((a.y + a.h / 2) - (b.y + b.h / 2))
-             + "px) scale(" + (a.w / b.w) + ", " + (a.h / b.h) + ")";
+    let newFrom = "scale(" + (a.w / b.w) + ", " + (a.h / b.h) + ")";   // new image on the old rectangle
+    // old image on the new rectangle, ending a little inside it: its edges are drawn at
+    // whole pixels and then scaled, so at exactly the same size a line of it could show
+    // beside the new image (half a pixel times the scale, plus one for the smoothing)
+    let inX = 1 + 0.5 * b.w / a.w, inY = 1 + 0.5 * b.h / a.h;
+    let oldTo = "scale(" + ((b.w - 2 * inX) / a.w) + ", " + ((b.h - 2 * inY) / a.h) + ")";
     let timing = {duration: this.#fadeMs(), easing: "ease-in-out"};
-    let layers = [ov.querySelector(".backImage"), ov.querySelector(".layer2")];
-    layers.forEach((l, i) => {
-        Object.assign(l.style, {left: b.x + "px", top: b.y + "px", width: b.w + "px", height: b.h + "px",
-                                backgroundSize: "100% 100%"});
-        let frames = i == 0 ? [{transform: from, opacity: 0}, {transform: "none", opacity: 1}]
-                            : [{transform: from, opacity: 1}, {transform: "none", opacity: 1}];
-        this.#morphAnims.push(l.animate(frames, timing));
-    });
+    this.#morphAnims.push(
+        ov.querySelector(".backImage").animate([{transform: newFrom, opacity: 0}, {transform: "none", opacity: 1}], timing),
+        ov.querySelector(".layer2").animate([{transform: "none", opacity: 1}, {transform: oldTo, opacity: 1}], timing));
     let anims = this.#morphAnims;
     Promise.all(anims.map((x) => x.finished)).then(() => { if (anims === this.#morphAnims) this.#endMorph(); }, () => {});
   }
@@ -374,11 +379,6 @@ class thePhotoGallery {
   #endMorph() {
     this.#morphAnims.forEach((x) => x.cancel());
     this.#morphAnims = [];
-    let ov = document.getElementById(this.myId);
-    if (!ov) return;
-    ov.querySelectorAll(".backImage, .layer2").forEach((l) => {
-        l.style.left = l.style.top = l.style.width = l.style.height = l.style.backgroundSize = "";
-    });
     // (.morph stays until the next change: removing it now would start the Pop animation)
   }
 
@@ -595,7 +595,9 @@ class thePhotoGallery {
   }
 
   // Prepare the neighbours of image number iPos (previews, and the next full-size image),
-  // so that prev/next can start at once.
+  // so that prev/next can start at once. The next full-size image only after the shown one
+  // has arrived (on a slow line it would take bandwidth from it), and not when the image
+  // has changed again meanwhile.
   #preloadAround(iPos) {
     let keys = Object.keys(this.#ovImages);
     if (keys.length < 2) return;
@@ -603,7 +605,10 @@ class thePhotoGallery {
     let prev = keys[(iPos - 1 + keys.length) % keys.length];
     this.#prepare(next);
     this.#prepare(prev);
-    if (this.#bigOf(next) != next) this.#resolve(this.#bigOf(next)).then((url) => this.#prepare(url));
+    let token = this.#sharpToken;
+    if (this.#bigOf(next) != next) this.#fullDone.then(() => {
+        if (token == this.#sharpToken) this.#resolve(this.#bigOf(next)).then((url) => this.#prepare(url));
+    });
   }
 
   // Open an image: the position is updated at once (so quick prev/next clicks count), the
@@ -637,9 +642,27 @@ class thePhotoGallery {
     document.querySelectorAll("#" + this.myId +" .album img.cur, #" + this.myId +" .album img.sel").forEach((e)=>e.classList.remove("cur", "sel")); 
     let imageSrc = src;
     let iOvE = document.querySelector("#" + this.myId);
-    let iOv = iOvE.querySelector("div.backImage");
+    // The two layers swap roles: the one showing the current image becomes .layer2 (the
+    // previous image, animated out) and keeps everything it has drawn; the other becomes
+    // .backImage and gets the new image. (Copying the previous image into the other layer
+    // meant redrawing a full-size image as the change starts: the change stuttered.)
+    // When the viewer is just being opened (or the image is picked in the gallery) there
+    // is no previous image: the new one appears from the viewer's background.
+    let freshOpen = iOvE.style.display == "none";
+    let wasOpen = !freshOpen && !fromAlbum;
+    let oldL = iOvE.querySelector("div.backImage");
+    let iOv = iOvE.querySelector("div.layer2");
+    oldL.classList.replace("backImage", "layer2");
+    iOv.classList.replace("layer2", "backImage");
+    let oldImg = oldL.querySelector("img.picture");
+    if (!wasOpen) {
+        oldL.style.backgroundImage = "none";
+        oldImg.classList.remove("sharp", "lost");
+    }
+    // a full-size image still loading is not needed any more (and would take bandwidth)
+    if (!wasOpen || !oldImg.complete) oldImg.removeAttribute("src");
     let iOvImg = iOv.querySelector("img.picture")
-    iOvImg.classList.remove("lost");      // an error on the previous image does not stay
+    iOvImg.classList.remove("lost", "sharp");   // an error on an earlier image does not stay
     let mylink = iOvE.querySelector(".head .nav-ov a.ext");
     //console.log(src);
     let path = "#" + this.myId +" .album img[src='" + imageSrc + "']";
@@ -660,15 +683,7 @@ class thePhotoGallery {
        }
     }
     //console.log(imageSrc, bigSrc, iOvImg.src);
-    iOvE.querySelector(".layer2").classList.remove("dohide");
-    // the previous image waits on layer2: take over what the image layer showed (full-size
-    // image and preview), not only the full-size image, which may not have loaded yet.
-    // When the viewer is just being opened there is no previous image: the new one
-    // appears from the viewer's background (not from the image shown last time).
-    let freshOpen = iOvE.style.display == "none";
-    let wasOpen = !freshOpen && !fromAlbum;
-    iOvE.querySelector(".layer2").style.backgroundImage = wasOpen ? (iOv.style.backgroundImage || "url('"+ iOvImg.src +"')") : "none";
-    iOvE.querySelector(".layer2").src = iOvImg.src;
+    oldL.classList.remove("dohide");
     iOvE.style.display = "block";
     // opened again in fullscreen if it was left in fullscreen (the click that opened it
     // still counts as the user's action the browser requires for real fullscreen)
@@ -697,19 +712,37 @@ class thePhotoGallery {
     else this.#endMorph();
     this.#shownSize = newSize;
 
-    // full-size image over the preview: the preview is decoded by now (openImage), so it
-    // shows at once and the full-size image builds up over it. The final addresses (after
-    // the forum's redirect) need no round trip to the forum.
-    iOv.style.backgroundImage = (bigSrc != imageSrc) ? "url('"+bigUrl+"'), url('"+previewUrl+"')" : "url('"+previewUrl+"')";
+    // The change runs on the preview only (small, decoded by now in openImage): drawing a
+    // full-size image while the change runs makes it stutter, even one already decoded
+    // (tested). The full-size image (img.picture, over the preview) is shown when it is
+    // decoded and the change is over. The final addresses (after the forum's redirect)
+    // need no round trip to the forum.
+    let token = ++this.#sharpToken;
+    delete iOvImg.dataset.full;
+    this.#fullDone = Promise.resolve();
+    iOv.style.backgroundImage = "url('"+previewUrl+"')";
+    if (bigSrc != imageSrc) {
+        iOvImg.dataset.full = "1";      // for the error handler: the full-size image failed
+        iOvImg.src = bigUrl;
+        let changeOver = Math.max(0, this.#changeStart + this.#fadeMs() - performance.now());
+        let decoded = iOvImg.decode();
+        this.#fullDone = decoded.catch(() => {});
+        Promise.all([decoded, new Promise((ok) => setTimeout(ok, changeOver))]).then(() => {
+            if (token == this.#sharpToken) iOvImg.classList.add("sharp");
+        }, () => {});                       // not loaded (error handler) or replaced
+    }
+    else {
+        iOvImg.src = bigSrc ;
+    }
     iOvE.querySelector(".head .nav-ov a.download").href = bigSrc ;
-    iOvImg.src = bigSrc ;
     
     let iPos = Object.keys(this.#ovImages).indexOf(imageSrc);
     //console.log(imageSrc,iPos);
     iOvE.dataset.pos = iPos;
     this.ivChangeNav(iPos, iOvE);
     this.#showInfo(imageSrc, iPos, iOvE);
-    if (this.useExif) this.makeExif(iOvImg.src, iOvE.querySelector(".exifOverlay"));    
+    // (the forum address as before, not the final one the image element now loads)
+    if (this.useExif) this.makeExif(new URL(bigSrc, document.baseURI).href, iOvE.querySelector(".exifOverlay"));
 }
 
  switchImage(e) {
