@@ -110,9 +110,10 @@ class Attachment(PluginDataModel):
         # NP: add exif
         self.plugin_data = {"exif":makeExif(thumbnail)}
         
-        # MG: patched for exif preversation
+        # MG: patched for exif and color profile preservation (as in 0.34)
         exif_data = thumbnail.info.get('exif', b'')
-        
+        icc = thumbnail.info.get('icc_profile', b'')  # empty: Pillow writes no profile
+
         downscale_image = (
             thumbnail.size[0] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[0]
             or thumbnail.size[1] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[1]
@@ -126,9 +127,9 @@ class Attachment(PluginDataModel):
             if fileformat == "jpg":
                 # normalize jpg to jpeg for Pillow
                 # MG: patched for exif preversation
-                thumbnail.save(thumb_stream, "jpeg", exif=exif_data)
+                thumbnail.save(thumb_stream, "jpeg", exif=exif_data, icc_profile=icc)
             else:
-                thumbnail.save(thumb_stream, "png")
+                thumbnail.save(thumb_stream, "png", icc_profile=icc)
         elif strip_animation:
             thumbnail.save(thumb_stream, "png")
 
