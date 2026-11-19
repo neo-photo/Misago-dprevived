@@ -14,6 +14,7 @@ function catchEvent(e) {
     //console.log(e);
     if (e.detail.action=="updatePost") {
          gallery.refreshGallery();
+    document.querySelectorAll(".exifrow").forEach((e) => {if (!e.classList.contains('exifbutton')) {e.classList.add('exifbutton');e.addEventListener('click',(e)=>{let tel = e.target; while (!tel.classList.contains("exifbutton")){tel=tel.parentElement};tel.classList.toggle('show')})}});
          document.querySelectorAll("#limitSwitch").forEach((ee) =>ee.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let st = document.querySelector("#limitSwitch").selectedOptions[0].value;
                                                       if (st!="") setPostLimit(st);
@@ -237,6 +238,7 @@ function changeStyle(opts) {
 function startup(){ 
     //alert("3");
     gallery.initGallery();
+    document.querySelectorAll(".exifrow").forEach((e) => {if (!e.classList.contains('exifbutton')) {e.classList.add('exifbutton');e.addEventListener('click',(e)=>{let tel = e.target; while (!tel.classList.contains("exifbutton")){tel=tel.parentElement};tel.classList.toggle('show')})}});
     document.querySelectorAll(".hoveropen").forEach((e)=>{e.addEventListener('click', (ev) => {
         let t = ev.target;
         //console.log(t);

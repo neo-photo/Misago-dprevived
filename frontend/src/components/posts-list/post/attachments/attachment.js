@@ -62,25 +62,21 @@ export function AttachmentThumbnail(props) {
   )
 }
 export function AttachmentExifDetails(props) {
-  let exifData = null
-  let result = ""
   if (props.attachment.plugin_data && props.attachment.plugin_data.exif) {
-      exifData = props.attachment.plugin_data.exif
-      
-      //for (const [key, value] of Object.entries(exifData)) {result += key ": " + value + '\n';}
-      Object.entries(exifData).map(function(keyName) {result += keyName[0] +": " + keyName[1] + '\n' })
-       return (<div className="attaexif">
-          <code className="exifInfo">{result}</code>
+
+       return (<div className="exifrow">
+         <button>Show more Exif</button>
+          <AttachmentExifRows exif={props.attachment.plugin_data.exif} />
           </div>)
     }
 
   return null
-  /*  return (<div className="attaexif">
-          <button>exif</button>
-          <div className="exifInfo">{{ result }}</div>
-          </div>)*/
-
 }
+export function AttachmentExifRows(exif) {
+      const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
+      return <div >{listItems}</div>;
+        }
+
 export function AttachmentDetails(props) {
   let user = null
   if (props.attachment.url.uploader) {
