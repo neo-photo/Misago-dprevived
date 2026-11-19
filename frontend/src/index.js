@@ -68,4 +68,4 @@ window.misago = misago
 // and export it for tests and stuff
 export default misago
 
-startLiveTimestamps()
+//startLiveTimestamps()
