@@ -14,6 +14,9 @@ from ...conf import settings
 from ...core.utils import slugify
 from ...plugins.models import PluginDataModel
 from ...thePhoto.exif import makeExif
+from ...thePhoto.exif import makeIcc
+
+Image.MAX_IMAGE_PIXELS = 250_000_000
 
 def upload_to(instance, filename):
     # pylint: disable=undefined-loop-variable
@@ -108,11 +111,16 @@ class Attachment(PluginDataModel):
         thumbnail = Image.open(upload)
         
         # NP: add exif
-        self.plugin_data = {"exif":makeExif(thumbnail)}
+        exif = makeExif(thumbnail)
+        icc = thumbnail.info.get('icc_profile',b'')              
         
-        # MG: patched for exif and color profile preservation (as in 0.34)
+        if icc:
+          exif = makeIcc(icc, exif)
+        self.plugin_data = {"exif":exif}
+        
+        # MG: patched for exif and color profile  preversation
         exif_data = thumbnail.info.get('exif', b'')
-        icc = thumbnail.info.get('icc_profile', b'')  # if no profile present, then Pillow just ignores that
+ 
 
         downscale_image = (
             thumbnail.size[0] > settings.MISAGO_ATTACHMENT_IMAGE_SIZE_LIMIT[0]
@@ -129,7 +137,7 @@ class Attachment(PluginDataModel):
                 # MG: patched for exif preversation
                 thumbnail.save(thumb_stream, "jpeg", exif=exif_data, icc_profile=icc)
             else:
-                thumbnail.save(thumb_stream, "png", icc_profile=icc)
+                thumbnail.save(thumb_stream, "png", exif=exif_data, icc_profile=icc)
         elif strip_animation:
             thumbnail.save(thumb_stream, "png")
 
