@@ -62,8 +62,7 @@ export function AttachmentThumbnail(props) {
   )
 }
 export function AttachmentExifDetails(props) {
-  if (props.attachment.plugin_data && props.attachment.plugin_data.exif) {
-
+  if (props.attachment.plugin_data && props.attachment.plugin_data.exif && Object.keys(props.attachment.plugin_data.exif).length>0) {
        return (<div className="exifrow">
          <button>Show more Exif</button>
           <AttachmentExifRows exif={props.attachment.plugin_data.exif} />
