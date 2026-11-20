@@ -21,7 +21,8 @@ export default function (props) {
         </a>
         <AttachmentDetails {...props} />
       </div>
-    </div>
+      <AttachmentExifDetails {...props} />
+  </div>
   )
 }
 
@@ -60,6 +61,20 @@ export function AttachmentThumbnail(props) {
     />
   )
 }
+export function AttachmentExifDetails(props) {
+  if (props.attachment.plugin_data && props.attachment.plugin_data.exif && Object.keys(props.attachment.plugin_data.exif).length>0) {
+       return (<div className="exifrow">
+         <button>Show more Exif</button>
+          <AttachmentExifRows exif={props.attachment.plugin_data.exif} />
+          </div>)
+    }
+
+  return null
+}
+export function AttachmentExifRows(exif) {
+      const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
+      return <div >{listItems}</div>;
+        }
 
 export function AttachmentDetails(props) {
   let user = null

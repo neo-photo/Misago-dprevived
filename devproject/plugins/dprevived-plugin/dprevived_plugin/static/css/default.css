@@ -22,6 +22,24 @@ background-color: chocolate;
   padding: 10px;
 }
 
+
+.exifrow {
+  max-height: 100px;
+  overflow: hidden;
+  
+}
+.exifrow.show {
+  max-height: inherit;
+  overflow: inherit;
+}
+
+.exifrow button {
+  border: 0;
+  padding: 0;
+  font-weight: bold;
+}
+
+
 .dark button.btn.btn-navbar-icon, .btn.btn-navbar-icon:link, .btn.btn-navbar-icon:visited, .btn.btn-navbar-icon:hover, .btn.btn-navbar-icon:focus {
  color:#a5adba;
 }

@@ -28,6 +28,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "acl",
             "is_image",
             "url",
+            "plugin_data"
         ]
 
     def get_acl(self, obj):

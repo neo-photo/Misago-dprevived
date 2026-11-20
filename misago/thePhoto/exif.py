@@ -1,5 +1,8 @@
 from PIL import ExifTags
+import PIL.ImageCms
+
 import datetime
+import io
 
 exifToStore =[
   "ExposureProgram",
@@ -40,7 +43,7 @@ exifDate=[
 
 gps ={
   "GPSLatitudeRef":1,
-  "GPSLatitude":2, 
+  "GPSLatitude":2,
   "GPSLongitudeRef":3,
   "GPSLongitude":4,
   "GPSAltitude":6,
@@ -49,14 +52,18 @@ gps ={
    }
 
 def makeDate(d, o):
-  print(d)
-  print(o)
   if o:
     format_string_tz = "%Y:%m:%d %H:%M:%S%z"
     parsed_datetime = datetime.datetime.strptime(d + o, format_string_tz)
     return  parsed_datetime.astimezone(datetime.UTC).strftime("%Y:%m:%d %H:%M:%S")
   else:
     return d
+
+def makeIcc(icc, exif):
+  profile = PIL.ImageCms.ImageCmsProfile(io.BytesIO(icc))
+  exif["IccProfile"] = PIL.ImageCms.getProfileName(profile).strip()
+  exif["IccVersion"] = profile.profile.version
+  return exif
 
 def makeExif(pilImage):
     exifResult = {}
@@ -70,12 +77,12 @@ def makeExif(pilImage):
                 ExifTags.TAGS.get(tag_id, tag_id): value
                 for tag_id, value in exifData.items()
             }
-            
+
         for one in exifToStore:
             v = exifDict.get(one)
             if v:
               exifResult[one] = str(v).replace("\x00","").strip()
-              
+
         #GPS
         if "GPSInfo" in exifDict:
             gpsData =  exifDict["GPSInfo"]
@@ -83,15 +90,15 @@ def makeExif(pilImage):
             v = gpsData.get(gps.get("GPSAltitude"))
             if v:
               exifResult["GPSAltitude"] = str(v).strip()
-              
+
             if gps.get("GPSLatitude") in gpsData:
               (deg,min,sec) = gpsData.get(gps.get("GPSLatitude"))
               lat = float(deg) + (float(min)/60.0) + (float(sec)/60.0)
               if (gpsData.get(gps.get("GPSLatitudeRef")))=="S": lat = -lat
-            
+
               (deg,min,sec) =gpsData.get(gps.get("GPSLongitude"))
               lon =  float(deg) + (float(min)/60.0) + (float(sec)/60.0)
-              if (gpsData.get(gps.get("GPSLongitudeRef")))=="W": lon = -lon      
+              if (gpsData.get(gps.get("GPSLongitudeRef")))=="W": lon = -lon
               exifResult["GPSPosition"] = "%f, %f" %(lat, lon)
             gpsDate = gpsData.get(gps.get("GPSDateStamp"))
             gpsTime = gpsData.get(gps.get("GPSTimeStamp"))
@@ -112,6 +119,6 @@ def makeExif(pilImage):
           exifResult["DateTimeOriginal"] = makeDate(dtd,dtdo)
         if dt:
           exifResult["DateTime"] = makeDate(dt,dto)
-          
+
     return exifResult
 
