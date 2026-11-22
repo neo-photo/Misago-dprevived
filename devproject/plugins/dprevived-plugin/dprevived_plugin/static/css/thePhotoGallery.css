@@ -423,10 +423,10 @@ html:has(#image-ov.full:not([style*="none"])) {
   left: 0;
   height: auto;
 }
-/* two layers: .backImage the current image (full-size over the preview), .layer2 the
+/* two layers: .backImage the current image (full-size over the preview), .bufferImage the
    previous one during an image change */
 #image-ov .backImage,
-#image-ov .layer2 {
+#image-ov .bufferImage {
   position: absolute;
   top: 0;
   left: 0;
@@ -445,14 +445,14 @@ html:has(#image-ov.full:not([style*="none"])) {
   opacity: 1;
   transform: none;
 }
-#image-ov .layer2 {
+#image-ov .bufferImage {
   opacity: 0;
   transform: none;
 }
 /* the soft line around the image: a drop-shadow, which follows the image (a background
    image, no box of its own) once the layer's own background is transparent */
 #image-ov:not(.big) .backImage,
-#image-ov:not(.big) .layer2 {
+#image-ov:not(.big) .bufferImage {
   background-color: transparent;
   filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line));
 }
@@ -466,7 +466,7 @@ html:has(#image-ov.full:not([style*="none"])) {
    every change, so the previous image leaves with what it has drawn (nothing new to draw
    but the new preview); will-change keeps each on its own, already drawn, layer. */
 #image-ov:not(.big) .backImage img.picture:not(.lost),
-#image-ov:not(.big) .layer2 img.picture:not(.lost) {
+#image-ov:not(.big) .bufferImage img.picture:not(.lost) {
   display: block;
   position: absolute;
   top: 0;
@@ -481,16 +481,16 @@ html:has(#image-ov.full:not([style*="none"])) {
   will-change: opacity;
 }
 #image-ov:not(.big) .backImage img.picture.sharp:not(.lost),
-#image-ov:not(.big) .layer2 img.picture.sharp:not(.lost) {
+#image-ov:not(.big) .bufferImage img.picture.sharp:not(.lost) {
   opacity: 1;
   transition: opacity var(--dp-iv-sharpen) linear;
 }
 #image-ov:not(.big) .backImage,
-#image-ov:not(.big) .layer2 {
+#image-ov:not(.big) .bufferImage {
   will-change: transform, opacity;
 }
 /* zoomed, the previous image is not shown during a change (as its preview: size 0) */
-#image-ov.big .layer2 img.picture {
+#image-ov.big .bufferImage img.picture {
   display: none;
 }
 /* an image that could not be loaded: the error image (Misago's attachment-404.png, set in
@@ -518,7 +518,7 @@ html:has(#image-ov.full:not([style*="none"])) {
 #image-ov.changing .backImage {
   animation: dp-iv-morph-in var(--dp-iv-fade) ease-in-out both;
 }
-#image-ov.changing .layer2 {
+#image-ov.changing .bufferImage {
   animation: dp-iv-morph-out var(--dp-iv-fade) ease-in-out both;
 }
 /* Fade (.t-fade) and Quick (.t-quick): the old image fades out while the new one fades
@@ -526,13 +526,13 @@ html:has(#image-ov.full:not([style*="none"])) {
 #image-ov.changing.t-fade .backImage {
   animation: dp-iv-fade-in var(--dp-iv-fade) linear both;
 }
-#image-ov.changing.t-fade .layer2 {
+#image-ov.changing.t-fade .bufferImage {
   animation: dp-iv-fade-out var(--dp-iv-fade) linear both;
 }
 #image-ov.changing.t-quick .backImage {
   animation: dp-iv-fade-in var(--dp-iv-quick) linear both;
 }
-#image-ov.changing.t-quick .layer2 {
+#image-ov.changing.t-quick .bufferImage {
   animation: dp-iv-fade-out var(--dp-iv-quick) linear both;
 }
 @keyframes dp-iv-fade-in {
@@ -544,7 +544,7 @@ html:has(#image-ov.full:not([style*="none"])) {
   to { opacity: 0; }
 }
 #image-ov.changing.morph .backImage,
-#image-ov.changing.morph .layer2 {
+#image-ov.changing.morph .bufferImage {
   animation: none;
 }
 @keyframes dp-iv-morph-in {
@@ -555,9 +555,50 @@ html:has(#image-ov.full:not([style*="none"])) {
   from { opacity: 1; transform: scale(1); }
   to { opacity: 0; transform: scale(calc(1 + var(--dp-iv-morph-scale))); }
 }
+/* Martin's transitions (class trans-<name>), rules to come */
+.trans-flip .bufferImage {
+
+}
+
+.trans-flip .backImage {
+
+}
+
+.trans-slide .bufferImage {
+
+}
+
+.trans-slide .backImage {
+
+}
+
+.trans-drop .bufferImage {
+
+}
+
+.trans-drop .backImage {
+
+}
+
+.trans-fade .bufferImage {
+
+}
+
+.trans-fade .backImage {
+
+}
+
+.trans-none .bufferImage {
+
+}
+
+.trans-none .backImage {
+
+}
+
 /* the old "preview" spinner is not used */
 #image-ov .backImage svg,
-#image-ov .layer2 svg {
+#image-ov .bufferImage svg {
   display: none;
 }
 /* "Loading...", under the layers, so any image covers it: only seen when loading takes
@@ -638,7 +679,7 @@ html:has(#image-ov.full:not([style*="none"])) {
    (the JS), so dragging and the scrollbars are one mechanism. A transparent border leaves
    a little room past the image edges. An image smaller than the area is centred. */
 #image-ov.big .backImage,
-#image-ov.big .layer2 {
+#image-ov.big .bufferImage {
   background-size: 0;
 }
 #image-ov.big .backImage {
