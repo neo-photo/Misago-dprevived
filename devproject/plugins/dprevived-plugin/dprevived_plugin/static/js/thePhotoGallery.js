@@ -16,22 +16,23 @@ class thePhotoGallery {
     #ovImages = {};
     #cache = {"exif":{}};
     #moveMouse = (e) => {this.divMove(e)};    
+    #pluginKeys = ["init","menuitems","lightable","refresh"];
+    #plugins = {};    
     #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
     #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
     #fallBackCss = "H4sIAAAAAAAAA41XS2/jNhA+x7+C2CJAvIi0tB1vXBsFeu1pz0WxB0qkJTYyKVD0I7vY/97hU6JkBUUgxx4OyXl8882o1qdmX5Pu6Td+IhXL5CU/nptmL6R++qfT7w37/McnIQX79H25RD8XCMkLU8dGXveo5pQycVj8Wixy+M6yE7MalHdtQ973yOxzy+zGj99gI4hTlWPDbgcQmP+ZO7aUzfnkj214VWtNisad3MqOay7FHinWEM0vzOytmdHaoxXGj24baYrzabSDFB0crO0OLds9wubbj4wLym57tDnMmnVVBNTNpxFdOdV1uGx8OUIFKd8qJc+CZuCIVGBqVZCnNcbPyH5g9Izz16XRJeCeADWhmdDu0qzTRGmz2BJKuagya+t621p7QvAzsJGctTSyf8+d5sf3/pwSPpkaRoKfKhuNYPv2Uie2+98noioOoVpjd1shFWUqU4Tyc7dfWWlyaF6elT046O7RS3tDEGhOnd/4eb3dPmNwebu0m3uctUpWinUdyiHkTK1Rd6n8YSEPRSPLt4ORODSM9WJ2h8k1fkDSrKvg2dXJwu9Hr8JFUMFBxYcjxNXB5CXsaNhR97+ChRHiKca7logU6M4V0JwG4BndCQrll1yQi3cU4twBlsJqGklUnLWW7j7ZkpJruA/nu5EWnGhz1shO37VtDtvhZ4AHjtAzgZ5UH/rzxCgn6KmPMXr9umtvy5DcS2+UE/UJ2mEf4BjyFX60AnOyAQEEJaetYpes0MLv97f0mQtG9ZK+LkNFAi7Dg/PN0meZC9a7xE7Go9F1/rKdL5KgvEuKBjbHQiga4sKb1hPauA0hrL7EBwTS8R/M8OHFVHMEAaCexwIfRvKhN8XU80PPfUd+YxQk0XQD+YfIfZC61Sx3WeryzzKS5wo7yrApQqGGpr4DXN/nXPcMZ5n418KjpisVYwIRQQFAsY7BZAjv0qc7cXqQf/DDOhaxgw8eOgnxFLxCufH1LyNBP/uOBpfLpjkkce01B3UaOetDHgoEEzA9qqdhHwqRxGO0zmfiIVFTrGVEm57rv04O6uEQGsRIIcBNaMLFlDzyszBd3rn85bNWRIQDPesA6Wy7w+cvRmG4bL8fpTohs56uZpRZDgorgcBWvZ7ZCQGQmmj29xOmrLKtBI3Mo7I373/cnp76ezz2bup9nkPFOOOirT5p88e6/jWHwCH/25UEW5MEYdeEDQ/Ckwl20yOGUo4GnCJBk+kLIQ8qLiBGpBm73fedI4DBX7sxZBhlV081hWyo9x7syLqaUFNIhgDMc615KIbINuvDx3PZy+5xyCWhw47sM90snTzuEO6EdzzHDkaf4FWgkHwdJNYhO6LNVkwy4SX95NX3k9C4A2VPegyUjOsyA/+m+XI9InMcEZ1IDtp8DeLBLK2kn20mQyJMKCXLCqavjI2LPa8Zofva8OIUhM5nn9jptmAwWBssWzsXh2NTHLDvWzsT4hWENjxuoEyKEgPg7+EqmWqGgTbTUMtLfVZsNHg60E0nCfC3kPQ9p0S9obsVc7cMPCDNmJiW+rwF03nRj3k5VHk2mp/cm0OtuHiDSxNA9xNQP76ZPw+i0IMthQ2qfZX7eh8Mcav81cli8QRBOjUFRC/uGZyfgBgVkE7GSz+zJru5qGHZdC8v6QXBA5wQSFyfvGjGIbz3fBNeYQxzxvDNoRIgeI3xnFSQZdnpm1oS18xTsb93gBhSmtfXufJC9sW3UpPatG/n6dTrp56E1bAfzz4YMWJQxvSMMU5tDa8i5v+RNw0bv/Nh1NfL1BXbFluiIGj3YmuyYa/6dknfYNza4j85yHy2ohAAAA==";
     #decompress = base64string => {
-    const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
-    const cs = new DecompressionStream('gzip');
-    const writer = cs.writable.getWriter();
-    writer.write(bytes);
-    writer.close();
-    return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
-        return new TextDecoder().decode(arrayBuffer);
-    });
+      const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
+      const cs = new DecompressionStream('gzip');
+      const writer = cs.writable.getWriter();
+      writer.write(bytes);
+      writer.close();
+      return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
+          return new TextDecoder().decode(arrayBuffer);
+      });
 }
 
-
-    
+  
     constructor(selector = "article.misago-markup img") {
         // config Vars
         this.selector = selector;
@@ -119,9 +120,22 @@ class thePhotoGallery {
   add2lighttable(element){
       document.querySelector("#" + this.myId + " div.lightable").append.Element(element);  
   }
+
+  setTitle(value=""){
+     document.querySelector("#" + this.myId + ".exifoverlay").innerHTML = value;
+  }
+
+  registerPlugin(name,values) {
+    if (name in this.#plugins) console.warn("plugin already registrerd:",name)
+    this.#plugins[name] = {};
+    this.#pluginKeys.forEach((key)=>{
+      if (key in values) this.#plugins[name] = values[key]
+    });
+  }
   
   initGallery(){
     //alert("g4");
+
     if (this.absPath[0] in [".","/"]) {console.error("Error wrong absPath:",this.absPath)}
     if (this.bootstrap.indexOf("html")>-1 && document.querySelector('#' + this.myId) == undefined) {this.bootstrapHtml();}
     if (this.bootstrap.indexOf("css")>-1) {this.bootstrapCss()}
@@ -163,6 +177,15 @@ class thePhotoGallery {
     document.querySelectorAll("#" + this.myId +" div.nav").forEach(
     (e) => { e.addEventListener('click',(e) =>{this.switchImage(e);return false;});}
     );
+    Object.values(this.#plugins).forEach((plugin) => {
+      if ("init" in plugin) {plugin.init()}
+      if ("menuitems" in plugin) {
+        plugin.menuitems.forEach((item=>{this.menuitem(item.element,item.click,item.conetxtmenu)}))
+      }
+      if ("lighttable" in plugin) {
+        plugin.lighttable.forEach((item=>{this.add2lighttable(item)})
+      )}
+    });
     this.refreshGallery();
 }
 
@@ -537,6 +560,9 @@ class thePhotoGallery {
             }
         }
     );
+    Object.values(this.#plugins).forEach((plugin) => {
+      if ("refresh" in plugin) {plugin.refresh()}
+    });
 }
 
 }
