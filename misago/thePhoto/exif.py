@@ -67,10 +67,13 @@ def makeIcc(icc, exif):
 
 def makeExif(pilImage):
     exifResult = {}
-    if len(pilImage.info.get('exif',''))>0:
+    exifData = pilImage.info.get('exif','')
+    if exifData and len(exifData)>0:
       try:
         exifData = pilImage._getexif()
-      except SyntaxError:
+      except AttributeError:
+        exifData = pilImage.getexif()
+      except NotImplementedError:
         exifData = None
       if exifData and len(exifData)>0 :
         exifDict = {

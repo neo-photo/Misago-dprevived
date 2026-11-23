@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from PIL import Image
+import pillow_heif
 
 from ...conf import settings
 from ...core.utils import slugify
@@ -107,13 +108,14 @@ class Attachment(PluginDataModel):
         fileformat = self.filetype.extensions_list[0]
 
         self.image = File(upload, upload.name)
-
+        if fileformat in ("heif","heic") :
+          pillow_heif.register_heif_opener()
+          
         thumbnail = Image.open(upload)
         
         # NP: add exif
         exif = makeExif(thumbnail)
         icc = thumbnail.info.get('icc_profile',b'')              
-        
         if icc:
           exif = makeIcc(icc, exif)
         self.plugin_data = {"exif":exif}
