@@ -1,0 +1,258 @@
+/* thePhotoGallery settings dialog (thePhotoGallerySettings.js): a panel over the dimmed
+   image area. Its own colours (--dp-iv-dlg-*): light like the forum's posts, dark (dark
+   theme, and fullscreen) like the forum's editor dialog with its copper glow; sliders in
+   the dark theme's scrollbar colours. Save: white on a deeper steel blue in light, the
+   viewer's "on" colours (thePhotoGallery.css) in dark and fullscreen. Plain CSS, no
+   nesting (Windows 7 browsers). */
+
+#image-ov {
+  --dp-iv-dlg-bg: hsl(330, 1%, 94%);                 /* between the posts' rows (88%, white) */
+  --dp-iv-dlg-text: hsl(218, 22%, 31%);
+  --dp-iv-dlg-strong: hsl(218, 30%, 22%);
+  --dp-iv-dlg-border: hsl(38, 2%, 62%);
+  --dp-iv-dlg-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --dp-iv-dlg-line: hsl(38, 2%, 80%);                /* under the group headings */
+  --dp-iv-dlg-ctl-bg: #fff;                          /* dropdowns, buttons */
+  --dp-iv-dlg-ctl-hover-bg: hsl(38, 2%, 97%);
+  --dp-iv-dlg-ctl-border: hsl(38, 2%, 68%);
+  --dp-iv-dlg-ctl-color: #172b4d;
+  --dp-iv-dlg-track: hsl(38, 2%, 76%);               /* sliders: the track, */
+  --dp-iv-dlg-fill: hsl(214, 41%, 64%);              /* its part left of the thumb, */
+  --dp-iv-dlg-thumb: hsl(214, 41%, 50%);             /* the thumb */
+  --dp-iv-dlg-thumb-border: hsl(214, 35%, 38%);
+  /* Save: white on a deeper steel blue (the toolbar's "on" blue is too light for text) */
+  --dp-iv-dlg-save-bg: hsl(214, 50%, 44%);
+  --dp-iv-dlg-save-hover-bg: hsl(214, 50%, 38%);
+  --dp-iv-dlg-save-border: hsl(214, 50%, 32%);
+  --dp-iv-dlg-save-color: #fff;
+}
+body.dark #image-ov,
+#image-ov.full {
+  --dp-iv-dlg-bg: hsl(40, 11%, 11%);                 /* the editor dialog's panel */
+  --dp-iv-dlg-text: rgb(200, 181, 148);
+  --dp-iv-dlg-strong: rgb(246, 224, 185);
+  --dp-iv-dlg-border: rgb(200, 181, 148);
+  --dp-iv-dlg-shadow: 0 0 18px rgba(200, 181, 148, 0.35);
+  --dp-iv-dlg-line: rgb(70, 70, 70);
+  --dp-iv-dlg-ctl-bg: rgb(40, 40, 40);               /* the forum's inputs */
+  --dp-iv-dlg-ctl-hover-bg: rgb(70, 70, 70);
+  --dp-iv-dlg-ctl-border: rgb(70, 70, 70);
+  --dp-iv-dlg-ctl-color: rgb(200, 181, 148);
+  --dp-iv-dlg-track: hsl(38, 13%, 18%);              /* the dark scrollbar's track */
+  --dp-iv-dlg-fill: hsl(38, 25%, 34%);
+  --dp-iv-dlg-thumb: hsl(38, 32%, 50%);              /* and thumb */
+  --dp-iv-dlg-thumb-border: hsl(38, 32%, 40%);
+  /* Save: the viewer's "on" colours (dark theme: copper) */
+  --dp-iv-dlg-save-bg: var(--dp-iv-btn-active-bg);
+  --dp-iv-dlg-save-hover-bg: var(--dp-iv-btn-active-hover-bg);
+  --dp-iv-dlg-save-border: var(--dp-iv-btn-active-border);
+  --dp-iv-dlg-save-color: var(--dp-iv-btn-active-color);
+}
+
+#image-ov .iv-settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;                      /* over the image, arrows and gallery */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+}
+#image-ov .iv-settings[hidden] {
+  display: none;
+}
+#image-ov .iv-settings-panel {
+  box-sizing: border-box;
+  width: 520px;
+  max-width: calc(100% - 24px);
+  max-height: calc(100% - 24px);
+  margin: 0;
+  padding: 14px 18px 16px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--dp-iv-dlg-text);
+  background-color: var(--dp-iv-dlg-bg);
+  border: 1px solid var(--dp-iv-dlg-border);
+  border-radius: 4px;
+  box-shadow: var(--dp-iv-dlg-shadow);
+}
+#image-ov .iv-settings-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dp-iv-dlg-strong);
+}
+
+/* two columns: labels, controls; group headings across both */
+#image-ov .iv-settings-grid {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px 16px;
+  align-items: center;
+}
+#image-ov .iv-settings-group {
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  padding: 0 0 2px;
+  font-weight: 600;
+  color: var(--dp-iv-dlg-strong);
+  border-bottom: 1px solid var(--dp-iv-dlg-line);
+}
+#image-ov .iv-settings-group:first-child {
+  margin-top: 0;
+}
+#image-ov .iv-settings-label,
+#image-ov .iv-settings-choice {
+  margin: 0;                        /* the forum's labels are bold with a margin */
+  font-weight: normal;
+  color: inherit;
+}
+#image-ov .iv-settings-ctl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  min-height: 26px;
+}
+#image-ov .iv-settings-ctl.off {
+  opacity: 0.45;
+}
+
+/* dropdowns */
+#image-ov .iv-settings select {
+  flex: 1 1 auto;
+  height: 26px;
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--dp-iv-dlg-ctl-color);
+  background-color: var(--dp-iv-dlg-ctl-bg);
+  border: 1px solid var(--dp-iv-dlg-ctl-border);
+  border-radius: 3px;
+}
+#image-ov .iv-settings select option {
+  color: var(--dp-iv-dlg-ctl-color);
+  background-color: var(--dp-iv-dlg-ctl-bg);
+}
+
+/* sliders: drawn here (the browsers' own are near invisible on light grey and white on
+   dark); the JS puts the thumb's position on the slider as --p, for the filled part */
+#image-ov .iv-settings input[type="range"] {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+#image-ov .iv-settings input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--dp-iv-dlg-fill) var(--p, 0%), var(--dp-iv-dlg-track) var(--p, 0%));
+  border-radius: 2px;
+}
+#image-ov .iv-settings input[type="range"]::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  background: var(--dp-iv-dlg-thumb);
+  border: 1px solid var(--dp-iv-dlg-thumb-border);
+  border-radius: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+#image-ov .iv-settings input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: var(--dp-iv-dlg-track);
+  border-radius: 2px;
+}
+#image-ov .iv-settings input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: var(--dp-iv-dlg-fill);
+  border-radius: 2px;
+}
+#image-ov .iv-settings input[type="range"]::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  background: var(--dp-iv-dlg-thumb);
+  border: 1px solid var(--dp-iv-dlg-thumb-border);
+  border-radius: 50%;
+}
+#image-ov .iv-settings input[type="range"]:disabled {
+  cursor: default;
+}
+#image-ov .iv-settings output {
+  flex: 0 0 auto;
+  min-width: 3.6em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--dp-iv-dlg-strong);
+}
+
+/* checkboxes */
+#image-ov .iv-settings input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0 5px 0 0;
+  vertical-align: middle;
+  accent-color: var(--dp-iv-dlg-thumb);
+}
+#image-ov .iv-settings-choice {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Defaults at the left, Cancel and Save at the right; Save in the viewer's "on" colour */
+#image-ov .iv-settings-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+#image-ov .iv-settings-buttons .iv-defaults {
+  margin-right: auto;
+}
+#image-ov .iv-settings-buttons button {
+  min-width: 76px;
+  height: 28px;
+  margin: 0;
+  padding: 0 12px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--dp-iv-dlg-ctl-color);
+  background-color: var(--dp-iv-dlg-ctl-bg);
+  border: 1px solid var(--dp-iv-dlg-ctl-border);
+  border-radius: 3px;
+  box-shadow: none;
+  cursor: pointer;
+}
+#image-ov .iv-settings-buttons button:hover {
+  background-color: var(--dp-iv-dlg-ctl-hover-bg);
+}
+#image-ov .iv-settings-buttons button.iv-save {
+  color: var(--dp-iv-dlg-save-color);
+  background-color: var(--dp-iv-dlg-save-bg);
+  border-color: var(--dp-iv-dlg-save-border);
+}
+#image-ov .iv-settings-buttons button.iv-save:hover {
+  background-color: var(--dp-iv-dlg-save-hover-bg);
+}
+#image-ov .iv-settings select:focus,
+#image-ov .iv-settings input:focus,
+#image-ov .iv-settings-buttons button:focus {
+  outline: none;
+}
+#image-ov .iv-settings select:focus-visible,
+#image-ov .iv-settings input:focus-visible,
+#image-ov .iv-settings-buttons button:focus-visible {
+  outline: 2px solid var(--dp-iv-focus);
+  outline-offset: 1px;
+}

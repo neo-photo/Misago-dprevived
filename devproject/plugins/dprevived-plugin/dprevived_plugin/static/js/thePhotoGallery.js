@@ -16,11 +16,12 @@ class thePhotoGallery {
     #ovImages = {};
     #cache = {"exif":{}};
     #moveMouse = (e) => {this.divMove(e)};    
-    #pluginKeys = ["init","menuitems","lightable","refresh"];
-    #plugins = {};    
+    #pluginKeys = ["init","menuitems","lighttable","refresh"];
+    #plugins = {};
+    #started = false;   // initGallery() has run: a plugin registered later starts at once
     #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
     #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
-    #fallBackCss = "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";
+    #fallBackCss = "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";
     #decompress = base64string => {
       const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
       const cs = new DecompressionStream('gzip');
@@ -53,9 +54,21 @@ class thePhotoGallery {
         // config Vars
         this.selector = selector;
         this.timeout = 3000;  // slideshow: how long an image is shown (after its transition)
-        this.transition = "pop";  // image change: "quick", "fade", "pop" or "morph"; the
-                                  // viewer's chooser overrides it with the user's last choice
-        this.storageKey = "dp-image-viewer";  // localStorage: last transition, fullscreen
+        this.transition = "pop";  // image change: "quick", "fade", "pop" or "morph"
+        // Settings (changed with applySettings(), e.g. by the settings plugin): the
+        // transition, its duration (s; Quick is fixed), slideshow time per image (s), the
+        // display modes offered ("window" popup, "max" filling the browser window, "full"
+        // whole screen), the mode to open in ("last" = last used), transparency of the
+        // viewer's background (0 - 0.5), preloading the next full-size image.
+        this.defaultSettings = {transition: "pop", duration: 0.7, slideTime: 3,
+                                modes: ["window", "max", "full"], openIn: "last",
+                                transparency: 0, preload: true};
+        this.settings = Object.assign({}, this.defaultSettings);
+        this.transitionList = [["quick", "Quick"], ["fade", "Fade"], ["pop", "Pop"], ["morph", "Morph"]];
+        // where settings and the last used display mode are kept: localStorage by default;
+        // replace with {load: () => object, save: (changes) => {}} (e.g. a database)
+        this.storageKey = "dp-image-viewer";
+        this.storage = {load: () => this.#load(), save: (changes) => this.#save(changes)};
         this.myId = "image-ov";
         this.useExif = true;
         this.addExif = false;
@@ -126,32 +139,58 @@ class thePhotoGallery {
    }
   }
   
+  // Plugins: registerPlugin(name, {init, menuitems, lighttable, refresh}), all optional:
+  // init(gallery) is called once, menuitems [{element, click, contextmenu}] go into the
+  // header (add2nav), lighttable [element] into the image area (add2lighttable), refresh()
+  // after every refreshGallery(). A plugin registered after initGallery() starts at once.
+  // A plugin's dialog in the image area should have the class "iv-modal" (and be hidden
+  // with the hidden attribute): while one is shown the viewer's keys and the slideshow
+  // wait, and close() hides it.
   add2nav(element, click = null , contextmenu = null) {
-    document.querySelector("#" + this.myId + " div.nav-ov").append.Element(element);
+    // before the close button, which stays the last one
+    let bar = document.querySelector("#" + this.myId + " div.nav-ov");
+    bar.insertBefore(element, bar.querySelector("button[data-class='close']"));
     if (click != null) {
       element.addEventListener("click", click);
     }
-    if (context != null) {
+    if (contextmenu != null) {
       element.addEventListener("contextmenu", contextmenu);
     }
   }
-  
+
   add2lighttable(element){
-      document.querySelector("#" + this.myId + " div.lightable").append.Element(element);  
+      document.querySelector("#" + this.myId + " div.lighttable").append(element);
   }
 
   setTitle(value=""){
-     document.querySelector("#" + this.myId + ".exifoverlay").innerHTML = value;
+     document.querySelector("#" + this.myId + " .exifOverlay").innerHTML = value;
   }
 
   registerPlugin(name,values) {
     if (name in this.#plugins) console.warn("plugin already registrerd:",name)
-    this.#plugins[name] = {};
+    let plugin = {};
     this.#pluginKeys.forEach((key)=>{
-      if (key in values) this.#plugins[name] = values[key]
+      if (key in values) plugin[key] = values[key];
     });
+    this.#plugins[name] = plugin;
+    if (this.#started) this.#startPlugin(plugin);
   }
-  
+
+  #startPlugin(plugin) {
+    if ("init" in plugin) {plugin.init(this)}
+    if ("menuitems" in plugin) {
+      plugin.menuitems.forEach((item)=>{this.add2nav(item.element, item.click, item.contextmenu)});
+    }
+    if ("lighttable" in plugin) {
+      plugin.lighttable.forEach((item)=>{this.add2lighttable(item)});
+    }
+  }
+
+  // a plugin's dialog (.iv-modal) is shown
+  #modalOpen() {
+    return !!document.querySelector("#" + this.myId + " .iv-modal:not([hidden])");
+  }
+
   initGallery(){
     //alert("g4");
     if (this.absPath[0] in [".","/"]) {console.error("Error wrong absPath:",this.absPath)}
@@ -218,9 +257,13 @@ class thePhotoGallery {
         let x = e.clientX / window.innerWidth, y = e.clientY / window.innerHeight;
         if (x < 0.1 || x > 0.9 || y < 0.1 || y > 0.9) this.#idle(true);
     });
-    // leaving browser fullscreen (Esc, F11 ...) leaves the viewer's fullscreen too
+    // leaving browser fullscreen (Esc, F11 ...) leaves the viewer's fullscreen too, for the
+    // next offered mode that is not fullscreen (none offered: it stays dark, in the window)
     document.addEventListener('fullscreenchange', (e) => {
-        if (!document.fullscreenElement && ov.classList.contains("full")) this.setFull(false);
+        if (!document.fullscreenElement && ov.classList.contains("full")) {
+            let m = this.settings.modes.find((x) => x != "full");
+            if (m) this.setMode(m);
+        }
         else this.#restoreZoomSpot();
     });
     // keyboard: left/right arrow = previous/next image, Space = slideshow on/off, Esc =
@@ -229,8 +272,7 @@ class thePhotoGallery {
     document.addEventListener('keydown', (e) => {
         if (ov.style.display == "none" || e.altKey || e.ctrlKey || e.metaKey) return;
         if (e.target.closest && e.target.closest("input, textarea, select, [contenteditable]")) return;
-        let menu = ov.querySelector(".iv-trans-menu");
-        if (menu && !menu.hidden) { if (e.key == "Escape") { menu.hidden = true; e.preventDefault(); } return; }
+        if (this.#modalOpen()) return;          // a plugin's dialog handles its own keys
         // a viewer button clicked before keeps the focus, and a key press would make the
         // browser show its focus outline: release it for the keys handled here
         if (["ArrowLeft", "ArrowRight", "Enter", "Escape", " "].includes(e.key)
@@ -246,12 +288,13 @@ class thePhotoGallery {
             if (btn) { btn.click(); e.preventDefault(); }
         }
     });
+    // settings: the saved ones over the defaults (this.transition / this.timeout set
+    // before initGallery() count as defaults)
+    this.defaultSettings.transition = this.transition;
+    this.defaultSettings.slideTime = this.timeout / 1000;
+    this.applySettings(Object.assign({}, this.defaultSettings, this.storage.load()), false);
     // header: position, poster and file name (.iv-info) before the EXIF line; the EXIF
     // line gets its full text as a tooltip (it is cut with "..." when too long)
-    this.#buildTransitionChooser(ov);
-    let saved = this.#load();
-    if (saved.transition) this.transition = saved.transition;
-    this.setTransition(this.transition, false);
     let head = ov.querySelector(".head");
     if (head && !head.querySelector(".iv-info")) {
         let info = document.createElement("div");
@@ -261,15 +304,8 @@ class thePhotoGallery {
     let exifEl = ov.querySelector(".head .exifOverlay");
     if (exifEl) new MutationObserver(() => { exifEl.title = exifEl.textContent.replace(/\s+/g, " ").trim(); })
         .observe(exifEl, {childList: true, subtree: true});
-    Object.values(this.#plugins).forEach((plugin) => {
-      if ("init" in plugin) {plugin.init()}
-      if ("menuitems" in plugin) {
-        plugin.menuitems.forEach((item=>{this.menuitem(item.element,item.click,item.conetxtmenu)}))
-      }
-      if ("lighttable" in plugin) {
-        plugin.lighttable.forEach((item=>{this.add2lighttable(item)})
-      )}
-    });
+    this.#started = true;
+    Object.values(this.#plugins).forEach((plugin) => this.#startPlugin(plugin));
     this.refreshGallery();
 }
 
@@ -431,9 +467,13 @@ class thePhotoGallery {
     if (!btn || !btn.classList.contains("active")) return;
     let fade = this.#fadeMs();
     let wait = Math.max(0, this.#changeStart + fade - performance.now()) + this.timeout;
-    this.#slideTimer = setTimeout(() => {
-        if (btn.classList.contains("active") && ov.style.display != "none") ov.querySelector("div.nav-next").click();
-    }, wait);
+    let next = () => {
+        if (!btn.classList.contains("active") || ov.style.display == "none") return;
+        // a plugin's dialog is open: the image stays, a full time again after it closes
+        if (this.#modalOpen()) { this.#slideTimer = setTimeout(next, this.timeout); return; }
+        ov.querySelector("div.nav-next").click();
+    };
+    this.#slideTimer = setTimeout(next, wait);
   }
 
   // gallery keys: left/right move .sel (starting from the current image), Enter opens the
@@ -462,70 +502,102 @@ class thePhotoGallery {
     }
   }
 
-  // Fullscreen: the viewer fills the window (.full) and, where the browser allows, the
-  // whole screen (Fullscreen API). Zoomed, the same spot of the photo stays in the middle.
-  setFull(on) {
+  // Display mode: "window" (the popup), "max" (.max: the popup filling the browser window)
+  // or "full" (.full: dark, and the whole screen where the browser allows it - Fullscreen
+  // API). Zoomed, the same spot of the photo stays in the middle. The mode is remembered
+  // for "open in: last used" unless save is false.
+  setMode(mode, save = true) {
     let tElem = document.getElementById(this.myId);
-    let btn = tElem.querySelector("button[data-class='full']");
+    if (["window", "max", "full"].indexOf(mode) < 0) mode = "window";
+    let full = mode == "full";
     this.#keepZoomSpot(() => {
-        tElem.classList.toggle("full", on);
-        if (btn) btn.classList.toggle("active", on);
+        tElem.classList.toggle("full", full);
+        tElem.classList.toggle("max", mode == "max");
     });
-    if (on && !document.fullscreenElement && tElem.requestFullscreen) tElem.requestFullscreen().catch(() => {});
-    if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    this.#idle(on);
-    this.#save({full: on});
+    if (full && !document.fullscreenElement && tElem.requestFullscreen) tElem.requestFullscreen().catch(() => {});
+    if (!full && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    this.#idle(full);
+    this.#updateModeButton();
+    if (save) this.storage.save({mode: mode});
   }
 
-  // remembered settings (localStorage; quietly nothing where it is not available)
+  // (older name) fullscreen on, or back to the first offered other mode
+  setFull(on) {
+    this.setMode(on ? "full" : (this.settings.modes.find((x) => x != "full") || "window"));
+  }
+
+  #mode() {
+    let ov = document.getElementById(this.myId);
+    return ov.classList.contains("full") ? "full" : ov.classList.contains("max") ? "max" : "window";
+  }
+
+  // the display button steps through the offered modes (window, max, full); hidden when
+  // only one is offered; "on" in any mode but the window; its icon shows where the next
+  // step goes: expand to a bigger mode (.off icon), or back to a smaller one (.shrink:
+  // the .on icon)
+  #nextMode() {
+    let m = this.settings.modes;
+    return m[(m.indexOf(this.#mode()) + 1) % m.length];
+  }
+  #updateModeButton() {
+    let btn = document.querySelector("#" + this.myId + " button[data-class='full']");
+    if (!btn) return;
+    let names = {window: "window", max: "maximized", full: "fullscreen"};
+    btn.style.display = this.settings.modes.length < 2 ? "none" : "";
+    let order = ["window", "max", "full"];
+    btn.classList.toggle("active", this.#mode() != "window");
+    btn.classList.toggle("shrink", order.indexOf(this.#nextMode()) < order.indexOf(this.#mode()));
+    btn.title = "display: " + names[this.#nextMode()];
+  }
+
+  // remembered settings (localStorage; quietly nothing where it is not available); the
+  // older {full: true} counts as mode "full"
   #load() {
-    try { return JSON.parse(localStorage.getItem(this.storageKey)) || {}; } catch (e) { return {}; }
+    let v;
+    try { v = JSON.parse(localStorage.getItem(this.storageKey)) || {}; } catch (e) { v = {}; }
+    if (!("mode" in v) && v.full) v.mode = "full";
+    return v;
   }
   #save(values) {
     try { localStorage.setItem(this.storageKey, JSON.stringify(Object.assign(this.#load(), values))); } catch (e) {}
   }
 
-  // Transition chooser: a button with the current mode's letter at the left of the header
-  // buttons, opening a small menu. Q quick fade, F fade, P pop (fade + grow), M morph.
-  #buildTransitionChooser(ov) {
-    let bar = ov.querySelector(".nav-ov");
-    if (!bar || bar.querySelector(".iv-trans")) return;
-    let box = document.createElement("div");
-    box.className = "iv-trans";
-    let btn = document.createElement("button");
-    btn.className = "btn-default btn btn-image-ov iv-trans-btn";
-    btn.title = "image change: Quick, Fade, Pop, Morph (zoomed: Pop instead of Morph)";
-    let menu = document.createElement("ul");
-    menu.className = "iv-trans-menu";
-    menu.hidden = true;
-    [["quick", "Q", "Quick"], ["fade", "F", "Fade"], ["pop", "P", "Pop"], ["morph", "M", "Morph"]].forEach(([key, letter, label]) => {
-        let li = document.createElement("li");
-        li.dataset.t = key;
-        if (key == "morph") li.title = "zoomed images use Pop";
-        let b = document.createElement("b");
-        b.textContent = letter;
-        li.appendChild(b);
-        li.appendChild(document.createTextNode(label));
-        li.addEventListener("click", (e) => { this.setTransition(key); menu.hidden = true; });
-        menu.appendChild(li);
-    });
-    btn.addEventListener("click", (e) => { menu.hidden = !menu.hidden; });
-    document.addEventListener("click", (e) => { if (!box.contains(e.target)) menu.hidden = true; });
-    box.appendChild(btn);
-    box.appendChild(menu);
-    bar.insertBefore(box, bar.firstChild);
+  // Change settings (any of this.defaultSettings' keys): checked, applied at once and
+  // saved (unless save is false). Values out of range are brought into it.
+  applySettings(changes = {}, save = true) {
+    let d = this.defaultSettings, s = Object.assign({}, this.settings);
+    Object.keys(d).forEach((k) => { if (k in changes) s[k] = changes[k]; });
+    let num = (v, lo, hi, def) => { v = parseFloat(v); return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : def; };
+    if (!this.transitionList.some(([k]) => k == s.transition)) s.transition = d.transition;
+    s.duration = num(s.duration, 0.3, 3, d.duration);
+    s.slideTime = num(s.slideTime, 1, 10, d.slideTime);
+    s.transparency = num(s.transparency, 0, 0.5, d.transparency);
+    let modes = Array.isArray(s.modes) ? s.modes : [];
+    s.modes = ["window", "max", "full"].filter((m) => modes.indexOf(m) >= 0);
+    if (!s.modes.length) s.modes = d.modes.slice();
+    if (s.openIn != "last" && s.modes.indexOf(s.openIn) < 0) s.openIn = "last";
+    s.preload = !!s.preload;
+    this.settings = s;
+    this.setTransition(s.transition, false);
+    this.timeout = s.slideTime * 1000;
+    let ov = document.getElementById(this.myId);
+    if (ov) {
+        ov.style.setProperty("--dp-iv-fade", s.duration + "s");
+        ov.style.setProperty("--dp-iv-transparency", s.transparency);
+        // the open viewer's mode no longer offered: the first offered one
+        if (ov.style.display != "none" && s.modes.indexOf(this.#mode()) < 0) this.setMode(s.modes[0], false);
+        this.#updateModeButton();
+    }
+    if (save) this.storage.save(s);
   }
 
-  // set the transition mode (and remember it, unless save is false)
+  // set the transition (and remember it, unless save is false)
   setTransition(t, save = true) {
-    if (["quick", "fade", "pop", "morph"].indexOf(t) < 0) t = "pop";
+    if (save) { this.applySettings({transition: t}); return; }
+    if (!this.transitionList.some(([k]) => k == t)) t = "pop";
     this.transition = t;
     let ov = document.getElementById(this.myId);
-    let btn = ov && ov.querySelector(".iv-trans-btn");
-    if (btn) btn.textContent = t[0].toUpperCase();
-    if (ov) ov.dataset.transition = t;     // CSS dims M while zoomed (Pop is used there)
-    if (ov) ov.querySelectorAll(".iv-trans-menu li").forEach((li) => li.classList.toggle("cur", li.dataset.t == t));
-    if (save) this.#save({transition: t});
+    if (ov) ov.dataset.transition = t;
   }
 
   // fullscreen: .idle on the viewer 2.5 s after the controls were shown (CSS hides the
@@ -592,11 +664,15 @@ class thePhotoGallery {
   close() {
       let tElem = document.getElementById(this.myId);
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-      tElem.style.display='none';    
+      tElem.style.display='none';
       document.querySelectorAll("#" + this.myId +" .nav-ov button.active").forEach((e)=>{
                           e.classList.remove("active");
                           tElem.classList.remove(e.dataset.class);
                         });
+      // the display mode is set again on the next opening; plugins' dialogs close
+      tElem.classList.remove("max", "full");
+      this.#idle(false);
+      tElem.querySelectorAll(".iv-modal").forEach((m) => m.hidden = true);
   }
 
   // The forum's image addresses (/a/..., /a/thumb/...) redirect to the file under /media/.
@@ -645,7 +721,7 @@ class thePhotoGallery {
     this.#prepare(next);
     this.#prepare(prev);
     let token = this.#sharpToken;
-    if (this.#bigOf(next) != next) this.#fullDone.then(() => {
+    if (this.settings.preload && this.#bigOf(next) != next) this.#fullDone.then(() => {
         if (token == this.#sharpToken) this.#resolve(this.#bigOf(next)).then((url) => this.#prepare(url));
     });
   }
@@ -726,7 +802,11 @@ class thePhotoGallery {
     iOvE.style.display = "block";
     // opened again in fullscreen if it was left in fullscreen (the click that opened it
     // still counts as the user's action the browser requires for real fullscreen)
-    if (freshOpen && this.#load().full && !iOvE.classList.contains("full")) this.setFull(true);
+    if (freshOpen) {
+        let m = this.settings.openIn == "last" ? this.storage.load().mode : this.settings.openIn;
+        if (this.settings.modes.indexOf(m) < 0) m = this.settings.modes[0];
+        this.setMode(m, false);
+    }
     iOv.classList.remove("unhide");
     iOvE.classList.add("progress");
     // restart the image change transition (CSS animations on .changing), independent of
@@ -858,7 +938,7 @@ class thePhotoGallery {
       this.close();
     }
     else if (action == "full") {
-        this.setFull(!isActive);
+        this.setMode(this.#nextMode());
     }
     else {
         document.querySelectorAll("#" + this.myId +" .nav-ov button.radio-btn").forEach((e)=>{e.classList.remove("active");tElem.classList.remove(e.dataset.class);});

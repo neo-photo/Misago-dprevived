@@ -7,9 +7,11 @@
    defined: a theme that changes the tone redefines the built ones too.
 
    Several states are set by thePhotoGallery.js: .changing (image change), .progress
-   (full-size image loading), .big (zoom), .dragging, .full (fullscreen), .idle and
-   .resting (fullscreen controls / pointer hidden), .near-prev / .near-next (mouse near an
-   edge), and on thumbnails --r (proportion), .cur (current image), .sel (keyboard).
+   (full-size image loading), .big (zoom), .dragging, .max (maximized), .full
+   (fullscreen), .idle and .resting (fullscreen controls / pointer hidden), .near-prev /
+   .near-next (mouse near an edge), and on thumbnails --r (proportion), .cur (current
+   image), .sel (keyboard). Settings come as inline variables on #image-ov: --dp-iv-fade
+   (transition duration) and --dp-iv-transparency.
 
    Plain CSS, no nesting: Windows 7 browsers (Chrome 109, Firefox 115) must parse it. */
 
@@ -61,6 +63,8 @@
   --dp-iv-sharpen: 0.25s;                            /* preview -> full-size image */
   --dp-iv-morph-scale: 0.04;
   --dp-iv-label-delay: 0.6s;
+  /* transparency of the viewer's background (0 - 0.5): a setting, the JS sets it */
+  --dp-iv-transparency: 0;
   /* zoom: room past the image edges, about 10% of the image area */
   --dp-iv-overdrag: 8vh 8vw;
   /* gallery: thumbnail height; gap as a share of it; the box proportion limits (width /
@@ -173,7 +177,8 @@ a .exifOverlay {
   opacity: 1;
 }
 /* fullscreen: the page behind does not scroll */
-html:has(#image-ov.full:not([style*="none"])) {
+html:has(#image-ov.full:not([style*="none"])),
+html:has(#image-ov.max:not([style*="none"])) {
   overflow: hidden;
 }
 
@@ -189,10 +194,23 @@ html:has(#image-ov.full:not([style*="none"])) {
   height: 80vh;
   padding: 0;
   overflow: hidden;                 /* the corners clip the header and image layers */
-  background-color: var(--dp-iv-bg);
+  background-color: transparent;    /* the background is ::before (below): see there */
   border: 1px solid var(--dp-iv-border);
   border-radius: 4px;
   box-shadow: var(--dp-iv-frame-shadow), 0 0 0 100vmax var(--dp-iv-backdrop);
+}
+/* the viewer's background, under everything in it; transparent by the setting
+   (--dp-iv-transparency), so the page shows through */
+#image-ov::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--dp-iv-bg);
+  opacity: calc(1 - var(--dp-iv-transparency));
+  pointer-events: none;
 }
 @media (min-width: 768px) {
   div#image-ov {
@@ -276,61 +294,6 @@ html:has(#image-ov.full:not([style*="none"])) {
   content: "\00b7";                 /* the same dot as in .iv-info */
   margin: 0 6px 0 0;
 }
-/* the transition chooser: a letter button left of the others, a little apart, and its menu */
-#image-ov .iv-trans {
-  position: relative;
-  margin-right: 10px;
-}
-#image-ov button.btn-image-ov.iv-trans-btn {
-  width: calc(var(--dp-iv-btn-size) + 6px);
-  padding-top: 2px;                 /* a capital letter sits high in its line (room for
-                                       descenders below): lower it 1px to look centred */
-  font-size: 15px;
-  font-weight: 700;
-}
-#image-ov .iv-trans-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 4px;
-  z-index: 110;
-  min-width: 110px;
-  margin: 0;
-  padding: 4px 0;
-  list-style: none;
-  background-color: var(--dp-iv-head-bg);
-  border: 1px solid var(--dp-iv-btn-border);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-#image-ov .iv-trans-menu[hidden] {
-  display: none;
-}
-#image-ov .iv-trans-menu li {
-  padding: 5px 12px;
-  font-size: 13px;
-  line-height: 1.3;
-  white-space: nowrap;
-  color: var(--dp-iv-btn-color);
-  cursor: pointer;
-}
-#image-ov .iv-trans-menu li b {
-  display: inline-block;
-  width: 1.5em;
-}
-#image-ov .iv-trans-menu li:hover {
-  background-color: var(--dp-iv-btn-hover-bg);
-}
-#image-ov .iv-trans-menu li.cur {
-  color: var(--dp-iv-btn-active-color);
-  background-color: var(--dp-iv-btn-active-bg);
-}
-/* zoomed, Morph is not possible (Pop is used): its letter and menu row look dimmed */
-#image-ov.big[data-transition="morph"] button.btn-image-ov.iv-trans-btn {
-  color: var(--dp-iv-btn-color-dim);
-}
-#image-ov.big .iv-trans-menu li[data-t="morph"] {
-  opacity: 0.5;                     /* whole row, so it also works when it is the current one */
-}
 #image-ov .nav-ov {
   display: flex;
   flex: 0 0 auto;
@@ -408,6 +371,19 @@ html:has(#image-ov.full:not([style*="none"])) {
 #image-ov button.btn-image-ov.active .material-icon.on {
   display: block;
 }
+/* the display button (window, maximized, fullscreen): the icon shows where the next click
+   goes - expand while a bigger mode follows, the contracting icon (.shrink) when it goes
+   back to a smaller one */
+#image-ov button.btn-image-ov[data-class="full"] .material-icon.off {
+  display: block;
+}
+#image-ov button.btn-image-ov[data-class="full"] .material-icon.on,
+#image-ov button.btn-image-ov[data-class="full"].shrink .material-icon.off {
+  display: none;
+}
+#image-ov button.btn-image-ov[data-class="full"].shrink .material-icon.on {
+  display: block;
+}
 
 /* ---- image area ---- */
 #image-ov .lighttable {
@@ -435,7 +411,7 @@ html:has(#image-ov.full:not([style*="none"])) {
   align-items: center;
   width: 100%;
   height: 100%;
-  background-color: var(--dp-iv-bg);
+  background-color: transparent;    /* the viewer's background shows (#image-ov::before) */
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -705,6 +681,19 @@ html:has(#image-ov.full:not([style*="none"])) {
 #image-ov.dragging,
 #image-ov.dragging * {
   cursor: grabbing;
+}
+
+/* ---- maximized (.max) ----
+   The popup filling the browser window: the window look, without the frame. */
+#image-ov.max {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border: 0 none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* ---- fullscreen (.full) ----
