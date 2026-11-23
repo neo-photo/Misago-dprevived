@@ -9,7 +9,7 @@ from ...users.audittrail import create_audit_trail
 from ..models import Attachment, AttachmentType
 from ..serializers import AttachmentSerializer
 
-IMAGE_EXTENSIONS = ("jpg", "jpeg", "png", "gif", "webp")
+IMAGE_EXTENSIONS = ("jpg", "jpeg", "png", "gif", "webp","tif","tiff","heic","heif")
 
 
 class AttachmentViewSet(viewsets.ViewSet):
@@ -49,7 +49,7 @@ class AttachmentViewSet(viewsets.ViewSet):
 
         if is_upload_image(upload):
             try:
-                attachment.set_image(upload)
+              attachment.set_image(upload)
             except IOError:
                 raise ValidationError(
                     pgettext(
@@ -71,7 +71,6 @@ class AttachmentViewSet(viewsets.ViewSet):
 
 def validate_filetype(upload, user_roles):
     filename = upload.name.strip().lower()
-
     queryset = AttachmentType.objects.filter(status=AttachmentType.ENABLED)
     for filetype in queryset.prefetch_related("limit_uploads_to"):
         for extension in filetype.extensions_list:
