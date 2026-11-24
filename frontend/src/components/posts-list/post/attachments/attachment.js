@@ -72,7 +72,11 @@ export function AttachmentExifDetails(props) {
   return null
 }
 export function AttachmentExifRows(exif) {
-      const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
+      const listItems2 = Object.keys(exif.exif).sort();
+      let empty = {};
+      //const listItems = listItems2.reduce((obj, key) => { obj[key] = exif.exif[key];  return obj;}, empty);
+      //const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
+      const listItems = listItems2.map((e,nr) => <div key={nr}>{e}: {exif.exif[e]}</div>);
       return <div className="exifdown">{listItems}</div>;
         }
 
