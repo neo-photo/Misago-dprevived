@@ -22,11 +22,12 @@ background-color: chocolate;
   padding: 10px;
 }
 
+article..misago-markup {
+  posiion:relative;
+}
 
 div.exifrow.exifbig {
-  position: relative;
-   bottom: 30px;
-top: inherit;
+ top:0;
 }
 div.exifrow.exifbig.show {
 max-width: 50%;
