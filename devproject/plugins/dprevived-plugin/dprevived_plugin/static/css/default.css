@@ -27,21 +27,23 @@ article.misago-markup {
 }
 
 div.exifrow.exifbig {
- top:-5em;
-  position:relative;
+ top:0;
+    max-width: 1.5em;
+      max-height: 1.5em;
+      z-index:10;
 }
 div.exifrow.exifbig.show {
 max-width: 50%;
+max-height: inherit;
 }
 
 
 .exifrow {
-  max-height: 1.5em;
+  max-height: 1em;
   overflow: hidden;
   position: absolute;
-  background: indianred;
-  bottom: 0.5em;
-  max-width: 1.5em;
+  top: 0;
+  max-width: 1em;
   z-index: 1;
   color:black;
   background:rgba(255,255,255,0.8)
@@ -52,7 +54,6 @@ max-width: 50%;
   overflow: inherit;
   max-width: inherit;
   bottom: inherit;
-  top:1em;
 }
 .exifrow button .material-icon {
   width:1em;
@@ -61,12 +62,23 @@ max-width: 50%;
   padding: 0;
   margin: 0;
   position: inherit;
-  font-size: 1.5em;
+  font-size: 1em;
   background-color: rgba(255,255,255,0.5);
   opacity: 0.5;
+  vertical-align: central;
 }
 
+.misago-markup a {
+  position: relative;
+  display: block;
+  }
 
+.exifrow.exifbig button {
+  font-size: 1.5em;
+  line-height: .5em;
+  adding: 0;
+margin: 0;
+}
 
 .exifrow button {
   border: 0;
