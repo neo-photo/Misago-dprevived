@@ -7,11 +7,13 @@
    defined: a theme that changes the tone redefines the built ones too.
 
    Several states are set by thePhotoGallery.js: .changing (image change), .progress
-   (full-size image loading), .big (zoom), .dragging, .max (maximized), .full
+   (full-size image loading), .big (zoom), .wheel-zoom (the wheel zooms: a setting),
+   .dragging, .max (maximized), .full
    (fullscreen), .idle and .resting (fullscreen controls / pointer hidden), .near-prev /
    .near-next (mouse near an edge), and on thumbnails --r (proportion), .cur (current
    image), .sel (keyboard). Settings come as inline variables on #image-ov: --dp-iv-fade
-   (transition duration) and --dp-iv-transparency.
+   (transition duration) and --dp-iv-transparency; zoomed, the image's size as
+   --dp-iv-zw / --dp-iv-zh on the image.
 
    Plain CSS, no nesting: Windows 7 browsers (Chrome 109, Firefox 115) must parse it. */
 
@@ -651,9 +653,10 @@ html:has(#image-ov.max:not([style*="none"])) {
 }
 
 /* ---- zoom (.big) ----
-   The image at full pixel size, starting at its middle. Dragging scrolls the image area
-   (the JS), so dragging and the scrollbars are one mechanism. A transparent border leaves
-   a little room past the image edges. An image smaller than the area is centred. */
+   The image at the zoom's size (--dp-iv-zw / --dp-iv-zh, set by the JS; its own pixel
+   size until then). Dragging scrolls the image area (the JS), so dragging and the
+   scrollbars are one mechanism. A transparent border leaves a little room past the image
+   edges. An image smaller than the area is centred. */
 #image-ov.big .backImage,
 #image-ov.big .bufferImage {
   background-size: 0;
@@ -674,9 +677,39 @@ html:has(#image-ov.max:not([style*="none"])) {
   max-width: none;
   max-height: none;
   box-sizing: content-box;
+  width: var(--dp-iv-zw, auto);
+  height: var(--dp-iv-zh, auto);
   border: solid transparent;
   border-width: var(--dp-iv-overdrag);
   cursor: grab;
+}
+/* the wheel zooms (a setting): no scrollbars, dragging moves the image */
+#image-ov.wheel-zoom.big .backImage {
+  scrollbar-width: none;
+}
+#image-ov.wheel-zoom.big .backImage::-webkit-scrollbar {
+  display: none;
+}
+/* the zoom level, shown for a moment while zooming, at the bottom of the image area */
+#image-ov .iv-zoom {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: var(--dp-iv-bg);
+  color: var(--dp-iv-head-text);
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+#image-ov .iv-zoom.show {
+  opacity: 0.9;
+  transition: none;
 }
 #image-ov.dragging,
 #image-ov.dragging * {

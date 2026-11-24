@@ -21,7 +21,7 @@ class thePhotoGallery {
     #started = false;   // initGallery() has run: a plugin registered later starts at once
     #fallBackErrorSvG = '<svg viewBox="-10 -10 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" ><g id="SVGRepo_iconCarrier"> <path  stroke="#ff0000" d="M0 11.25L4.75 16H11.25L16 11.25V4.75L11.25 0H4.75L0 4.75V11.25Z" fill="#fff"></path> </g><text y="9.5" x="1.5" fill="#f00"  font-size="5">Error</text></svg>';
     #fallBackError = "data:image/svg+xml;base64," +  btoa(unescape(encodeURIComponent(this.#fallBackErrorSvG)));
-    #fallBackCss = "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";
+    #fallBackCss = "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";
     #decompress = base64string => {
       const bytes = Uint8Array.from(atob(base64string), c => c.charCodeAt(0));
       const cs = new DecompressionStream('gzip');
@@ -38,6 +38,9 @@ class thePhotoGallery {
     #openToken = 0;   // the latest openImage() call; an older one that is still waiting gives up
     #drag = {vx: 0, vy: 0, t: 0, x: 0, y: 0, glide: 0};  // zoom drag: speed (px/ms), last event, glide frame
     #zoomSpot = null; // zoomed: the photo's spot in the middle (fractions), kept over a size change
+    #zoom = 1;        // zoomed (.big): the image's scale (1 = its own pixel size)
+    #pendingSpot = null;  // zoomed: the spot to show in the middle once the image's size is known
+    #zoomLabelTimer = 0;  // hides the zoom level label
     #idleTimer = 0;   // fullscreen: hides the controls when the mouse rests
     #restTimer = 0;   // fullscreen: hides the mouse pointer when the mouse rests
     #slideTimer = 0;  // slideshow: the next image
@@ -59,10 +62,16 @@ class thePhotoGallery {
         // transition, its duration (s; Quick is fixed), slideshow time per image (s), the
         // display modes offered ("window" popup, "max" filling the browser window, "full"
         // whole screen), the mode to open in ("last" = last used), transparency of the
-        // viewer's background (0 - 0.5), preloading the next full-size image.
+        // viewer's background (0 - 0.5), preloading the next full-size image, what the
+        // mouse wheel does: "scroll" (scrolls the zoomed image; Ctrl + wheel zooms) or
+        // "zoom" (zooms; no scrollbars).
         this.defaultSettings = {transition: "pop", duration: 0.7, slideTime: 3,
                                 modes: ["window", "max", "full"], openIn: "last",
-                                transparency: 0, preload: true};
+                                transparency: 0, preload: true, wheel: "scroll"};
+        // zoom: the largest scale (1 = the image's own pixel size), and the factor between
+        // the zoom levels (a mouse wheel notch, the + and - keys)
+        this.maxZoom = 2;
+        this.zoomStep = 1.25;
         this.settings = Object.assign({}, this.defaultSettings);
         this.transitionList = [["quick", "Quick"], ["fade", "Fade"], ["pop", "Pop"], ["morph", "Morph"]];
         // where settings and the last used display mode are kept: localStorage by default;
@@ -249,6 +258,26 @@ class thePhotoGallery {
         ov.classList.toggle("near-next", x > 0.9);
     });
     area.addEventListener('mouseleave', (e) => { ov.classList.remove("near-prev", "near-next"); });
+    // mouse wheel: Ctrl + wheel zooms (so does a touchpad's pinch, which browsers send as
+    // Ctrl + wheel); the plain wheel zooms too when the setting says so ("zoom"), otherwise
+    // it scrolls the zoomed image as usual. A wheel notch is one zoom step, a touchpad's
+    // small steps zoom smoothly. The point under the mouse stays where it is.
+    area.addEventListener('wheel', (e) => {
+        if (ov.style.display == "none" || this.#modalOpen()) return;
+        if (!ov.querySelector("div.album").classList.contains("hide")) return;
+        if (!e.ctrlKey && this.settings.wheel != "zoom") return;
+        e.preventDefault();                     // (with Ctrl: the browser's page zoom)
+        let d = e.deltaY * (e.deltaMode == 1 ? 33 : e.deltaMode == 2 ? 800 : 1);
+        if (!d) return;
+        if (Math.abs(d) >= 40) { if (d < 0) this.zoomIn(e.clientX, e.clientY); else this.zoomOut(e.clientX, e.clientY); }
+        else this.zoomBy(Math.pow(this.zoomStep, -d / 100), e.clientX, e.clientY);
+    }, {passive: false});
+    // the zoom level, shown briefly while zooming
+    if (!area.querySelector(".iv-zoom")) {
+        let label = document.createElement("div");
+        label.className = "iv-zoom";
+        area.appendChild(label);
+    }
     // fullscreen: mouse movement near an edge (10% of the screen) shows the controls again,
     // any movement shows the mouse pointer
     ov.addEventListener('mousemove', (e) => {
@@ -267,7 +296,9 @@ class thePhotoGallery {
         else this.#restoreZoomSpot();
     });
     // keyboard: left/right arrow = previous/next image, Space = slideshow on/off, Esc =
-    // close (in browser fullscreen the browser takes Esc itself and leaves fullscreen first). In the gallery: left/right
+    // close (in browser fullscreen the browser takes Esc itself and leaves fullscreen first),
+    // + / - = zoom in / out, 0 = fit (not zoomed), 1 = 100 %, 2 = 200 %, * = 100 % or (from
+    // 100 % and more) fit. In the gallery: left/right
     // move a selection over the thumbnails (.sel), Enter opens it, Esc closes the gallery.
     document.addEventListener('keydown', (e) => {
         if (ov.style.display == "none" || e.altKey || e.ctrlKey || e.metaKey) return;
@@ -286,6 +317,15 @@ class thePhotoGallery {
         else if (e.key == " ") {                       // Space: slideshow on / off
             let btn = ov.querySelector("button[data-class='slideshow']");
             if (btn) { btn.click(); e.preventDefault(); }
+        }
+        else if (e.key == "+" || e.key == "=") { this.zoomIn(); e.preventDefault(); }
+        else if (e.key == "-") { this.zoomOut(); e.preventDefault(); }
+        else if (e.key == "0") { this.zoomTo("fit"); e.preventDefault(); }
+        else if (e.key == "1") { this.zoomTo(1); e.preventDefault(); }
+        else if (e.key == "2") { this.zoomTo(2); e.preventDefault(); }
+        else if (e.key == "*") {
+            this.zoomTo(ov.classList.contains("big") && this.#zoom >= 1 ? "fit" : 1);
+            e.preventDefault();
         }
     });
     // settings: the saved ones over the defaults (this.transition / this.timeout set
@@ -577,6 +617,7 @@ class thePhotoGallery {
     if (!s.modes.length) s.modes = d.modes.slice();
     if (s.openIn != "last" && s.modes.indexOf(s.openIn) < 0) s.openIn = "last";
     s.preload = !!s.preload;
+    if (["scroll", "zoom"].indexOf(s.wheel) < 0) s.wheel = d.wheel;
     this.settings = s;
     this.setTransition(s.transition, false);
     this.timeout = s.slideTime * 1000;
@@ -584,6 +625,7 @@ class thePhotoGallery {
     if (ov) {
         ov.style.setProperty("--dp-iv-fade", s.duration + "s");
         ov.style.setProperty("--dp-iv-transparency", s.transparency);
+        ov.classList.toggle("wheel-zoom", s.wheel == "zoom");   // (CSS: no scrollbars)
         // the open viewer's mode no longer offered: the first offered one
         if (ov.style.display != "none" && s.modes.indexOf(this.#mode()) < 0) this.setMode(s.modes[0], false);
         this.#updateModeButton();
@@ -623,32 +665,218 @@ class thePhotoGallery {
   // spot again (once more on 'fullscreenchange', when the screen size has settled)
   #keepZoomSpot(change) {
     let ov = document.getElementById(this.myId);
-    let area = ov.querySelector(".backImage");
-    this.#zoomSpot = ov.classList.contains("big") && area.scrollWidth
-        ? [(area.scrollLeft + area.clientWidth / 2) / area.scrollWidth,
-           (area.scrollTop + area.clientHeight / 2) / area.scrollHeight]
-        : null;
+    this.#zoomSpot = ov.classList.contains("big") ? this.#spot() : null;
     change();
     this.#restoreZoomSpot();
   }
 
   #restoreZoomSpot() {
     if (!this.#zoomSpot) return;
-    let [fx, fy] = this.#zoomSpot;
-    let area = document.querySelector('#' + this.myId +' .backImage');
-    requestAnimationFrame(() => {
-        area.scrollLeft = fx * area.scrollWidth - area.clientWidth / 2;
-        area.scrollTop = fy * area.scrollHeight - area.clientHeight / 2;
-    });
+    let spot = this.#zoomSpot;
+    this.#showSpot(spot);                       // at once, and again when the size has settled
+    requestAnimationFrame(() => this.#showSpot(spot));
   }
 
   // zoom: show the middle of the zoomed image
   centreZoom() {
-    let area = document.querySelector('#' + this.myId +' .backImage');
-    requestAnimationFrame(() => {
-      area.scrollLeft = (area.scrollWidth - area.clientWidth) / 2;
-      area.scrollTop = (area.scrollHeight - area.clientHeight) / 2;
-    });
+    requestAnimationFrame(() => this.#showSpot([0.5, 0.5]));
+  }
+
+  // ---- zoom ----
+  // Zoomed (.big) the image area (.backImage) scrolls over the image, shown at #zoom times
+  // its own pixel size (--dp-iv-zw / --dp-iv-zh on the image; the CSS uses them only while
+  // zoomed). Not zoomed, the image fits the area. Zoom spots are fractions of the image
+  // ([0.5, 0.5] = its middle), so they also fit another image of a different size.
+
+  #area() { return document.querySelector("#" + this.myId + " .backImage"); }
+  #picture() { return this.#area().querySelector("img.picture"); }
+
+  // the scale at which the shown image fits the image area; null while its size is unknown
+  #fitScale(img = this.#picture()) {
+    if (!img.naturalWidth || img.classList.contains("lost")) return null;
+    let lt = document.querySelector("#" + this.myId + " .lighttable");
+    return Math.min(lt.clientWidth / img.naturalWidth, lt.clientHeight / img.naturalHeight);
+  }
+
+  // zoomed: the spot of the image in the middle of the image area
+  #spot() {
+    let area = this.#area(), img = this.#picture();
+    if (!img.clientWidth || !img.clientHeight) return [0.5, 0.5];
+    let f = (v) => Math.min(1, Math.max(0, v));
+    return [f((area.scrollLeft + area.clientWidth / 2 - img.offsetLeft - img.clientLeft) / img.clientWidth),
+            f((area.scrollTop + area.clientHeight / 2 - img.offsetTop - img.clientTop) / img.clientHeight)];
+  }
+
+  // zoomed: scroll so that this spot of the image is in the middle (or at mx, my in the area)
+  #showSpot([fx, fy], mx, my) {
+    let area = this.#area(), img = this.#picture();
+    if (mx == null) { mx = area.clientWidth / 2; my = area.clientHeight / 2; }
+    area.scrollLeft = img.offsetLeft + img.clientLeft + fx * img.clientWidth - mx;
+    area.scrollTop = img.offsetTop + img.clientTop + fy * img.clientHeight - my;
+  }
+
+  // the image's size at the zoom; false while its own size is unknown
+  #sizePicture(img) {
+    if (!img.naturalWidth || img.classList.contains("lost")) {
+      img.style.removeProperty("--dp-iv-zw");
+      img.style.removeProperty("--dp-iv-zh");
+      return false;
+    }
+    img.style.setProperty("--dp-iv-zw", Math.round(img.naturalWidth * this.#zoom) + "px");
+    img.style.setProperty("--dp-iv-zh", Math.round(img.naturalHeight * this.#zoom) + "px");
+    return true;
+  }
+
+  // zoomed: give the shown image its size, and show the spot waiting for it (a new image
+  // or the zoom button); called again when the image has loaded
+  #applyZoom() {
+    let ov = document.getElementById(this.myId);
+    if (!ov.classList.contains("big")) return;
+    if (!this.#sizePicture(this.#picture())) return;
+    if (this.#pendingSpot) {
+      this.#showSpot(this.#pendingSpot);
+      this.#pendingSpot = null;
+    }
+    this.#updateZoomButton();
+  }
+
+  // a new image while zoomed: size it as soon as its own size is known (before it has
+  // loaded), so it does not show at a wrong size first
+  #sizeWhenKnown(img, token) {
+    let check = () => {
+      if (token != this.#sharpToken) return;
+      if (img.naturalWidth) this.#applyZoom();
+      else if (!img.complete) requestAnimationFrame(check);
+    };
+    requestAnimationFrame(check);
+  }
+
+  // zoom on (as the zoom button: the gallery and the slideshow end) or off
+  #setBig(on) {
+    let ov = document.getElementById(this.myId);
+    let btn = ov.querySelector("button[data-class='big']");
+    if (on && !ov.classList.contains("big")) {
+      ov.querySelectorAll(".nav-ov button.radio-btn").forEach((b) => {
+        b.classList.remove("active");
+        ov.classList.remove(b.dataset.class);
+      });
+      ov.querySelector("div.album").classList.add("hide");
+      ov.classList.add("big");
+      if (btn) btn.classList.add("active");
+    }
+    else if (!on) {
+      ov.classList.remove("big");
+      if (btn) btn.classList.remove("active");
+    }
+  }
+
+  // Zoom to a scale (1 = the image's own pixel size, at most maxZoom; "fit" = not zoomed),
+  // keeping the image point under x, y (page coordinates, e.g. the mouse; default the
+  // middle of the image area) where it is.
+  zoomTo(z, x, y) {
+    let ov = document.getElementById(this.myId);
+    if (ov.style.display == "none") return;
+    let area = this.#area(), img = this.#picture();
+    let fit = this.#fitScale(img);
+    if (fit == null) return;                    // (the image's size is not known yet)
+    let big = ov.classList.contains("big");
+    let r = area.getBoundingClientRect();
+    let mx = x == null ? area.clientWidth / 2 : x - r.left;
+    let my = y == null ? area.clientHeight / 2 : y - r.top;
+    // the image point there, as fractions of the image
+    let spot;
+    if (big) {
+      spot = [(area.scrollLeft + mx - img.offsetLeft - img.clientLeft) / img.clientWidth,
+              (area.scrollTop + my - img.offsetTop - img.clientTop) / img.clientHeight];
+    }
+    else {
+      let w = img.naturalWidth * fit, h = img.naturalHeight * fit;
+      spot = [(mx - (area.clientWidth - w) / 2) / w, (my - (area.clientHeight - h) / 2) / h];
+    }
+    spot = spot.map((v) => Math.min(1, Math.max(0, v)));
+    if (z == "fit") {
+      this.#setBig(false);
+      this.#pendingSpot = null;
+    }
+    else {
+      this.#zoom = Math.min(z, this.maxZoom);
+      this.#setBig(true);
+      this.#pendingSpot = null;
+      this.#sizePicture(img);
+      this.#showSpot(spot, mx, my);
+    }
+    this.#showZoom();
+  }
+
+  // One zoom step in or out (a wheel notch, the + and - keys; position as zoomTo). The
+  // levels are the powers of zoomStep (so 100 % is one), maxZoom and the fitting size; a
+  // level less than 10% away from the current one is passed over.
+  zoomIn(x, y) { this.#zoomLevelStep(1, x, y); }
+  zoomOut(x, y) { this.#zoomLevelStep(-1, x, y); }
+
+  #zoomLevelStep(dir, x, y) {
+    let ov = document.getElementById(this.myId);
+    let fit = this.#fitScale();
+    if (fit == null) return;
+    let big = ov.classList.contains("big");
+    let z0 = big ? this.#zoom : fit;
+    let near = 1.1, ln = Math.log(this.zoomStep);
+    if (dir > 0) {
+      let z1 = Math.pow(this.zoomStep, Math.ceil(Math.log(z0 * near) / ln - 1e-9));
+      if (z1 * near > this.maxZoom) z1 = this.maxZoom;
+      if (z1 <= z0 + 1e-9) { this.#showZoom(); return; }   // at the largest already
+      this.zoomTo(z1, x, y);
+    }
+    else {
+      let z1 = Math.pow(this.zoomStep, Math.floor(Math.log(z0 / near) / ln + 1e-9));
+      if (z1 <= fit * near) { if (big) this.zoomTo("fit", x, y); else this.#showZoom(); return; }
+      this.zoomTo(z1, x, y);
+    }
+  }
+
+  // Zoom by a factor (as zoomTo; a touchpad's small steps). 100 % is a stop on the way;
+  // zooming out to the fitting size or below ends the zoom.
+  zoomBy(f, x, y) {
+    let ov = document.getElementById(this.myId);
+    let fit = this.#fitScale();
+    if (fit == null) return;
+    let big = ov.classList.contains("big");
+    let z0 = big ? this.#zoom : fit;
+    let z1 = z0 * f;
+    if ((z0 - 1) * (z1 - 1) < 0) z1 = 1;
+    if (f < 1 && z1 <= fit * 1.001) { if (big) this.zoomTo("fit", x, y); else this.#showZoom(); return; }
+    z1 = Math.min(z1, this.maxZoom);
+    if (f > 1 && z1 <= z0) { this.#showZoom(); return; }  // at the largest already
+    this.zoomTo(z1, x, y);
+  }
+
+  // the zoom level now, as text: "150 %", "Fit · 23 %"
+  #zoomText() {
+    let ov = document.getElementById(this.myId);
+    let pct = (z) => Math.round(z * 100) + " %";
+    if (ov.classList.contains("big")) return pct(this.#zoom);
+    let fit = this.#fitScale();
+    return fit ? "Fit · " + pct(fit) : "Fit";
+  }
+
+  // the zoom button's tooltip: the zoom level now and what a click does
+  #updateZoomButton() {
+    let ov = document.getElementById(this.myId);
+    let btn = ov.querySelector("button[data-class='big']");
+    if (btn) btn.title = "zoom: " + this.#zoomText()
+        + (ov.classList.contains("big") ? " (click: fit)" : " (click: 100 %)");
+  }
+
+  // the zoom level, shown for a moment (and in the zoom button's tooltip)
+  #showZoom() {
+    let ov = document.getElementById(this.myId);
+    this.#updateZoomButton();
+    let label = ov.querySelector(".iv-zoom");
+    if (!label) return;
+    label.textContent = this.#zoomText();
+    label.classList.add("show");
+    clearTimeout(this.#zoomLabelTimer);
+    this.#zoomLabelTimer = setTimeout(() => label.classList.remove("show"), 1000);
   }
 
   preview() {
@@ -765,6 +993,9 @@ class thePhotoGallery {
     // is no previous image: the new one appears from the viewer's background.
     let freshOpen = iOvE.style.display == "none";
     let wasOpen = !freshOpen && !fromAlbum;
+    // zoomed: the new image keeps the zoom level, with the same spot (relative to the
+    // image) in the middle
+    let zoomSpot = wasOpen && iOvE.classList.contains("big") ? this.#spot() : null;
     let oldL = iOvE.querySelector("div.backImage");
     let iOv = iOvE.querySelector("div.bufferImage");
     oldL.classList.replace("backImage", "bufferImage");
@@ -852,6 +1083,13 @@ class thePhotoGallery {
     }
     else {
         iOvImg.src = bigSrc ;
+    }
+    // zoomed: the new image gets its size (and the spot) as soon as its own size is known
+    iOvImg.style.removeProperty("--dp-iv-zw");
+    iOvImg.style.removeProperty("--dp-iv-zh");
+    if (zoomSpot) {
+        this.#pendingSpot = zoomSpot;
+        this.#sizeWhenKnown(iOvImg, token);
     }
     iOvE.querySelector(".head .nav-ov a.download").href = bigSrc ;
     
@@ -948,7 +1186,12 @@ class thePhotoGallery {
         else {
            tElem.classList.add(elem.dataset.class);
            elem.classList.add("active");
-           if (elem.dataset.class == "big") this.centreZoom();
+           // zoom: 100 %, the image's middle in the middle (sized now, or once its size is known)
+           if (elem.dataset.class == "big") {
+               this.#zoom = 1;
+               this.#pendingSpot = [0.5, 0.5];
+               this.#applyZoom();
+           }
            // slideshow: the next image at once (the current one has been seen); from
            // then on every image is timed by #scheduleSlide()
            if (elem.dataset.class == "slideshow" ) document.querySelector("#" + this.myId +" div.nav-next").click();
@@ -963,6 +1206,7 @@ class thePhotoGallery {
            }
         }      
     }
+    if (action == "big") this.#showZoom();
 
 
 }
@@ -970,7 +1214,10 @@ class thePhotoGallery {
  loadedOvImage(e){
     //console.log("loaded:",e.target.src);
     document.querySelector("#" + this.myId +"").classList.remove("progress");
-    if (document.querySelector("#" + this.myId).classList.contains("big")) this.centreZoom();
+    // zoomed: the image's size at the zoom (and the spot waiting for it); the zoom
+    // button's tooltip with the new image's fitting size
+    this.#applyZoom();
+    this.#updateZoomButton();
     //e.addEventListener('load',loadedOvImage(e));
     //cursor: progress;
     //console.log(this.timeout);

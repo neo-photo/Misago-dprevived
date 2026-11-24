@@ -18,7 +18,8 @@ function thePhotoGallerySettings() {
 
   // group: a heading; type: "select" (choices: list, or a function of the form's values),
   // "range" (min, max, step, format), "checks" (several of choices), "check"; disabled:
-  // a function of the form's values; title: tooltip
+  // a function of the form's values; title: tooltip; note: a line of text under the label
+  // before it
   const options = () => [
     {group: "Image change"},
     {key: "transition", label: "Transition", type: "select", choices: gallery.transitionList,
@@ -26,6 +27,7 @@ function thePhotoGallerySettings() {
     {key: "duration", label: "Duration", type: "range", min: 0.3, max: 3, step: 0.1,
      format: (v) => v.toFixed(1) + " s", disabled: (f) => f.transition == "quick",
      title: "Quick always takes 0.15 s"},
+    {key: "preload", label: "Preload next full-size image", type: "check"},
     {group: "Slideshow"},
     {key: "slideTime", label: "Time per image", type: "range", min: 1, max: 10, step: 0.5,
      format: (v) => (v % 1 ? v.toFixed(1) : v) + " s"},
@@ -36,8 +38,10 @@ function thePhotoGallerySettings() {
      choices: (f) => [["last", "Last used"]].concat(modeNames.filter(([k]) => f.modes.indexOf(k) >= 0))},
     {key: "transparency", label: "Background transparency", type: "range", min: 0, max: 0.5, step: 0.05,
      format: (v) => Math.round(v * 100) + " %"},
-    {group: "Loading"},
-    {key: "preload", label: "Preload next full-size image", type: "check"},
+    {group: "Zoom"},
+    {key: "wheel", label: "Mouse wheel", type: "select",
+     choices: [["scroll", "Scrolls the zoomed image"], ["zoom", "Zooms (no scrollbars)"]]},
+    {note: "Ctrl + wheel always zooms"},
   ];
 
   const el = (tag, cls, text) => {
@@ -131,6 +135,7 @@ function thePhotoGallerySettings() {
     let grid = el("div", "iv-settings-grid");
     options().forEach((o) => {
       if (o.group) { grid.appendChild(el("div", "iv-settings-group", o.group)); return; }
+      if (o.note) { grid.appendChild(el("div", "iv-settings-note", o.note)); return; }
       let id = "iv-set-" + o.key;
       let label = el(o.type == "checks" ? "span" : "label", "iv-settings-label", o.label);
       if (o.type != "checks") label.htmlFor = id;
