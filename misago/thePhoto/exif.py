@@ -84,7 +84,15 @@ def makeExif(pilImage):
         for one in exifToStore:
             v = exifDict.get(one)
             if v:
-              exifResult[one] = str(v).replace("\x00","").strip()
+              if one == "ExposureTime":
+                v = float(v);
+                if v<1:
+                  v = int(1/v)
+                  exifResult[one] = "1/%ss"%v
+                else:
+                  exifResult[one] = "%.1fs"%v
+              else:
+                exifResult[one] = str(v).replace("\x00","").strip()
 
         #GPS
         if "GPSInfo" in exifDict:
