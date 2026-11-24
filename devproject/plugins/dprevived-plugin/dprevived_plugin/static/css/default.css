@@ -23,15 +23,48 @@ background-color: chocolate;
 }
 
 
-.exifrow {
-  max-height: 100px;
-  overflow: hidden;
-  
+div.exifrow.exifbig {
+  position: relative;
+   bottom: 30px;
+top: inherit;
 }
+div.exifrow.exifbig.show {
+max-width: 50%;
+}
+
+
+.exifrow {
+  max-height: 1.5em;
+  overflow: hidden;
+  position: absolute;
+  background: indianred;
+  bottom: 0.5em;
+  max-width: 1.5em;
+  z-index: 1;
+  color:black;
+  background:rgba(255,255,255,0.8)
+}
+
 .exifrow.show {
   max-height: inherit;
   overflow: inherit;
+  max-width: inherit;
+  bottom: inherit;
+  top:1em;
 }
+.exifrow button .material-icon {
+  width:1em;
+  height:1em;
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+  position: inherit;
+  font-size: 1.5em;
+  background-color: rgba(255,255,255,0.5);
+  opacity: 0.5;
+}
+
+
 
 .exifrow button {
   border: 0;

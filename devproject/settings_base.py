@@ -325,8 +325,9 @@ MISAGO_PROFILE_FIELDS = [
 
 # Display debug toolbar if IN_MISAGO_DOCKER enviroment var is set to "1"
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": "misago.conf.debugtoolbar.enable_debug_toolbar"
+DEBUG_TOOLBAR_CONFIG = {    
+"SHOW_TOOLBAR_CALLBACK": "misago.conf.debugtoolbar.enable_debug_toolbar"
+#"SHOW_TOOLBAR_CALLBACK": "debug_toolbar.middleware.show_toolbar"
 }
 
 LOGGING = {

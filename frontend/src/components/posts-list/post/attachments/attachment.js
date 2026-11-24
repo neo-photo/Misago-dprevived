@@ -63,8 +63,8 @@ export function AttachmentThumbnail(props) {
 }
 export function AttachmentExifDetails(props) {
   if (props.attachment.plugin_data && props.attachment.plugin_data.exif && Object.keys(props.attachment.plugin_data.exif).length>0) {
-       return (<div className="exifrow">
-         <button>Show more Exif</button>
+       return (<div className="exifrow" data-url={props.attachment.url.thumb} >
+         <button><span className="material-icon" >info_outline</span></button>
           <AttachmentExifRows exif={props.attachment.plugin_data.exif} />
           </div>)
     }
@@ -73,7 +73,7 @@ export function AttachmentExifDetails(props) {
 }
 export function AttachmentExifRows(exif) {
       const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
-      return <div >{listItems}</div>;
+      return <div className="exifdown">{listItems}</div>;
         }
 
 export function AttachmentDetails(props) {

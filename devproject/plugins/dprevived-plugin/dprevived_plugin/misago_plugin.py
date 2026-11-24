@@ -13,7 +13,7 @@ def dictfetchall(cursor):
     """
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
-        
+
 def check_free_space(request):
     max_space_kb = settings.MISAGO_MAX_SPACE_USER * 1024
     max_space = (max_space_kb * 1024)
@@ -38,7 +38,7 @@ def check_free_space(request):
     free_pct = int(((free/max_space) * 100))
     used_pct = int(((usedSpace/max_space) * 100))
     return JsonResponse({"max":max_space_kb , "used": used_kb,"free":free_kb,"usedp": used_pct ,"freep":free_pct })
-    
+
 def mark_read( thread_pk, cursor, request):
         cursor.execute("SELECT  id, category_id from misago_threads_post WHERE thread_id=%s"%(int(thread_pk)))
         rows = cursor.fetchall()
@@ -51,7 +51,7 @@ def mark_read( thread_pk, cursor, request):
 def mark_thread_read(request, thread_pk):
     lines = -1
     with connection.cursor() as cursor:
-        lines = mark_read( thread_pk, cursor, request) 
+        lines = mark_read( thread_pk, cursor, request)
     return JsonResponse({"read":lines, "user": request.user.id})
 
 
@@ -63,7 +63,7 @@ def mark_category_read(request, category_pk):
         res = cursor.fetchone()[0]
         if int(res)>2:
            cats =[[category_pk]]
-        elif int(res)<1: 
+        elif int(res)<1:
             cats =[]
         else: # Level 1 und 2
             cursor.execute("SELECT id from misago_categories_category WHERE parent_id=%s"%int(category_pk))
@@ -71,13 +71,13 @@ def mark_category_read(request, category_pk):
             if int(res)==1:
                 cursor.execute("SELECT id from misago_categories_category WHERE parent_id in ()"%(",".join(cats)))
                 cats += cursor.fetchall()
-                print(cats)
+                #print(cats)
         for x in cats:
             cursor.execute("SELECT id from misago_threads_thread WHERE category_id=%s"%int(x[0]))
             rows = cursor.fetchall()
             for one in rows:
                 threads += 1
-                lines += mark_read( one[0], cursor, request) 
+                lines += mark_read( one[0], cursor, request)
     return JsonResponse({"read":lines, "threads":threads,"user": request.user.id})
 
 
