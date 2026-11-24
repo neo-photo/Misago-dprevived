@@ -27,7 +27,8 @@ article.misago-markup {
 }
 
 div.exifrow.exifbig {
- top:0;
+ top:-5em;
+  position:relative;
 }
 div.exifrow.exifbig.show {
 max-width: 50%;
