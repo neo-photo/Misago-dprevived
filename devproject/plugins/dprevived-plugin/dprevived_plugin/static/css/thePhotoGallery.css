@@ -9,7 +9,8 @@
    Several states are set by thePhotoGallery.js: .changing (image change), .progress
    (full-size image loading), .big (zoom), .wheel-zoom (the wheel zooms: a setting),
    .dragging, .max (maximized), .full
-   (fullscreen), .idle and .resting (fullscreen controls / pointer hidden), .near-prev /
+   (fullscreen), .idle and .resting (fullscreen controls / pointer hidden), .touch (phones
+   and tablets), .bare (controls tapped away), .near-prev /
    .near-next (mouse near an edge), and on thumbnails --r (proportion), .cur (current
    image), .sel (keyboard). Settings come as inline variables on #image-ov: --dp-iv-fade
    (transition duration) and --dp-iv-transparency; zoomed, the image's size as
@@ -193,6 +194,27 @@ html:has(#image-ov:not([style*="none"])) {
 #image-ov .bufferImage,
 #image-ov .album {
   overscroll-behavior: contain;
+}
+/* touch gestures on the image are the viewer's own (swipe, pinch, double tap: the JS);
+   the arrows and header: no double-tap zoom of the page either */
+#image-ov .backImage,
+#image-ov .bufferImage {
+  touch-action: none;
+}
+#image-ov .head,
+#image-ov .nav {
+  touch-action: manipulation;
+}
+/* touch screens: a single tap on the image takes the header and arrows away (.bare) and
+   brings them back */
+#image-ov.bare .head,
+#image-ov.bare .nav {
+  opacity: 0;
+  pointer-events: none;
+}
+/* touch devices (.touch): the image area takes the header's place meanwhile */
+#image-ov.touch.bare:not(.full) .lighttable {
+  top: 0;
 }
 
 /* ---- frame ----
@@ -645,12 +667,15 @@ html:has(#image-ov:not([style*="none"])) {
 #image-ov .nav.nav-next {
   right: 8px;
 }
-#image-ov.near-prev .nav.nav-prev:not(:hover),
-#image-ov.near-next .nav.nav-next:not(:hover) {
-  background-color: var(--dp-iv-nav-near-bg);
-}
-#image-ov .nav.dprev-btn:hover {
-  background-color: var(--dp-iv-btn-hover-bg);
+/* (only where there is real hovering: on a touch screen a tap would leave the arrow lit) */
+@media (hover: hover) {
+  #image-ov.near-prev .nav.nav-prev:not(:hover),
+  #image-ov.near-next .nav.nav-next:not(:hover) {
+    background-color: var(--dp-iv-nav-near-bg);
+  }
+  #image-ov .nav.dprev-btn:hover {
+    background-color: var(--dp-iv-btn-hover-bg);
+  }
 }
 #image-ov .nav.dprev-btn .material-icon {
   display: block;
