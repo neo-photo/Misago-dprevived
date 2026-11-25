@@ -274,13 +274,13 @@ function startup(){
          });
         //el.addEventListener('mouseout', (ev) => { document.querySelectorAll(".quickmenu .open").forEach((el)=>{el.classList.remove("open");});});
     });
-   
+        let globalClick = (e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';};
         let selectElement = document.querySelector("#styleSwitch ul");
         Object.entries(global.styles).forEach(([key,val]) => {
             let newdiv = document.createElement("li");
             newdiv.dataset.value = key;
             newdiv.appendChild(document.createTextNode(val.name));
-            newdiv.addEventListener("click",(e)=>{switchStyle(e.target.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();});          
+            newdiv.addEventListener("click",(e)=>{switchStyle(e.target.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();document.body.removeEventListener('click', globalClick ); });          
             selectElement.appendChild(newdiv);
         }); 
     
@@ -305,8 +305,7 @@ function startup(){
                                                       let ulel = styleSwitch.querySelector("ul");
                                                       if (ulel.style.display=='none') {
                                                         ulel.style.display='block';
-                                                        document.body.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } );       
-                                                        document.body.addEventListener('contextmenu',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } ); 
+                                                        document.body.addEventListener('click', globalClick,{ once: true } );       
                                                                                                                 }
                                                       });
         styleSwitch.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();
@@ -328,7 +327,7 @@ function startup(){
             if (ulel.style.display=='none') {
               down = true;
               ulel.style.display='block';
-              document.body.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } );                  
+              document.body.addEventListener('click', globalClick,{ once: true } );                  
               }
           }, 500); // 500 milliseconds for long hold
         });
