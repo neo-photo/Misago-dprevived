@@ -24,7 +24,7 @@ export default function ({ post }) {
         className="btn btn-link posted-on"
         title={tooltip}
       >
-        {post.posted_on.fromNow()}
+        {post.posted_on.format("LL, LT")}
       </a>
     </div>
   )
