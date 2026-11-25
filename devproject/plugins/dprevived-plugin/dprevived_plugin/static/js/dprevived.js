@@ -160,6 +160,7 @@ function switchStyle(cvalue) {
     let d= new (Date)
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     document.cookie ="dpreviedBGSet=" + cvalue + ";" + "expires="+d.toUTCString() + ";path=/;samesite=strict";
+    document.body.dataset.sclass = cvalue;
     changeStyle(global.styles[cvalue]);
 }
 
@@ -198,8 +199,11 @@ function swichBgOpt() {
 }
 
 function changeStyle(opts) {
-    let bodyElement = document.querySelector("#page-mount");
-     Object.entries(opts).forEach(([cl,val]) => {
+    document.querySelectorAll("#styleSwitch ul li").forEach(e=>e.classList.remove('active'));
+    let sel = "#styleSwitch ul li[data-value='"+ document.body.dataset.sclass +  "']";
+    document.querySelector(sel).classList.add('active');
+    let bodyElement = document.querySelector("#page-mount");     
+     Object.entries(opts).forEach(([cl,val]) => {  
         if (cl == "opacity" && val!="") {
             document.querySelectorAll(".panel-post").forEach((e) => {
             let vx="rgba(255,255,255," + val +")";
@@ -216,13 +220,9 @@ function changeStyle(opts) {
            bodyElement.style.backgroundColor = val;
         }
         if (cl == "fgcolor" && val!="") {
-            let bodyElement = document.querySelector("body");
-            let old = bodyElement.dataset.sclass;
-            if (old!=undefined && old !='' ) {
-               document.querySelector("body").classList.remove(old);
-            }
-            document.querySelector("body").classList.add(val);
-            document.querySelector("body").dataset.sclass = val;
+            document.body.classList.add(val);
+            if (val=='dark')document.body.classList.remove('light');
+            else document.body.classList.remove('dark');
         }
         if (cl == "bgurl") {
             if (val!="") {
@@ -274,34 +274,70 @@ function startup(){
          });
         //el.addEventListener('mouseout', (ev) => { document.querySelectorAll(".quickmenu .open").forEach((el)=>{el.classList.remove("open");});});
     });
+   
+        let selectElement = document.querySelector("#styleSwitch ul");
+        Object.entries(global.styles).forEach(([key,val]) => {
+            let newdiv = document.createElement("li");
+            newdiv.dataset.value = key;
+            newdiv.appendChild(document.createTextNode(val.name));
+            newdiv.addEventListener("click",(e)=>{switchStyle(e.target.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();});          
+            selectElement.appendChild(newdiv);
+        }); 
+    
     let dpreviedBGSet="";
     document.cookie.split(';').forEach((e)=> {let [name,value] = e.split("=",2); if (name.trim()=="dpreviedBGSet") dpreviedBGSet=value;});
     if (dpreviedBGSet!="") 
         {   
         changeStyle(global.styles[dpreviedBGSet]);
-        document.getElementById("styleSwitch").value = dpreviedBGSet;
+        //document.getElementById("styleSwitch").value = dpreviedBGSet;
         }
     else if (document.location.pathname.search("/2599/")>0) {
         document.querySelector("body").classList.add("dark");
     }
     else if (window.matchMedia('(prefers-color-scheme:dark').matches) {
         switchStyle('dark');
-        document.getElementById("styleSwitch").value = 'dark';
+        //document.getElementById("styleSwitch").value = 'dark';
     }
-    
-        let selectElement = document.querySelector("#styleSwitch");
-        Object.entries(global.styles).forEach(([key,val]) => {
-            let newdiv = document.createElement("option");
-            newdiv.value = key;
-            newdiv.appendChild(document.createTextNode(val.name));
-            selectElement.appendChild(newdiv);
-        });
-        selectElement.style.display="block";
-        selectElement.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
-                                                      let st = document.querySelector("#styleSwitch").selectedOptions[0].value;
-                                                      if (st!="") switchStyle(st);
-                                                      return false;
+   
+        //selectElement.style.display="block";
+        let styleSwitch = document.getElementById("styleSwitch");
+        styleSwitch.addEventListener('contextmenu',(e) =>{e.stopPropagation();e.preventDefault();
+                                                      let ulel = styleSwitch.querySelector("ul");
+                                                      if (ulel.style.display=='none') {
+                                                        ulel.style.display='block';
+                                                        document.body.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } );       
+                                                        document.body.addEventListener('contextmenu',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } ); 
+                                                                                                                }
                                                       });
+        styleSwitch.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();
+                                                      let ulel = styleSwitch.querySelector("ul");
+                                                      if (ulel.style.display=='none') {   
+                                                        if (document.body.dataset.sclass == "grey") {switchStyle("dark");}
+                                                        else if (document.body.dataset.sclass == "light") {switchStyle("grey");}
+                                                        else { switchStyle("light");}
+                                                        }
+                                                        else if (down == false) ulel.style.display='none';
+                                                        });                                                      
+
+        let holdTimer;
+        let down = false;
+        styleSwitch.addEventListener("mousedown", () => {
+           down = false;
+          holdTimer = setTimeout(() => {
+            let ulel = styleSwitch.querySelector("ul");
+            if (ulel.style.display=='none') {
+              down = true;
+              ulel.style.display='block';
+              document.body.addEventListener('click',(e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';},{ once: true } );                  
+              }
+          }, 500); // 500 milliseconds for long hold
+        });
+
+        styleSwitch.addEventListener("mouseup", () => {          
+          clearTimeout(holdTimer);
+        });
+
+                                                      
         // set limit
          document.querySelectorAll("#limitSwitch").forEach((ee) =>ee.addEventListener('change',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let st = document.querySelector("#limitSwitch").selectedOptions[0].value;

@@ -9,15 +9,6 @@ function initStyles() {
             "fgcolor":"light",
             "name":"light"
             },
-        "origin":
-            {"opacity":"",
-             "bgurl":"",
-            "size":"",
-            "repeat":"",
-            "color":"white",
-            "fgcolor":"origin",
-            "name":"origin",
-            },
         "grey":
             {"opacity":"",
              "bgurl":"",

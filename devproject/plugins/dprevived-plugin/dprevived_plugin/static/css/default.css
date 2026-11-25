@@ -31,10 +31,12 @@ div.exifrow.exifbig {
     max-width: 1.5em;
       max-height: 1.5em;
       z-index:10;
+    margin: 3px;
 }
 div.exifrow.exifbig.show {
 max-width: 50%;
 max-height: inherit;
+  z-index:20;
 }
 
 
@@ -46,7 +48,8 @@ max-height: inherit;
   max-width: 1em;
   z-index: 1;
   color:black;
-  background:rgba(255,255,255,0.8)
+  background:rgba(255,255,255,0.8);
+  border-radius: 50%;
 }
 
 .exifrow.show {
@@ -54,6 +57,9 @@ max-height: inherit;
   overflow: inherit;
   max-width: inherit;
   bottom: inherit;
+  border-radius: 5px;
+  z-index:20;
+  padding: 2px;
 }
 .exifrow button .material-icon {
   width:1em;
@@ -76,7 +82,7 @@ max-height: inherit;
 .exifrow.exifbig button {
   font-size: 1.5em;
   line-height: .5em;
-  adding: 0;
+  padding: 0;
 margin: 0;
 }
 
@@ -289,6 +295,18 @@ li.quickmenu:active > .popmenu-lev1, li.lev1:active > .popmenu-lev2, li.lev2:act
     width:max-content;
 }
 
+.navbar-extra-menu {
+display:flex;
+align-items:center;
+}
+
+.navbar-extra-menu li.switch {
+  position: relative;
+  display:block;
+  display:pointer
+}
+
+
 a.nav-to-footer {
   color:black;
   display:block;
@@ -300,13 +318,37 @@ a.nav-to-footer {
 }
 
 #styleSwitch {
-  margin-top: 12px;
-  margin-left: 10px;
-  background-color: #2563eb;
   color: white;
   font-weight: bold;
   border-radius: 3px;
   padding: 5px;
+  background: grey;
+  -webkit-touch-callout: none; /* Disables iOS Safari's native long-press link/image menu */
+  -webkit-user-select: none;   /* Prevents text selection magnifying glass on iOS */
+  user-select: none;           /* Standard text selection prevention */
+  touch-action: manipulation;  /* Prevents double-tap zoom delay while allowing scrolling */
+}
+
+#styleSwitch ul {
+  list-style: none;
+  background-color: grey;
+  padding: 3px;
+  margin: 0;
+  position:absolute;
+}
+
+#styleSwitch li {
+  background-color: grey;
+  margin: 0;
+  padding: 0;
+white-space: nowrap;
+}
+#styleSwitch li:hover {
+ background-color: lightgrey;
+}
+
+#styleSwitch li.active {
+ color: black;
 }
 
 
