@@ -183,6 +183,17 @@ html:has(#image-ov.full:not([style*="none"])),
 html:has(#image-ov.max:not([style*="none"])) {
   overflow: hidden;
 }
+/* touch screens: a drag inside the viewer moves neither the page underneath nor (the
+   browser's elastic overscroll at an edge) the whole viewer */
+html:has(#image-ov:not([style*="none"])) {
+  overscroll-behavior: none;
+}
+#image-ov,
+#image-ov .backImage,
+#image-ov .bufferImage,
+#image-ov .album {
+  overscroll-behavior: contain;
+}
 
 /* ---- frame ----
    A popup of 80% of the window over the dimmed page (the dimming is a huge shadow), above
@@ -679,6 +690,13 @@ html:has(#image-ov.max:not([style*="none"])) {
   box-sizing: content-box;
   width: var(--dp-iv-zw, auto);
   height: var(--dp-iv-zh, auto);
+  /* while the full-size image loads: the preview enlarged under it (--dp-iv-soft, set by
+     the JS), so the sharp image draws over a soft one instead of an empty area */
+  background-image: var(--dp-iv-soft, none);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-origin: content-box;
+  background-clip: content-box;
   border: solid transparent;
   border-width: var(--dp-iv-overdrag);
   cursor: grab;
@@ -717,12 +735,17 @@ html:has(#image-ov.max:not([style*="none"])) {
 }
 
 /* ---- maximized (.max) ----
-   The popup filling the browser window: the window look, without the frame. */
+   The popup filling the browser window: the window look, without the frame. Sized by the
+   window's edges, not 100vw x 100vh: on a phone whose page the browser has zoomed out a
+   little (something wider than the screen) those units are smaller than what is shown,
+   and the page peeks out at the right and bottom. */
 #image-ov.max {
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: auto;
   margin: 0;
   border: 0 none;
   border-radius: 0;
@@ -736,10 +759,12 @@ html:has(#image-ov.max:not([style*="none"])) {
    edge; the pointer hides 2.5 s after the last movement (.resting). */
 #image-ov.full {
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
   z-index: 2000;
-  width: 100vw;
-  height: 100vh;
+  width: auto;                      /* (by the edges: see .max) */
+  height: auto;
   margin: 0;
   border: 0 none;
   border-radius: 0;

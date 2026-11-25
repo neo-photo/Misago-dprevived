@@ -19,30 +19,47 @@ function thePhotoGallerySettings() {
   // group: a heading; type: "select" (choices: list, or a function of the form's values),
   // "range" (min, max, step, format), "checks" (several of choices), "check"; disabled:
   // a function of the form's values; title: tooltip; note: a line of text under the label
-  // before it
-  const options = () => [
-    {group: "Image change"},
-    {key: "transition", label: "Transition", type: "select", choices: gallery.transitionList,
-     title: "zoomed images use Pop instead of Morph"},
-    {key: "duration", label: "Duration", type: "range", min: 0.3, max: 3, step: 0.1,
-     format: (v) => v.toFixed(1) + " s", disabled: (f) => f.transition == "quick",
-     title: "Quick always takes 0.15 s"},
-    {key: "preload", label: "Preload next full-size image", type: "check"},
-    {group: "Slideshow"},
-    {key: "slideTime", label: "Time per image", type: "range", min: 1, max: 10, step: 0.5,
-     format: (v) => (v % 1 ? v.toFixed(1) : v) + " s"},
-    {group: "Display"},
-    {key: "modes", label: "Modes offered", type: "checks", choices: modeNames,
-     title: "the display button steps through them"},
-    {key: "openIn", label: "Open in", type: "select",
-     choices: (f) => [["last", "Last used"]].concat(modeNames.filter(([k]) => f.modes.indexOf(k) >= 0))},
-    {key: "transparency", label: "Background transparency", type: "range", min: 0, max: 0.5, step: 0.05,
-     format: (v) => Math.round(v * 100) + " %"},
-    {group: "Zoom"},
-    {key: "wheel", label: "Mouse wheel", type: "select",
-     choices: [["scroll", "Scrolls the zoomed image"], ["zoom", "Zooms (no scrollbars)"]]},
-    {note: "Ctrl + wheel always zooms"},
-  ];
+  // before it.
+  // By device (gallery.device): phones have only the maximized mode (no display choices),
+  // a download button that downloads, and no preloading of the next full-size image; the
+  // mouse wheel only where there is a mouse or touchpad.
+  const options = () => {
+    let phone = gallery.device == "phone";
+    let fine = !!(window.matchMedia && window.matchMedia("(any-pointer: fine)").matches);
+    let load = [["preload", "Load, and preload the next"], ["shown", "Load when shown"],
+                ["zoom", "Load only when zooming"]];
+    let list = [
+      {group: "Image change"},
+      {key: "transition", label: "Transition", type: "select", choices: gallery.transitionList,
+       title: "zoomed images use Pop instead of Morph"},
+      {key: "duration", label: "Duration", type: "range", min: 0.3, max: 3, step: 0.1,
+       format: (v) => v.toFixed(1) + " s", disabled: (f) => f.transition == "quick",
+       title: "Quick always takes 0.15 s"},
+      {key: "load", label: "Full-size images", type: "select", choices: phone ? load.slice(1) : load,
+       title: "until then the preview (1200 px) is shown"},
+      {key: "slideTime", label: "Slideshow time", type: "range", min: 1, max: 10, step: 0.5,
+       format: (v) => (v % 1 ? v.toFixed(1) : v) + " s", title: "how long each image is shown"},
+      {group: "Display"},
+    ];
+    if (!phone) list.push(
+      {key: "modes", label: "Modes offered", type: "checks", choices: modeNames,
+       title: "the display button steps through them"},
+      {key: "openIn", label: "Open in", type: "select",
+       choices: (f) => [["last", "Last used"]].concat(modeNames.filter(([k]) => f.modes.indexOf(k) >= 0))});
+    list.push(
+      {key: "transparency", label: "Background transparency", type: "range", min: 0, max: 0.5, step: 0.05,
+       format: (v) => Math.round(v * 100) + " %"});
+    if (!phone || fine) list.push({group: "Controls"});
+    if (!phone) list.push(
+      {key: "download", label: "Download button", type: "select",
+       choices: [["save", "Downloads the full-size image"], ["open", "Opens it in a new tab"]],
+       title: "images from other sites always open in a new tab"});
+    if (fine) list.push(
+      {key: "wheel", label: "Mouse wheel", type: "select",
+       choices: [["scroll", "Scrolls the zoomed image"], ["zoom", "Zooms (no scrollbars)"]]},
+      {note: "Ctrl + wheel always zooms"});
+    return list;
+  };
 
   const el = (tag, cls, text) => {
     let e = document.createElement(tag);

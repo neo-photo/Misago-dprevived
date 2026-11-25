@@ -267,3 +267,47 @@ body.dark #image-ov,
   outline: 2px solid var(--dp-iv-focus);
   outline-offset: 1px;
 }
+
+/* narrow screens (phones): one column, each label above its control */
+@media (max-width: 500px) {
+  #image-ov .iv-settings-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px 0;
+  }
+  #image-ov .iv-settings-label {
+    margin-top: 6px;
+  }
+  #image-ov .iv-settings-note {
+    margin-top: 0;
+  }
+  #image-ov .iv-settings-panel {
+    padding: 12px 14px 14px;
+  }
+}
+/* touch screens: controls a finger can hit */
+@media (pointer: coarse) {
+  #image-ov .iv-settings select,
+  #image-ov .iv-settings-buttons button {
+    height: 36px;
+    font-size: 15px;
+  }
+  #image-ov .iv-settings-ctl {
+    min-height: 36px;
+  }
+  #image-ov .iv-settings input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+  #image-ov .iv-settings input[type="range"] {
+    height: 30px;
+  }
+  #image-ov .iv-settings input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    margin-top: -10px;
+  }
+  #image-ov .iv-settings input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+}
