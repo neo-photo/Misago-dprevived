@@ -66,8 +66,13 @@
       window.misago_locale = "{{ LANGUAGE_CODE }}"
       window.misago_csrf = {{ CSRF_COOKIE_NAME|safe }}
     </script>
+<script src="/static/js/styles.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>    
 <script src="/static/js/dprevived.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
-<script src="/static/js/thePhotoGallery.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
+  {% if 'big' in request.GET %}
+<script src="/static/js/thePhotoGalleryBig.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
+      {% else %}
+<script src="/static/js/thePhotoGalleryBig.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>      
+      {% endif %}      
 <script src="/static/js/styles.js?v{{settings.forum_version}}.{{dprevived.Version}}"></script>
 <script src="/static/js/exif.js"></script>
 <link rel="stylesheet" href="/static/css/default.css?v{{settings.forum_version}}.{{dprevived.Version}}">

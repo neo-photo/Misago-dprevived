@@ -274,7 +274,7 @@ function startup(){
          });
         //el.addEventListener('mouseout', (ev) => { document.querySelectorAll(".quickmenu .open").forEach((el)=>{el.classList.remove("open");});});
     });
-        let globalClick = (e) =>{e.stopPropagation();e.preventDefault();styleSwitch.querySelector("ul").style.display='none';};
+        let globalClick = (e) =>{e.stopPropagation();e.preventDefault();document.querySelector("#styleSwitch ul").style.display='none';};
         let selectElement = document.querySelector("#styleSwitch ul");
         Object.entries(global.styles).forEach(([key,val]) => {
             let newdiv = document.createElement("li");
@@ -298,12 +298,14 @@ function startup(){
         switchStyle('dark');
         //document.getElementById("styleSwitch").value = 'dark';
     }
-   
+  
+          let down = false; 
         //selectElement.style.display="block";
         let styleSwitch = document.getElementById("styleSwitch");
         styleSwitch.addEventListener('contextmenu',(e) =>{e.stopPropagation();e.preventDefault();
                                                       let ulel = styleSwitch.querySelector("ul");
                                                       if (ulel.style.display=='none') {
+                                                        down = true;
                                                         ulel.style.display='block';
                                                         document.body.addEventListener('click', globalClick,{ once: true } );       
                                                                                                                 }
@@ -319,8 +321,8 @@ function startup(){
                                                         });                                                      
 
         let holdTimer;
-        let down = false;
-        styleSwitch.addEventListener("mousedown", () => {
+
+        styleSwitch.addEventListener("pointerdown", () => {
            down = false;
           holdTimer = setTimeout(() => {
             let ulel = styleSwitch.querySelector("ul");
@@ -332,8 +334,9 @@ function startup(){
           }, 500); // 500 milliseconds for long hold
         });
 
-        styleSwitch.addEventListener("mouseup", () => {          
+        styleSwitch.addEventListener("pointerup", () => {                  
           clearTimeout(holdTimer);
+          if (down == false) document.querySelector("#styleSwitch ul").style.display='none';          
         });
 
                                                       

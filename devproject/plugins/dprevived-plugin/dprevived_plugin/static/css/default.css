@@ -27,11 +27,9 @@ article.misago-markup {
 }
 
 div.exifrow.exifbig {
- top:0;
     max-width: 1.5em;
-      max-height: 1.5em;
-      z-index:10;
-    margin: 3px;
+    max-height: 1.5em;
+    z-index:10;
 }
 div.exifrow.exifbig.show {
 max-width: 50%;
@@ -50,6 +48,7 @@ max-height: inherit;
   color:black;
   background:rgba(255,255,255,0.8);
   border-radius: 50%;
+  margin: 2px;
 }
 
 .exifrow.show {
@@ -71,7 +70,7 @@ max-height: inherit;
   font-size: 1em;
   background-color: rgba(255,255,255,0.5);
   opacity: 0.5;
-  vertical-align: central;
+  vertical-align: top;
 }
 
 .misago-markup a {

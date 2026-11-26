@@ -141,8 +141,8 @@ class thePhotoGallery {
     if (this.bootstrap.indexOf("css")>-1) {this.bootstrapCss()}
     if (this.bootstrap.indexOf("font")>-1) {this.bootstrapFont()}
     
-    window.addEventListener('mouseup', (e) => {this.mouseUp()}, false);
-    document.querySelector('#' + this.myId +' .backImage img.picture').addEventListener('mousedown',(e) =>{ this.mouseDown(e)}, false);
+    window.addEventListener('pointerup', (e) => {this.mouseUp()}, false);
+    document.querySelector('#' + this.myId +' .backImage img.picture').addEventListener('pointerdown',(e) =>{ this.mouseDown(e)}, false);
     document.querySelector('#' + this.myId +' svg').addEventListener('click', (e) => {this.preview();});
     document.querySelectorAll("#" + this.myId +" .backImage img.picture").forEach((e)=>{
         e.addEventListener('load', (e) => {this.loadedOvImage();});
@@ -190,7 +190,7 @@ class thePhotoGallery {
 }
 
   mouseUp() {
-    window.removeEventListener('mousemove', this.#moveMouse, true);
+    window.removeEventListener('pointermove', this.#moveMouse, true);
     let div = document.querySelector('#' + this.myId +' .backImage img.picture');
     div.style.cursor='inherit';
 }
@@ -223,7 +223,7 @@ class thePhotoGallery {
     let topNumString = topPart.slice(0, topPos);    // Get the Y value of the object.
     this.#gMouseDownOffsetY = this.#gMouseDownY - parseInt(topNumString,10);
 
-    window.addEventListener('mousemove', this.#moveMouse, true);
+    window.addEventListener('pointermove', this.#moveMouse, true);
 }
 
  divMove(e){
