@@ -7,7 +7,8 @@ function initStyles() {
             "repeat":"",
             "color":"white",
             "fgcolor":"light",
-            "name":"light"
+            "name":"light",
+            "icon":"brightness_5",
             },
         "grey":
             {"opacity":"",
@@ -17,6 +18,7 @@ function initStyles() {
             "color":"lightgrey",
             "fgcolor":"light",
             "name":"grey",
+            "icon":"brightness_6",
             },
         "dark":
             {"opacity":"",
@@ -26,6 +28,7 @@ function initStyles() {
             "color":"black",
             "fgcolor":"dark",
             "name":"dark",
+            "icon":"brightness_54",
             },
         "light+bg":
             {"opacity":"0.8",
@@ -35,6 +38,7 @@ function initStyles() {
             "color":"white",
             "fgcolor":"light",
             "name":"Day Foto",
+            "icon":"brightness_5",
             },
         "dark+bg":
             {"opacity":"0.8",
@@ -43,7 +47,8 @@ function initStyles() {
             "repeat":"repeat-y",
             "color":"black",
             "fgcolor":"dark",
-            "name":"Night Foto"
+            "name":"Night Foto",
+            "icon":"brightness_4"
             }
         }
 }

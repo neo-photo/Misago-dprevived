@@ -15,7 +15,7 @@ export default function NavbarExtraMenu({ items }) {
         </li>
       ))}
        		<li className="switch">
-              <div id="styleSwitch"><span className="material-icon" >invert_colors</span>
+              <div id="styleSwitch"><span className="material-icon" >brightness_5</span>
               <ul style={{display:'none'}}></ul>
               </div>
               </li>

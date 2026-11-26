@@ -282,8 +282,14 @@ function startup(){
         Object.entries(global.styles).forEach(([key,val]) => {
             let newdiv = document.createElement("li");
             newdiv.dataset.value = key;
-            newdiv.appendChild(document.createTextNode(val.name));
-            newdiv.addEventListener("click",(e)=>{switchStyle(e.target.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();document.body.removeEventListener('click', globalClick ); });          
+            let divel = document.createElement("div");
+            let spanel = document.createElement("span");
+            spanel.appendChild(document.createTextNode(val.icon));
+            spanel.classList.add("material-icon");
+            divel.appendChild(spanel);
+            divel.appendChild(document.createTextNode(val.name));
+            newdiv.appendChild(divel);
+            newdiv.addEventListener("click",(e)=>{let tel =e.target; while (!tel.hasAttribute("data-value")){tel=tel.parentElement}; switchStyle(tel.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();document.body.removeEventListener('click', globalClick ); });          
             selectElement.appendChild(newdiv);
         }); 
     

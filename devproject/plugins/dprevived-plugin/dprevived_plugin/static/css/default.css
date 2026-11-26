@@ -588,4 +588,134 @@ label {
     height: fit-content;
     right: -80px;
   }
+  
+  
+  
+  /* Style switch (#styleSwitch in the navbar; dprevived.js): replaces the #styleSwitch rules
+   in default.css. No change to the markup or the JS needed. (The less39 theme's own rules
+   for the old <select> must not reach the new <div>: see custom-css less39/dprevived/base.less.)
+
+   The icon shows the current theme, read from body[data-sclass] / body.dark (set by
+   dprevived.js): a sun - empty for light, half for grey, with a crescent for dark. The
+   markup's icon name (invert_colors) is hidden and the icon drawn by ::before instead.
+   The menu (long press / right click) lists the themes with the same icons; the current
+   one (li.active) is bold. Warm colours, no blue. */
+
+#styleSwitch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: 0 4px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-touch-callout: none;      /* no iOS long-press menu */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;       /* no double-tap zoom delay */
+}
+#styleSwitch:hover {
+  background-color: rgba(17, 24, 39, 0.06);
+}
+body.dark #styleSwitch:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* the icon: the theme's own (light by default) */
+#styleSwitch > .material-icon {
+  position: static;
+  font-size: 0;                     /* hides the markup's icon name */
+  line-height: 1;
+}
+#styleSwitch > .material-icon::before {
+  content: "brightness_5";
+  font-size: 24px;
+  color: hsl(40, 90%, 42%);         /* amber */
+}
+body[data-sclass="grey"] #styleSwitch > .material-icon::before {
+  content: "brightness_6";
+  color: hsl(30, 5%, 38%);          /* warm grey */
+}
+body.dark #styleSwitch > .material-icon::before {
+  content: "brightness_4";
+  color: rgb(200, 181, 148);        /* the forum's copper */
+}
+
+/* the menu: below the button, opening to the right (the button is in the navbar's extra
+   menu, left of the middle, so on phones too it stays on the screen) */
+#styleSwitch ul {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  min-width: 160px;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  font-size: 14px;
+  font-weight: normal;
+  color: #111827;
+  background-color: #fff;
+  border: 1px solid rgba(17, 24, 39, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+#styleSwitch li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 6px 14px;
+  white-space: nowrap;
+  background-color: transparent;
+  cursor: pointer;
+}
+#styleSwitch li:hover,
+#styleSwitch li.active {
+  background-color: rgba(17, 24, 39, 0.06);
+}
+#styleSwitch li.active {
+  font-weight: 600;
+}
+/* each theme's icon before its name (the click still lands on the li) */
+#styleSwitch li::before {
+  content: "brightness_5";
+  font-family: "Material Icons";
+  font-size: 20px;
+  line-height: 1;
+  color: hsl(40, 90%, 42%);
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  pointer-events: none;
+}
+#styleSwitch li[data-value="grey"]::before {
+  content: "brightness_6";
+  color: hsl(30, 5%, 38%);
+}
+#styleSwitch li[data-value^="dark"]::before {
+  content: "brightness_4";
+  color: hsl(28, 40%, 30%);
+}
+
+/* dark theme: the menu like the forum's dark dropdowns */
+body.dark #styleSwitch ul {
+  color: rgb(200, 181, 148);
+  background-color: rgb(31, 29, 25);
+  border-color: rgb(70, 70, 70);
+}
+body.dark #styleSwitch li:hover,
+body.dark #styleSwitch li.active {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+body.dark #styleSwitch li[data-value="grey"]::before {
+  color: hsl(30, 5%, 62%);
+}
+body.dark #styleSwitch li[data-value^="dark"]::before {
+  color: rgb(200, 181, 148);
+}
+  
 }
