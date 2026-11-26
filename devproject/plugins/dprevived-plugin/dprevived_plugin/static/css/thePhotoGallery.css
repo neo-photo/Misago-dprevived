@@ -80,6 +80,8 @@
   --dp-iv-thumb-min-r: 0.35;
   --dp-iv-thumb-fill-wide: 0.4;
   --dp-iv-thumb-fill-tall: 0.9;
+  --dp-iv-col-fill-wide: 0.9;                        /* phones in portrait: the column */
+  --dp-iv-col-fill-tall: 0.4;
   --dp-iv-thumb-dim: 1;
   --dp-iv-thumb-shadow: hsla(30, 25%, 15%, 0.45);
   --dp-iv-thumb-current: hsla(30, 30%, 12%, 0.8);
@@ -858,6 +860,33 @@ html:has(#image-ov:not([style*="none"])) {
 #image-ov .album img.cur {
   filter: drop-shadow(0 0 var(--dp-iv-image-line-blur) var(--dp-iv-image-line))
           drop-shadow(0 0 7px var(--dp-iv-thumb-current)) brightness(var(--dp-iv-thumb-dim));
+}
+/* phones in portrait: one column of thumbnails, all of one width (--dp-iv-col-w, set by the
+   JS: about four 3:2 images per screen height). The gallery's rule turned around: the
+   height follows the image's proportion, boxes between 1.2 x the width (tall images) and
+   a third of it (wide ones). A taller image is shown narrower, the empty space beside it
+   (no gaps in the column), at least --dp-iv-col-fill-tall of the width; a wider one (a
+   panorama) fills at least --dp-iv-col-fill-wide of the box height, its ends cropped -
+   no empty bands between panoramas. */
+@media (orientation: portrait) {
+  #image-ov.phone .album {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: calc(var(--dp-iv-col-w, 250px) * 0.06);
+  }
+  #image-ov.phone .album img {
+    --w: var(--dp-iv-col-w, 250px);
+    --h: calc(var(--w) / clamp(0.8333, var(--r, 1.5), 3));
+    flex: 0 0 auto;
+    width: var(--w);
+    height: var(--h);
+    padding: calc((var(--h) - min(var(--h), max(var(--w) / var(--r, 1.5),
+                                                 var(--h) * var(--dp-iv-col-fill-wide)))) / 2)
+             calc((var(--w) - min(var(--w), max(var(--h) * var(--r, 1.5),
+                                                 var(--w) * var(--dp-iv-col-fill-tall)))) / 2);
+  }
 }
 #image-ov .album img:hover,
 #image-ov .album img.sel {
