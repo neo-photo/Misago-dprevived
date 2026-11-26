@@ -1,0 +1,82 @@
+/* thePhotoGallery image details (thePhotoGalleryInfo.js): an info button at the start of
+   the header, and a panel at the bottom of the image area in the header's colours (the
+   viewer's --dp-iv-* variables, so light, dark and fullscreen follow). Plain CSS, no
+   nesting (Windows 7 browsers). */
+
+#image-ov .head .iv-info-btn {
+  flex: 0 0 auto;
+  margin: 0 0 0 6px;
+}
+#image-ov .head .iv-info-btn + .iv-info {
+  margin-left: 8px;
+}
+
+/* the panel: at the bottom, at most 560 px wide (the whole width on phones), over the
+   image and arrows, below dialogs; slides up when opened */
+#image-ov .iv-panel {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 5;
+  box-sizing: border-box;
+  width: 560px;
+  max-width: 100%;
+  max-height: 60%;
+  padding: 12px 16px 14px;
+  overflow-y: auto;
+  transform: translateX(-50%);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--dp-iv-head-text);
+  background-color: var(--dp-iv-head-bg);
+  border: 1px solid var(--dp-iv-border);
+  border-bottom: 0 none;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.25);
+  touch-action: none;               /* swipes on it are the viewer's gestures (down: closes) */
+  -webkit-user-select: text;        /* the image area forbids selecting; the details can be copied */
+  user-select: text;
+  cursor: auto;
+  animation: iv-panel-in 0.2s ease-out;
+}
+#image-ov.full .iv-panel {
+  background-color: var(--dp-iv-head-bg-full);
+}
+#image-ov .iv-panel[hidden] {
+  display: none;
+}
+@keyframes iv-panel-in {
+  from { transform: translate(-50%, 100%); }
+  to { transform: translate(-50%, 0); }
+}
+#image-ov .iv-panel-title {
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  color: var(--dp-iv-head-strong);
+}
+/* label and value in two columns */
+#image-ov .iv-panel-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 3px 14px;
+}
+#image-ov .iv-panel-label {
+  opacity: 0.8;
+}
+#image-ov .iv-panel-value {
+  overflow-wrap: anywhere;
+  color: var(--dp-iv-head-strong);
+}
+#image-ov .iv-panel-value a {
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+}
+/* touch screens: a little larger */
+@media (pointer: coarse) {
+  #image-ov .iv-panel {
+    font-size: 15px;
+    padding: 14px 18px 18px;
+  }
+}

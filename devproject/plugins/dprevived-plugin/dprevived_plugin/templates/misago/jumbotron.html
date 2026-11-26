@@ -30,6 +30,7 @@ gallery.clearOnRefresh = false;
 gallery.absPath ="/static";
 gallery.errorImage = "/misago/img/attachment-404.png";  // Misago's own "missing attachment" image
 gallery.addPreviewDownload = false;  // only the full-size download button
+if (typeof thePhotoGalleryInfo == "function") gallery.registerPlugin("info", thePhotoGalleryInfo());
 if (typeof thePhotoGallerySettings == "function") gallery.registerPlugin("settings", thePhotoGallerySettings());
 </script>
 <div id="fire" ><div></div><div></div><div></div></div>

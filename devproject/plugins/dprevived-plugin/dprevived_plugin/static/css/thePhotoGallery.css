@@ -214,6 +214,19 @@ html:has(#image-ov:not([style*="none"])) {
   opacity: 0;
   pointer-events: none;
 }
+/* phones: no zoom button (pinch and double tap), no EXIF line in the header (too narrow:
+   the info plugin shows it) */
+#image-ov.phone .nav-ov button[data-class="big"],
+#image-ov.phone .head .exifOverlay {
+  display: none;
+}
+/* phones: position and name take the room left, a long name ends in "..." */
+#image-ov.phone .head .iv-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 /* touch devices (.touch): the image area takes the header's place meanwhile */
 #image-ov.touch.bare:not(.full) .lighttable {
   top: 0;
