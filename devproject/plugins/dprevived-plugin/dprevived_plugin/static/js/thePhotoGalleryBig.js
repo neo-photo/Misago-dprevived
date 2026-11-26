@@ -1038,7 +1038,7 @@ class thePhotoGallery {
                     if (this.addExif) {
                         newdiv = document.createElement("div");
                         newdiv.classList.add("exifOverlay");           
-                        e.parentElement.appendChild(newdiv);
+                        e.parentElement.after(newdiv);
                     }
                     this.makeExif(e.src, newdiv);
                 }

@@ -37,6 +37,7 @@ max-height: inherit;
   z-index:20;
 }
 
+.exifbutton .exifOverlay { display:none;}
 
 .exifrow {
   max-height: 1em;

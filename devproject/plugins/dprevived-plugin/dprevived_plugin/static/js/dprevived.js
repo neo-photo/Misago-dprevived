@@ -237,20 +237,23 @@ function changeStyle(opts) {
 
 function startup(){ 
     //alert("3");
-    gallery.initGallery();
     document.querySelectorAll(".exifrow").forEach((e) => {if (!e.classList.contains('exifbutton')) {
     let toggle = (e)=>{let tel = e.target; while (!tel.classList.contains("exifbutton")){tel=tel.parentElement};tel.classList.toggle('show');e.preventDefault();e.stopPropagation()}
     e.classList.add('exifbutton');
     e.addEventListener('click', toggle);
-    
+    let ovEl = e.querySelector(".exifOverlay")
     document.querySelectorAll(".misago-markup a img[src^='" + e.dataset.url +  "']").forEach((imgEl) => {
-    let n = e.cloneNode(true);
-    n.classList.add("exifbig");
-    n.addEventListener('click', toggle);
-    imgEl.parentElement.appendChild(n);
-    });
+      let n = e.cloneNode(true);
+      n.classList.add("exifbig");
+      n.addEventListener('click', toggle);
+      imgEl.parentElement.appendChild(n);
+      imgEl.classList.add("exif");
+      let nOv = ovEl.cloneNode(true);
+      imgEl.parentElement.after(nOv);
+      });
     }});
-    
+ 
+     gallery.initGallery();   
     
     document.querySelectorAll(".hoveropen").forEach((e)=>{e.addEventListener('click', (ev) => {
         let t = ev.target;

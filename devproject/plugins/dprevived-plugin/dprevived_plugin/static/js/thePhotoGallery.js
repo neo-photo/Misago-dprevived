@@ -31,9 +31,42 @@ class thePhotoGallery {
       return new Response(cs.readable).arrayBuffer().then(function (arrayBuffer) {
           return new TextDecoder().decode(arrayBuffer);
       });
-}
+    }
+    
+  #exifToStore =[
+  "Artist",
+  "ColorSpace",
+  "CompositeImage",
+  "DateTime",
+  "OffsetTime",
+  "DateTimeOriginal",
+  "OffsetTimeOriginal",
+  "DateTimeDigitized",
+  "OffsetTimeDigitized",
+  "ExposureBiasValue",      
+  "ExposureProgram",
+  "ExifImageWidth",
+  "ExifImageHeight",
+  "ExposureTime",
+  "ExposureMode" ,
+  "Flash",
+  "FocalLength",
+  "FocalLengthIn35mmFilm",
+  "FNumber",
+  "GainControl",
+  "ISOSpeedRatings",
+  "LensSpecification" ,
+  "LensMake",
+  "LensModel",        
+  "Make",
+  "Model",
+  "Orientation",
+  "SensingMethod",
+  "SubjectDistanceRange",
+  "SensitivityType",
+  "WhiteBalance"];
 
-  
+
     constructor(selector = "article.misago-markup img") {
         // config Vars
         this.selector = selector;
@@ -518,7 +551,9 @@ class thePhotoGallery {
         this.#cache.exif[src] = {"ready":false,"line1":"", "line2":"", "elems": []};
         if (elem!= null) {this.#cache.exif[src].elems.push(elem)};
         let img = new Image();
+        let toggle = (e)=>{let tel = e.target; while (!tel.classList.contains("exifbutton")){tel=tel.parentElement};tel.classList.toggle('show');e.preventDefault();e.stopPropagation()}
         let exifCache = this.#cache.exif;
+        let exifToStore = this.#exifToStore;
         img.onload =(item) => {
             //console.log("exif",img.src);
             EXIF.getData(img, function() {
@@ -571,9 +606,20 @@ class thePhotoGallery {
     		    exifCache[img.src].line1 = line1;
     		    exifCache[img.src].line2 = line2;
     		    exifCache[img.src].ready = true;
+    		    let exifrowshtml = '<button><span class="material-icon" >info_outline</span></button>';
+    		    exifToStore.forEach((e)=> {
+    		      let val = EXIF.getTag(this, e);
+    		      if (val != undefined )  exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>';
+    		    });
+    		    let exifrows = document.createElement("div");
+    		    exifrows.classList.add("exifrow");
+    		    exifrows.classList.add("exifbutton");
+            exifrows.innerHTML = exifrowshtml;
+            exifrows.addEventListener("click",toggle);
     		    while (exifCache[img.src].elems.length>0) {
       		    let ediv = exifCache[img.src].elems.pop();
               ediv.innerHTML = line1 + line2;
+              ediv.previousElementSibling.appendChild(exifrows);
               }
              
             });
