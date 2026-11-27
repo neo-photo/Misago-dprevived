@@ -611,7 +611,10 @@ class thePhotoGallery {
     		    let isExif = false;
     		    exifToStore.forEach((e)=> {
     		      let val = EXIF.getTag(this, e);
-    		      if (val != undefined ) {isExif = true;; exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>'}
+    		      if (val != undefined ) {isExif = true; 
+      		      if (e == "FNumber") val = val.toFixed(1);
+      		      if (e == "ExposureTime" && val<1) val = (1/val).toFixed(0);
+      		      exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>'}
     		    });
     		    let exifrows = document.createElement("div");
     		    exifrows.classList.add("exifrow");
