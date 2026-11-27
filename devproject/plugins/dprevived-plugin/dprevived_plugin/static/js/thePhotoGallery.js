@@ -541,6 +541,15 @@ class thePhotoGallery {
             let line1 = this.#cache.exif[src].line1;
             let line2 = this.#cache.exif[src].line2;
             elem.innerHTML = line1 + line2 ;
+            let spSrc = src.split('?')[0]
+            spSrc = spSrc.split(window.location.host,2)
+            if (spSrc.length>1) {
+              src = spSrc[1]
+            }
+            else src = spSrc[0]
+            let sel =".misago-markup a[href^='" + src +  "']";
+            let a = document.querySelector(sel);
+            if (a != undefined) {let newEl=a.parentElement.querySelector(".exifbig").cloneNode(true);elem.parentElement.appendChild(newEl) ;}
             }
             else {
                 this.#cache.exif[src].elems.push(elem);
@@ -614,18 +623,21 @@ class thePhotoGallery {
     		      if (val != undefined ) {isExif = true; 
       		      if (e == "FNumber") val = val.toFixed(1);
       		      if (e == "ExposureTime" && val<1) val = (1/val).toFixed(0);
-      		      exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>'}
+      		      exifrowshtml +='<div class="exifdown"><div >' + e +':'+  val + ' </div></div>'}
     		    });
     		    let exifrows = document.createElement("div");
     		    exifrows.classList.add("exifrow");
     		    exifrows.classList.add("exifbutton");
      		    exifrows.classList.add("exifbig");
-            exifrows.innerHTML = exifrowshtml;
-            exifrows.addEventListener("click",toggle);
+    		    if (isExif) {
+              exifrows.innerHTML = exifrowshtml;            
+              exifrows.addEventListener("click",toggle);
+             }
+            
     		    while (exifCache[img.src].elems.length>0) {
       		    let ediv = exifCache[img.src].elems.pop();
               ediv.innerHTML = line1 + line2;
-              if (isExif) ediv.previousElementSibling.appendChild(exifrows);
+              ediv.previousElementSibling.appendChild(exifrows);
               }
              
             });
