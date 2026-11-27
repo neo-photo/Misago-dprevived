@@ -311,7 +311,6 @@ html:has(#image-ov:not([style*="none"])) {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  line-height: var(--dp-iv-head-h);
   font-size: 13px;
   color: var(--dp-iv-head-text);
 }
@@ -324,7 +323,6 @@ html:has(#image-ov:not([style*="none"])) {
   flex: 0 0 auto;
   margin: 0 0 0 10px;
   white-space: nowrap;
-  line-height: var(--dp-iv-head-h);
   font-size: 13px;
   color: var(--dp-iv-head-text);
 }
