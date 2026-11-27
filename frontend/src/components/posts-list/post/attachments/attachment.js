@@ -122,9 +122,9 @@ export function AttachmentExifOverlay(exifh) {
 
 export function AttachmentExifRows(exif) {
       let listItems2 = Object.keys(exif.exif).sort();
-      if ('fsize' in Object(exif) && !('size' in Object(exif))) {
-        exif.exif['size'] = (exif.fsize/1024).toFixed(0) + "kb";
-        listItems2.push('size');
+      if ('fsize' in Object(exif) && !('Filesize' in Object(exif))) {
+        exif.exif['Filesize'] = (exif.fsize/1024).toFixed(0) + "kb";
+        listItems2.push('Filesize');
         }
       //const listItems = listItems2.reduce((obj, key) => { obj[key] = exif.exif[key];  return obj;}, empty);
       //const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
