@@ -1023,7 +1023,7 @@ class thePhotoGallery {
   }
 
  refreshGallery(){
-        if (document.querySelectorAll(".exif").length>0) return;
+        //if (document.querySelectorAll(".exif").length>0) return;
         if (this.clearOnRefresh) {
             this.#ovImages = {}; 
             document.querySelector("#" + this.myId +" div.album").innerHTML = "";

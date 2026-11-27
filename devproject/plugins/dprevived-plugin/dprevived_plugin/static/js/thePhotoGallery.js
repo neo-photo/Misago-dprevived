@@ -85,6 +85,7 @@ class thePhotoGallery {
         this.css = '/css/thePhotoGallery.css';
         this.transitions = ['flip','none','fade','slide','drop'];
         this.curTransition = 'flip';
+        this.clickImage =(e) =>{  e.stopPropagation();e.preventDefault();this.openImage(e.target.src);return false;};
         
     }
 
@@ -645,7 +646,8 @@ class thePhotoGallery {
   }
 
  refreshGallery(){
-        if (document.querySelectorAll(".exif").length>0) return;
+        //console.log(document.querySelectorAll(".exif").length, document.querySelectorAll(this.selector+".exif").length);
+        if (document.querySelectorAll(".exif").length+1 == document.querySelectorAll(this.selector+".exif").length) return;
         if (this.clearOnRefresh) {
             this.#ovImages = {}; 
             document.querySelector("#" + this.myId +" div.album").innerHTML = "";
@@ -664,8 +666,7 @@ class thePhotoGallery {
                     }
                     this.makeExif(e.src, newdiv);
                 }
-                e.addEventListener('click',(e) =>{  e.stopPropagation();e.preventDefault();
-                this.openImage(e.target.src);return false;});
+                e.addEventListener('click',this.clickImage);
                 this.addImage(e);
                 //console.log("single",e.src);
             }

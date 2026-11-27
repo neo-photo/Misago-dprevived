@@ -247,9 +247,11 @@ function startup(){
       n.classList.add("exifbig");
       n.addEventListener('click', toggle);
       imgEl.parentElement.appendChild(n);
+      imgEl.parentElement.addEventListener('click',gallery.clickImage);
       imgEl.classList.add("exif");
       let nOv = ovEl.cloneNode(true);
       imgEl.parentElement.after(nOv);
+      gallery.addImage(imgEl);
       });
     }});
  
