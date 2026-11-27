@@ -7,7 +7,7 @@ function initStyles() {
             "repeat":"",
             "color":"white",
             "fgcolor":"light",
-            "name":"light",
+            "name":"Light",
             "icon":"brightness_5",
             },
         "grey":
@@ -17,7 +17,7 @@ function initStyles() {
             "repeat":"",
             "color":"lightgrey",
             "fgcolor":"light",
-            "name":"grey",
+            "name":"Grey",
             "icon":"brightness_6",
             },
         "dark":
@@ -27,7 +27,7 @@ function initStyles() {
             "repeat":"",
             "color":"black",
             "fgcolor":"dark",
-            "name":"dark",
+            "name":"Dark",
             "icon":"brightness_54",
             },
         "light+bg":
@@ -37,7 +37,7 @@ function initStyles() {
             "repeat":"repeat-y",
             "color":"white",
             "fgcolor":"light",
-            "name":"Day Foto",
+            "name":"Light Image",
             "icon":"brightness_5",
             },
         "dark+bg":
@@ -47,7 +47,7 @@ function initStyles() {
             "repeat":"repeat-y",
             "color":"black",
             "fgcolor":"dark",
-            "name":"Night Foto",
+            "name":"Dark Image",
             "icon":"brightness_4"
             }
         }

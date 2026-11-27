@@ -254,7 +254,7 @@ html:has(#image-ov.full:not([style*="none"])) {
 /* position and name ("3 / 6 . name", the JS's .iv-info), then the EXIF; dots between */
 #image-ov .head .iv-info {
   flex: 0 0 auto;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 30px;
   white-space: nowrap;
   line-height: var(--dp-iv-head-h);
   font-size: 13px;
