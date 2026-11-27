@@ -242,17 +242,21 @@ function startup(){
     e.classList.add('exifbutton');
     e.addEventListener('click', toggle);
     let ovEl = e.querySelector(".exifOverlay")
-    document.querySelectorAll(".misago-markup a img[src^='" + e.dataset.url +  "']").forEach((imgEl) => {
-      let n = e.cloneNode(true);
-      n.classList.add("exifbig");
-      n.addEventListener('click', toggle);
-      imgEl.parentElement.appendChild(n);
-      imgEl.parentElement.addEventListener('click',gallery.clickImage);
-      imgEl.classList.add("exif");
-      let nOv = ovEl.cloneNode(true);
-      imgEl.parentElement.after(nOv);
-      gallery.addImage(imgEl);
-      });
+    //console.log(e.querySelector(".exifdown"));
+    if (e.querySelector(".exifdown") != null) {
+      //console.log(e.querySelector(".exifdown") != null);
+      document.querySelectorAll(".misago-markup a img[src^='" + e.dataset.url +  "']").forEach((imgEl) => {
+        let n = e.cloneNode(true);
+        n.classList.add("exifbig");
+        n.addEventListener('click', toggle);
+        imgEl.parentElement.appendChild(n);
+        imgEl.parentElement.addEventListener('click',gallery.clickImage);
+        imgEl.classList.add("exif");
+        let nOv = ovEl.cloneNode(true);
+        imgEl.parentElement.after(nOv);
+        gallery.addImage(imgEl);
+        });
+     }
     }});
  
      gallery.initGallery();   

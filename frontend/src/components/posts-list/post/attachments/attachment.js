@@ -66,7 +66,7 @@ export function AttachmentExifDetails(props) {
        return (
        <div className="exifrow" data-url={props.attachment.url.thumb} >
          <button><span className="material-icon" >info_outline</span></button>
-          <AttachmentExifRows exif={props.attachment.plugin_data.exif} />
+          <AttachmentExifRows exif={props.attachment.plugin_data.exif} fsize={props.attachment.size} />
           <AttachmentExifOverlay exif={props.attachment.plugin_data.exif} />
           </div>)
     }
@@ -121,14 +121,17 @@ export function AttachmentExifOverlay(exifh) {
         }
 
 export function AttachmentExifRows(exif) {
-      const listItems2 = Object.keys(exif.exif).sort();
-      let empty = {};
+      let listItems2 = Object.keys(exif.exif).sort();
+      if ('fsize' in Object(exif) && !('size' in Object(exif))) {
+        exif.exif['size'] = (exif.fsize/1024).toFixed(0) + "kb";
+        listItems2.push('size');
+        }
       //const listItems = listItems2.reduce((obj, key) => { obj[key] = exif.exif[key];  return obj;}, empty);
       //const listItems = Object.entries(exif.exif).map((e,nr) => <div key={nr}>{e[0]}: {e[1]}</div>);
-      const listItems = listItems2.map((e,nr) => <div key={nr}>{e}: {exif.exif[e]}</div>);
+      let listItems = listItems2.map((e,nr) => <div key={nr}>{e}: {exif.exif[e]}</div>);
       return <div className="exifdown">{listItems}</div>;
         }
-
+  
 export function AttachmentDetails(props) {
   let user = null
   if (props.attachment.url.uploader) {

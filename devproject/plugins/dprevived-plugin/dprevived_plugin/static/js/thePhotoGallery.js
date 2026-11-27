@@ -608,19 +608,21 @@ class thePhotoGallery {
     		    exifCache[img.src].line2 = line2;
     		    exifCache[img.src].ready = true;
     		    let exifrowshtml = '<button><span class="material-icon" >info_outline</span></button>';
+    		    let isExif = false;
     		    exifToStore.forEach((e)=> {
     		      let val = EXIF.getTag(this, e);
-    		      if (val != undefined )  exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>';
+    		      if (val != undefined ) {isExif = true;; exifrowshtml +='<div className="exifdown"><div >' + e +':'+  val + ' </div></div>'}
     		    });
     		    let exifrows = document.createElement("div");
     		    exifrows.classList.add("exifrow");
     		    exifrows.classList.add("exifbutton");
+     		    exifrows.classList.add("exifbig");
             exifrows.innerHTML = exifrowshtml;
             exifrows.addEventListener("click",toggle);
     		    while (exifCache[img.src].elems.length>0) {
       		    let ediv = exifCache[img.src].elems.pop();
               ediv.innerHTML = line1 + line2;
-              ediv.previousElementSibling.appendChild(exifrows);
+              if (isExif) ediv.previousElementSibling.appendChild(exifrows);
               }
              
             });

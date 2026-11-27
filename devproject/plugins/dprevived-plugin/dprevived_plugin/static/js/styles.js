@@ -28,7 +28,7 @@ function initStyles() {
             "color":"black",
             "fgcolor":"dark",
             "name":"Dark",
-            "icon":"brightness_54",
+            "icon":"brightness_4",
             },
         "light+bg":
             {"opacity":"0.8",
