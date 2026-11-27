@@ -286,7 +286,7 @@ function startup(){
             let spanel = document.createElement("span");
             spanel.appendChild(document.createTextNode(val.icon));
             spanel.classList.add("material-icon");
-            divel.appendChild(spanel);
+            //divel.appendChild(spanel);
             divel.appendChild(document.createTextNode(val.name));
             newdiv.appendChild(divel);
             newdiv.addEventListener("click",(e)=>{let tel =e.target; while (!tel.hasAttribute("data-value")){tel=tel.parentElement}; switchStyle(tel.dataset.value);document.querySelector("#styleSwitch ul").style.display='none';e.stopPropagation();document.body.removeEventListener('click', globalClick ); });          

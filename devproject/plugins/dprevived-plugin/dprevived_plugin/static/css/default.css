@@ -634,9 +634,11 @@ body.dark #styleSwitch:hover {
 
 /* the icon: the theme's own (light by default) */
 #styleSwitch > .material-icon {
-  position: static;
+  position: absolute;
   font-size: 0;                     /* hides the markup's icon name */
   line-height: 1;
+  top: 5px;
+  left: 5px;
 }
 #styleSwitch > .material-icon::before {
   content: "brightness_5";
